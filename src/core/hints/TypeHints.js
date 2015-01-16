@@ -8,7 +8,7 @@ type Dispatcher = {
   register: (callback: (payload: Object) => void) => number;
 }
 
-var PrimitiveTypeHints = {
+var TypeHints = {
 
   enforceDispatcherInterface(
     dispatcher: Dispatcher,
@@ -84,4 +84,4 @@ var PrimitiveTypeHints = {
 
 };
 
-module.exports = PrimitiveTypeHints;
+module.exports = TypeHints;

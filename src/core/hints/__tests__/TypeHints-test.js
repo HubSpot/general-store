@@ -1,29 +1,29 @@
-jest.dontMock('../PrimitiveTypeHints.js');
+jest.dontMock('../TypeHints.js');
 
-describe('PrimitiveTypeHints', () => {
+describe('TypeHints', () => {
 
-  var PrimitiveTypeHints;
+  var TypeHints;
   var ScopeHint;
 
   beforeEach(() => {
-    PrimitiveTypeHints = require('../PrimitiveTypeHints.js');
-    ScopeHint = 'PrimitiveTypeHints-test';
+    TypeHints = require('../TypeHints.js');
+    ScopeHint = 'TypeHints-test';
   });
 
   it('throws from enforceDispatcherInterface', () => {
     // invalid dispatchers
     expect(() => {
-      PrimitiveTypeHints.enforceDispatcherInterface({
+      TypeHints.enforceDispatcherInterface({
         register: 'test'
       });
     }).toThrow();
     expect(() => {
-      PrimitiveTypeHints.enforceDispatcherInterface({});
+      TypeHints.enforceDispatcherInterface({});
     }).toThrow();
 
     // valid dispatchers
     expect(() => {
-      PrimitiveTypeHints.enforceDispatcherInterface({
+      TypeHints.enforceDispatcherInterface({
         register: function() {
           return 'test-token';
         }
@@ -33,44 +33,44 @@ describe('PrimitiveTypeHints', () => {
 
   it('throws from enforceIsFunction', () => {
     expect(
-      () => PrimitiveTypeHints.enforceIsFunction('test', ScopeHint)
+      () => TypeHints.enforceIsFunction('test', ScopeHint)
     ).toThrow()
     expect(
-      () => PrimitiveTypeHints.enforceIsFunction(1241, ScopeHint)
+      () => TypeHints.enforceIsFunction(1241, ScopeHint)
     ).toThrow()
     expect(
-      () => PrimitiveTypeHints.enforceIsFunction({}, ScopeHint)
+      () => TypeHints.enforceIsFunction({}, ScopeHint)
     ).toThrow()
     expect(
-      () => PrimitiveTypeHints.enforceIsFunction(function() {}, ScopeHint)
+      () => TypeHints.enforceIsFunction(function() {}, ScopeHint)
     ).not.toThrow()
   });
 
   it('throws from enforceIsString', () => {
     expect(
-      () => PrimitiveTypeHints.enforceIsString('test', ScopeHint)
+      () => TypeHints.enforceIsString('test', ScopeHint)
     ).not.toThrow()
     expect(
-      () => PrimitiveTypeHints.enforceIsString(1241, ScopeHint)
+      () => TypeHints.enforceIsString(1241, ScopeHint)
     ).toThrow()
     expect(
-      () => PrimitiveTypeHints.enforceIsString({}, ScopeHint)
+      () => TypeHints.enforceIsString({}, ScopeHint)
     ).toThrow()
     expect(
-      () => PrimitiveTypeHints.enforceIsString(function() {}, ScopeHint)
+      () => TypeHints.enforceIsString(function() {}, ScopeHint)
     ).toThrow()
   });
 
   it('throws from enforceKeyIsDefined', () => {
     expect(() => {
-      PrimitiveTypeHints.enforceKeyIsDefined(
+      TypeHints.enforceKeyIsDefined(
         {random: 'blah'},
         'test',
         ScopeHint
       );
     }).toThrow()
     expect(() => {
-      PrimitiveTypeHints.enforceKeyIsDefined(
+      TypeHints.enforceKeyIsDefined(
         {test: 'testing'},
         'test',
         ScopeHint
@@ -80,14 +80,14 @@ describe('PrimitiveTypeHints', () => {
 
   it('throws from enforceKeyIsNotDefined', () => {
     expect(() => {
-      PrimitiveTypeHints.enforceKeyIsNotDefined(
+      TypeHints.enforceKeyIsNotDefined(
         {test: 'testing'},
         'test',
         ScopeHint
       );
     }).toThrow()
     expect(() => {
-      PrimitiveTypeHints.enforceKeyIsNotDefined(
+      TypeHints.enforceKeyIsNotDefined(
         {random: 'blah'},
         'test',
         ScopeHint
