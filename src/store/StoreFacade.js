@@ -4,7 +4,7 @@ var StoreConstants = require('./StoreConstants.js');
 var {
   enforceKeyIsDefined,
   enforceIsFunction
-} = require('../hints/PrimitiveTypeHints.js');
+} = require('../core/hints/PrimitiveTypeHints.js');
 
 var SCOPE_HINT = 'StoreFacade';
 
@@ -12,17 +12,17 @@ class StoreFacade {
 
   _dispatcher: Object;
   _dispatchToken: string;
-  _getters: {[key:string]: (...args: Array<any>) => any};
+  _getter: (...args: Array<any>) => any;
   _listeners: Array<Function>;
   _responses: {[key:string]: (data: any, actionType: string) => any};
 
   constructor(
-    getters: {[key:string]: (...args: Array<any>) => any},
+    getter: (...args: Array<any>) => any,
     responses: {[key:string]: (data: any, actionType: string) => any},
     dispatcher: Object
   ) {
     this._dispatcher = dispatcher;
-    this._getters = getters;
+    this._getter = getter;
     this._responses = responses;
     this._listeners = [];
 
@@ -38,16 +38,7 @@ class StoreFacade {
   }
 
   get(...args: Array<any>): any {
-    var get = this.getKey.bind(
-      this,
-      StoreConstants.DEFAULT_GETTER_KEY
-    );
-    return get.apply(null, args);
-  }
-
-  getKey(key: string, ...args: Array<any>): any {
-    enforceKeyIsDefined(this._getters, key, SCOPE_HINT);
-    return this._getters[key].apply(null, args);
+    return this._getter.apply(null, args);
   }
 
   getDispatcher(): Object {

@@ -32,6 +32,9 @@
     "react-tools": "^0.12.2"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js"
+    "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "<rootDir>/src/core"
+    ]
   }
 }

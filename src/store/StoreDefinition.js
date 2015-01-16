@@ -7,45 +7,30 @@ var {
   enforceIsFunction,
   enforceIsString,
   enforceKeyIsNotDefined
-} = require('../hints/PrimitiveTypeHints.js');
+} = require('../core/hints/PrimitiveTypeHints.js');
 
 var SCOPE_HINT = 'StoreDefinition';
+
+function emptyGetter() {
+  return null;
+}
 
 class StoreDefinition {
 
   _facade: ?StoreFacade;
-  _getters: {[key: string]: () => any};
+  _getter: ?Function;
   _responses: {[key: string]: (data: any) => void};
 
   constructor() {
     this._facade = null;
-    this._getters = {}
+    this._getter = null;
     this._responses = {};
   }
 
   defineGet(
     getter: Function
   ): StoreDefinition {
-    enforceKeyIsNotDefined(
-      this._getters,
-      StoreConstants.DEFAULT_GETTER_KEY,
-      SCOPE_HINT
-    );
-    return this.defineGetKey(
-      StoreConstants.DEFAULT_GETTER_KEY,
-      getter
-    );
-  }
-
-  defineGetKey(
-    key: string,
-    getter: () => any
-  ): StoreDefinition {
-    enforceIsString(key, SCOPE_HINT);
     enforceIsFunction(getter, SCOPE_HINT);
-    enforceKeyIsNotDefined(this._getters, key, SCOPE_HINT);
-    this._enforceUnregistered();
-    this._getters[key] = getter;
     return this;
   }
 
@@ -53,11 +38,18 @@ class StoreDefinition {
     actionType: string,
     response: (data: any) => void
   ): StoreDefinition {
-    
     enforceIsString(actionType, SCOPE_HINT);
     enforceIsFunction(response, SCOPE_HINT);
     this._responses[actionType] = response;
     return this;
+  }
+
+  _enforceIsReadyForRegistration(): void {
+    if (typeof this._getter === 'function') {
+      throw new Error(
+        SCOPE_HINT + ': you must define a getter by calling defineGet.'
+      );
+    }
   }
 
   _enforceUnregistered(): void {
@@ -72,9 +64,10 @@ class StoreDefinition {
   register(
     dispatcher: Object
   ): StoreFacade {
+    this._enforceIsReadyForRegistration();
     var facade =
       this._facade || new StoreFacade(
-        this._getters,
+        this._getter || emptyGetter,
         this._responses,
         dispatcher
       );
