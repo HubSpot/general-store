@@ -1,0 +1,1 @@
+watchify -d -v -t [ reactify --es6 --strip-types ] src/index.js -o dist/index.js

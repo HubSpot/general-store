@@ -4,10 +4,10 @@
   "description": "for flux",
   "main": "index.js",
   "scripts": {
-    "build": "browserify -t [ reactify --es6 --strip-types ] src/index.js -o dist/index.js",
+    "build": "./bin/build",
     "flow-start": "flow start",
     "flow-stop": "flow stop",
-    "watch": "watchify -d -v -t [ reactify --es6 --strip-types ] src/index.js -o dist/index.js",
+    "watch": "./bin/watch",
     "test": "jest"
   },
   "repository": {
