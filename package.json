@@ -4,6 +4,10 @@
   "description": "for flux",
   "main": "index.js",
   "scripts": {
+    "build": "browserify -t [ reactify --es6 --strip-types ] src/index.js -o dist/index.js",
+    "flow-start": "flow start --lib node_modules/immutable/dist/immutable.d.ts",
+    "flow-stop": "flow stop",
+    "watch": "watchify -d -v -t [ reactify --es6 --strip-types ] src/index.js -o dist/index.js",
     "test": "jest"
   },
   "repository": {
