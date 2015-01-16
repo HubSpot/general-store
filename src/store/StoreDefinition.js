@@ -72,14 +72,16 @@ class StoreDefinition {
   register(
     dispatcher: Object
   ): StoreFacade {
-    if (this._facade) {
-      this._facade = new StoreFacade(
+    var facade =
+      this._facade || new StoreFacade(
         this._getters,
         this._responses,
         dispatcher
       );
+    if (this._facade === null) {
+      this._facade = facade;
     }
-    return this._facade;
+    return facade;
   }
 
 }

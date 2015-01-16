@@ -46,6 +46,21 @@ var PrimitiveTypeHints = {
         '" is already defined'
       ]);
     }
+  },
+
+  enforceKeyIsDefined(
+    context: Object,
+    key: string,
+    scope: string
+  ): void {
+    if (!context.hasOwnProperty(key)) {
+      throw composeError([
+        scope,
+        ': "',
+        key,
+        '" is not defined'
+      ]);
+    }
   }
 
 };
