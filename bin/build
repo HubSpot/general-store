@@ -1,1 +1,1 @@
-browserify -t [ reactify --es6 --strip-types ] src/index.js -o dist/index.js
+browserify -t [ reactify --es6 --strip-types ] src/index.js -o dist/hs-store.js
