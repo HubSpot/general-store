@@ -6,7 +6,7 @@ var StoreFacade = require('./StoreFacade.js');
 var {
   enforceIsFunction,
   enforceIsString,
-  enforceUniqueKey
+  enforceKeyIsNotDefined
 } = require('../hints/PrimitiveTypeHints.js');
 
 var SCOPE_HINT = 'StoreDefinition';
@@ -26,7 +26,7 @@ class StoreDefinition {
   defineGet(
     getter: Function
   ): StoreDefinition {
-    enforceUniqueKey(
+    enforceKeyIsNotDefined(
       this._getters,
       StoreConstants.DEFAULT_GETTER_KEY,
       SCOPE_HINT
@@ -43,7 +43,7 @@ class StoreDefinition {
   ): StoreDefinition {
     enforceIsString(key, SCOPE_HINT);
     enforceIsFunction(getter, SCOPE_HINT);
-    enforceUniqueKey(this._getters, key, SCOPE_HINT);
+    enforceKeyIsNotDefined(this._getters, key, SCOPE_HINT);
     this._enforceUnregistered();
     this._getters[key] = getter;
     return this;

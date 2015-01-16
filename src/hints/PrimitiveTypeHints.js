@@ -1,9 +1,7 @@
 /* @flow */
 
 function composeError(args: Array<any>): Error {
-  return Error(
-    args.join(' ')
-  );
+  return new Error(args.join(' '));
 }
 
 var PrimitiveTypeHints = {
@@ -33,21 +31,6 @@ var PrimitiveTypeHints = {
     }
   },
 
-  enforceUniqueKey(
-    context: Object,
-    key: string,
-    scope: string
-  ): void {
-    if (context.hasOwnProperty(key)) {
-      throw composeError([
-        scope,
-        ': "',
-        key,
-        '" is already defined'
-      ]);
-    }
-  },
-
   enforceKeyIsDefined(
     context: Object,
     key: string,
@@ -58,7 +41,22 @@ var PrimitiveTypeHints = {
         scope,
         ': "',
         key,
-        '" is not defined'
+        '" is not defined.'
+      ]);
+    }
+  },
+
+  enforceKeyIsNotDefined(
+    context: Object,
+    key: string,
+    scope: string
+  ): void {
+    if (context.hasOwnProperty(key)) {
+      throw composeError([
+        scope,
+        ': "',
+        key,
+        '" is already defined.'
       ]);
     }
   }
