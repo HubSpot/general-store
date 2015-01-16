@@ -10,6 +10,27 @@ describe('PrimitiveTypeHints', () => {
     ScopeHint = 'PrimitiveTypeHints-test';
   });
 
+  it('throws from enforceDispatcherInterface', () => {
+    // invalid dispatchers
+    expect(() => {
+      PrimitiveTypeHints.enforceDispatcherInterface({
+        register: 'test'
+      });
+    }).toThrow();
+    expect(() => {
+      PrimitiveTypeHints.enforceDispatcherInterface({});
+    }).toThrow();
+
+    // valid dispatchers
+    expect(() => {
+      PrimitiveTypeHints.enforceDispatcherInterface({
+        register: function() {
+          return 'test-token';
+        }
+      }, ScopeHint);
+    }).not.toThrow();
+  });
+
   it('throws from enforceIsFunction', () => {
     expect(
       () => PrimitiveTypeHints.enforceIsFunction('test', ScopeHint)
