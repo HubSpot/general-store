@@ -5,8 +5,6 @@
   "main": "index.js",
   "scripts": {
     "build": "./bin/build",
-    "flow-start": "flow start",
-    "flow-stop": "flow stop",
     "watch": "./bin/watch",
     "test": "jest"
   },
@@ -30,6 +28,10 @@
     "reactify": "^0.17.1"
   },
   "devDependencies": {
-    "jest-cli": "^0.2.1"
+    "jest-cli": "^0.2.1",
+    "react-tools": "^0.12.2"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js"
   }
 }
