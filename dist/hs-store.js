@@ -5,7 +5,28 @@ function composeError(args            )        {
   return new Error(args.join(' '));
 }
 
-var PrimitiveTypeHints = {
+                   
+                                                            
+ 
+
+var TypeHints = {
+
+  enforceDispatcherInterface:function(
+    dispatcher            ,
+    scope        
+  )       {
+    if (
+      typeof dispatcher !== 'object' ||
+      typeof dispatcher.register !== 'function'
+    ) {
+      throw composeError([
+        scope,
+        ': expected an object with a register method but got "',
+        dispatcher,
+        '" instead.'
+      ]);
+    }
+  },
 
   enforceIsFunction:function(arg     , scope        )       {
     if (typeof arg !== 'function') {
@@ -64,7 +85,7 @@ var PrimitiveTypeHints = {
 
 };
 
-module.exports = PrimitiveTypeHints;
+module.exports = TypeHints;
 
 },{}],2:[function(require,module,exports){
 /* @flow */
@@ -100,7 +121,8 @@ var $__0=
   
   
   
-  require('../core/hints/PrimitiveTypeHints.js'),enforceIsFunction=$__0.enforceIsFunction,enforceIsString=$__0.enforceIsString,enforceKeyIsNotDefined=$__0.enforceKeyIsNotDefined;
+  
+  require('../core/hints/TypeHints.js'),enforceDispatcherInterface=$__0.enforceDispatcherInterface,enforceIsFunction=$__0.enforceIsFunction,enforceIsString=$__0.enforceIsString,enforceKeyIsNotDefined=$__0.enforceKeyIsNotDefined;
 
 var SCOPE_HINT = 'StoreDefinition';
 
@@ -124,6 +146,8 @@ function emptyGetter() {
 getter)          
                     {"use strict";
     enforceIsFunction(getter, SCOPE_HINT);
+    this.$StoreDefinition_enforceIsUnregistered();
+    this.$StoreDefinition_getter = getter;
     return this;
   };
 
@@ -133,19 +157,22 @@ actionType        ,
                     {"use strict";
     enforceIsString(actionType, SCOPE_HINT);
     enforceIsFunction(response, SCOPE_HINT);
+    enforceKeyIsNotDefined(this.$StoreDefinition_responses, actionType, SCOPE_HINT);
+    this.$StoreDefinition_enforceIsUnregistered();
     this.$StoreDefinition_responses[actionType] = response;
     return this;
   };
 
   StoreDefinition.prototype.$StoreDefinition_enforceIsReadyForRegistration=function()       {"use strict";
-    if (typeof this.$StoreDefinition_getter === 'function') {
+    if (typeof this.$StoreDefinition_getter !== 'function') {
       throw new Error(
-        SCOPE_HINT + ': you must define a getter by calling defineGet.'
+        SCOPE_HINT +
+        ': you must call defineGet before calling register.'
       );
     }
   };
 
-  StoreDefinition.prototype.$StoreDefinition_enforceUnregistered=function()       {"use strict";
+  StoreDefinition.prototype.$StoreDefinition_enforceIsUnregistered=function()       {"use strict";
     if (this.$StoreDefinition_facade !== null) {
       throw new Error(
         SCOPE_HINT +
@@ -157,6 +184,7 @@ actionType        ,
   StoreDefinition.prototype.register=function(
 dispatcher)        
                 {"use strict";
+    enforceDispatcherInterface(dispatcher, SCOPE_HINT);
     this.$StoreDefinition_enforceIsReadyForRegistration();
     var facade =
       this.$StoreDefinition_facade || new StoreFacade(
@@ -174,14 +202,14 @@ dispatcher)
 
 module.exports = StoreDefinition;
 
-},{"../core/hints/PrimitiveTypeHints.js":1,"./StoreConstants.js":3,"./StoreFacade.js":5}],5:[function(require,module,exports){
+},{"../core/hints/TypeHints.js":1,"./StoreConstants.js":3,"./StoreFacade.js":5}],5:[function(require,module,exports){
 /* @flow */
 var StoreConstants = require('./StoreConstants.js');
 
 var $__0=
   
   
-  require('../core/hints/PrimitiveTypeHints.js'),enforceKeyIsDefined=$__0.enforceKeyIsDefined,enforceIsFunction=$__0.enforceIsFunction;
+  require('../core/hints/TypeHints.js'),enforceKeyIsDefined=$__0.enforceKeyIsDefined,enforceIsFunction=$__0.enforceIsFunction;
 
 var SCOPE_HINT = 'StoreFacade';
 
@@ -229,7 +257,9 @@ getter                              ,
   StoreFacade.prototype.$StoreFacade_handleDispatch=function(
 $__0 )                                 
          {"use strict";var actionType=$__0.actionType,data=$__0.data;
-    enforceKeyIsDefined(this.$StoreFacade_responses, actionType, SCOPE_HINT);
+    if (!this.$StoreFacade_responses.hasOwnProperty(actionType)) {
+      return;
+    }
     this.$StoreFacade_responses[actionType](data, actionType);
     this.triggerChange();
   };
@@ -247,15 +277,8 @@ $__0 )
     return this;
   };
 
-  StoreFacade.prototype.waitFor=function()              {"use strict";
-    this.$StoreFacade_dispatcher.waitFor(
-      this.getDispatchToken()
-    );
-    return this;
-  };
-
 
 
 module.exports = StoreFacade;
 
-},{"../core/hints/PrimitiveTypeHints.js":1,"./StoreConstants.js":3}]},{},[2]);
+},{"../core/hints/TypeHints.js":1,"./StoreConstants.js":3}]},{},[2]);
