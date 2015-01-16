@@ -1,0 +1,32 @@
+{
+  "name": "hs-store",
+  "version": "0.0.1",
+  "description": "for flux",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/colbyr/store.git"
+  },
+  "keywords": [
+    "flux",
+    "store",
+    "react"
+  ],
+  "author": "Colby Rabideau",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/colbyr/store/issues"
+  },
+  "homepage": "https://github.com/colbyr/store",
+  "dependencies": {
+    "browserify": "^8.1.1",
+    "flux": "^2.0.1",
+    "reactify": "^0.17.1"
+  },
+  "devDependencies": {
+    "jest": "^0.1.37"
+  }
+}
