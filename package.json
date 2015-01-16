@@ -27,10 +27,9 @@
   "homepage": "https://github.com/colbyr/store",
   "dependencies": {
     "browserify": "^8.1.1",
-    "flux": "^2.0.1",
     "reactify": "^0.17.1"
   },
   "devDependencies": {
-    "jest": "^0.1.37"
+    "jest-cli": "^0.2.1"
   }
 }
