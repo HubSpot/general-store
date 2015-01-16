@@ -4,6 +4,7 @@ var StoreConstants = require('./StoreConstants.js');
 var StoreFacade = require('./StoreFacade.js');
 
 var {
+  enforceDispatcherInterface,
   enforceIsFunction,
   enforceIsString,
   enforceKeyIsNotDefined
@@ -31,6 +32,8 @@ class StoreDefinition {
     getter: Function
   ): StoreDefinition {
     enforceIsFunction(getter, SCOPE_HINT);
+    this._enforceIsUnregistered();
+    this._getter = getter;
     return this;
   }
 
@@ -40,19 +43,22 @@ class StoreDefinition {
   ): StoreDefinition {
     enforceIsString(actionType, SCOPE_HINT);
     enforceIsFunction(response, SCOPE_HINT);
+    enforceKeyIsNotDefined(this._responses, actionType, SCOPE_HINT);
+    this._enforceIsUnregistered();
     this._responses[actionType] = response;
     return this;
   }
 
   _enforceIsReadyForRegistration(): void {
-    if (typeof this._getter === 'function') {
+    if (typeof this._getter !== 'function') {
       throw new Error(
-        SCOPE_HINT + ': you must define a getter by calling defineGet.'
+        SCOPE_HINT +
+        ': you must call defineGet before calling register.'
       );
     }
   }
 
-  _enforceUnregistered(): void {
+  _enforceIsUnregistered(): void {
     if (this._facade !== null) {
       throw new Error(
         SCOPE_HINT +
@@ -64,6 +70,7 @@ class StoreDefinition {
   register(
     dispatcher: Object
   ): StoreFacade {
+    enforceDispatcherInterface(dispatcher, SCOPE_HINT);
     this._enforceIsReadyForRegistration();
     var facade =
       this._facade || new StoreFacade(

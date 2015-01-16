@@ -52,7 +52,9 @@ class StoreFacade {
   _handleDispatch(
     {actionType, data}: {actionType: string; data: any}
   ): void {
-    enforceKeyIsDefined(this._responses, actionType, SCOPE_HINT);
+    if (!this._responses.hasOwnProperty(actionType)) {
+      return;
+    }
     this._responses[actionType](data, actionType);
     this.triggerChange();
   }
@@ -67,13 +69,6 @@ class StoreFacade {
 
   triggerChange(): StoreFacade {
     this._listeners.forEach(listener => listener.call());
-    return this;
-  }
-
-  waitFor(): StoreFacade {
-    this._dispatcher.waitFor(
-      this.getDispatchToken()
-    );
     return this;
   }
 
