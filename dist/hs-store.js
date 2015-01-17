@@ -208,7 +208,7 @@ function emptyGetter() {
   }
 
   StoreDefinition.prototype.defineGet=function(
-getter)          
+getter)           
                     {"use strict";
     enforceIsFunction(getter, SCOPE_HINT);
     this.$StoreDefinition_enforceIsUnregistered();
