@@ -3,7 +3,8 @@ jest.dontMock('../index.js');
 describe('index', () => {
 
   var exportList = [
-    'define'
+    'define',
+    'StoreListenerMixin'
   ];
   var HSStore;
 
