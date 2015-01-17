@@ -29,7 +29,7 @@ class StoreDefinition {
   }
 
   defineGet(
-    getter: Function
+    getter: () => any
   ): StoreDefinition {
     enforceIsFunction(getter, SCOPE_HINT);
     this._enforceIsUnregistered();
