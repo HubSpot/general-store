@@ -6,7 +6,9 @@ var HSStore = {
 
   define(): StoreDefinition {
     return new StoreDefinition();
-  }
+  },
+
+  StoreListenerMixin: require('./react/StoreListenerMixin.js')
 
 };
 
