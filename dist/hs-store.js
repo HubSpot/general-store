@@ -96,13 +96,78 @@ var HSStore = {
 
   define:function()                  {
     return new StoreDefinition();
-  }
+  },
+
+  StoreListenerMixin: require('./react/StoreListenerMixin.js')
 
 };
 
 module.exports = HSStore;
 
-},{"./store/StoreDefinition.js":4}],3:[function(require,module,exports){
+},{"./react/StoreListenerMixin.js":3,"./store/StoreDefinition.js":5}],3:[function(require,module,exports){
+/* @flow */
+
+var StoreFacade = require('../store/StoreFacade.js');
+
+var StoreListenerMixin = {
+
+  componentWillMount:function()       {
+    if (typeof this.getStoreState !== 'function') {
+      throw new Error(
+        'StoreListenerMixin: expected this.getStoreState to be a function.'
+      )
+    }
+    if (!Array.isArray(this.stores)) {
+      throw new Error(
+        'StoreListenerMixin: this.stores must be an array of stores.'
+      );
+    }
+    if (this.stores.length < 1) {
+      throw new Error(
+        'StoreListenerMixin: no stores are defined in this.stores.'
+      );
+    }
+    this.handleStoreChange = this.handleStoreChange.bind(this);
+    this.stores.forEach(
+      function(store)  {return store.addOnChange(this.handleStoreChange);}.bind(this)
+    );
+    this.handleStoreChange();
+  },
+
+  componentWillUnmount:function()       {
+    this.stores.forEach(
+      function(store)  {return store.removeOnChange(this._handleStoreChange);}.bind(this)
+    );
+  },
+
+  handleStoreChange:function()       {
+    this.setState(
+      this.getStoreState()
+    );
+  }
+
+  /**
+   * // an array of StoreFacades
+   * stores: [
+   *   ExampleStore
+   * ],
+   */
+
+  /**
+   * // the return value of getStoreState will be merged
+   * // into the component state
+   * getStoreState(): Object {
+   *   return {
+   *     exampleData: ExampleStore.get()
+   *   };
+   * }
+   */
+
+};
+
+module.exports = StoreListenerMixin;
+
+},{"../store/StoreFacade.js":6}],4:[function(require,module,exports){
 /* @flow */
 
 var StoreConstants = {
@@ -111,7 +176,7 @@ var StoreConstants = {
 
 module.exports = StoreConstants;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /* @flow */
 
 var StoreConstants = require('./StoreConstants.js');
@@ -202,7 +267,7 @@ dispatcher)
 
 module.exports = StoreDefinition;
 
-},{"../core/hints/TypeHints.js":1,"./StoreConstants.js":3,"./StoreFacade.js":5}],5:[function(require,module,exports){
+},{"../core/hints/TypeHints.js":1,"./StoreConstants.js":4,"./StoreFacade.js":6}],6:[function(require,module,exports){
 /* @flow */
 var StoreConstants = require('./StoreConstants.js');
 
@@ -281,4 +346,4 @@ $__0 )
 
 module.exports = StoreFacade;
 
-},{"../core/hints/TypeHints.js":1,"./StoreConstants.js":3}]},{},[2]);
+},{"../core/hints/TypeHints.js":1,"./StoreConstants.js":4}]},{},[2]);
