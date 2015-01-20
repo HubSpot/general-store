@@ -141,6 +141,10 @@ module.exports = DispatcherInstance;
 var Dispatcher = require('./dispatcher/Dispatcher.js');
 var StoreDefinition = require('./store/StoreDefinition.js');
 
+// comment for testing the autocommit
+//
+// MOAR comments
+
 var HSStore = {
 
   define:function()                  {
