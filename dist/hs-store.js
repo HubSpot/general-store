@@ -1,6 +1,26 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.HSStore=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /* @flow */
 
+var Dispatcher = require('./dispatcher/Dispatcher.js');
+var StoreDefinition = require('./store/StoreDefinition.js');
+
+var HSStore = {
+
+  define:function()                  {
+    return new StoreDefinition();
+  },
+
+  DispatcherInstance: require('./dispatcher/DispatcherInstance.js'),
+
+  StoreListenerMixin: require('./react/StoreListenerMixin.js')
+
+};
+
+module.exports = HSStore;
+
+},{"./dispatcher/Dispatcher.js":3,"./dispatcher/DispatcherInstance.js":4,"./react/StoreListenerMixin.js":5,"./store/StoreDefinition.js":7}],2:[function(require,module,exports){
+/* @flow */
+
 var Dispatcher = require('../../dispatcher/Dispatcher.js');
 
 function composeError(args            )        {
@@ -101,7 +121,7 @@ var TypeHints = {
 
 module.exports = TypeHints;
 
-},{"../../dispatcher/Dispatcher.js":2}],2:[function(require,module,exports){
+},{"../../dispatcher/Dispatcher.js":3}],3:[function(require,module,exports){
 /* @flow */
 
 function Dispatcher(){"use strict";}
@@ -111,7 +131,7 @@ function Dispatcher(){"use strict";}
 
 module.exports = Dispatcher;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /* @flow */
 
 var Dispatcher = require('./Dispatcher.js');
@@ -135,27 +155,7 @@ var DispatcherInstance = {
 
 module.exports = DispatcherInstance;
 
-},{"../core/hints/TypeHints.js":1,"./Dispatcher.js":2}],4:[function(require,module,exports){
-/* @flow */
-
-var Dispatcher = require('./dispatcher/Dispatcher.js');
-var StoreDefinition = require('./store/StoreDefinition.js');
-
-var HSStore = {
-
-  define:function()                  {
-    return new StoreDefinition();
-  },
-
-  DispatcherInstance: require('./dispatcher/DispatcherInstance.js'),
-
-  StoreListenerMixin: require('./react/StoreListenerMixin.js')
-
-};
-
-module.exports = HSStore;
-
-},{"./dispatcher/Dispatcher.js":2,"./dispatcher/DispatcherInstance.js":3,"./react/StoreListenerMixin.js":5,"./store/StoreDefinition.js":7}],5:[function(require,module,exports){
+},{"../core/hints/TypeHints.js":2,"./Dispatcher.js":3}],5:[function(require,module,exports){
 /* @flow */
 
 var StoreFacade = require('../store/StoreFacade.js');
@@ -326,7 +326,7 @@ actionType        ,
 
 module.exports = StoreDefinition;
 
-},{"../core/hints/TypeHints.js":1,"../dispatcher/Dispatcher.js":2,"../dispatcher/DispatcherInstance.js":3,"./StoreConstants.js":6,"./StoreFacade.js":8}],8:[function(require,module,exports){
+},{"../core/hints/TypeHints.js":2,"../dispatcher/Dispatcher.js":3,"../dispatcher/DispatcherInstance.js":4,"./StoreConstants.js":6,"./StoreFacade.js":8}],8:[function(require,module,exports){
 /* @flow */
 var StoreConstants = require('./StoreConstants.js');
 
@@ -405,5 +405,5 @@ $__0 )
 
 module.exports = StoreFacade;
 
-},{"../core/hints/TypeHints.js":1,"./StoreConstants.js":6}]},{},[4])(4)
+},{"../core/hints/TypeHints.js":2,"./StoreConstants.js":6}]},{},[1])(1)
 });
