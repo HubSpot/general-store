@@ -1,4 +1,4 @@
 git add ./dist &&
   git commit \
-    -m $(echo "updated build [" $(git rev-list --abbrev-commit origin..HEAD) "]") \
+    -m "$(echo "updated build [" $(git rev-list --abbrev-commit origin..HEAD) "]")" \
     ./dist;
