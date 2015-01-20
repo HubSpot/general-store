@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "./bin/build",
+    "build-and-test": "./bin/build-and-test",
     "build-dev": "./bin/build-dev",
     "build-prod": "./bin/build-prod",
     "deploy": "./bin/deploy",
