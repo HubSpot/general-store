@@ -6,15 +6,18 @@ var mocks = require('mock-modules');
 
 describe('StoreDefinition', () => {
 
+  var DispatcherInstance;
   var StoreDefinition;
 
   var mockDispatcher;
   var storeDefinition;
 
   beforeEach(() => {
+    DispatcherInstance = require('../../dispatcher/DispatcherInstance.js');
     StoreDefinition = require('../StoreDefinition.js');
 
-    mockDispatcher = {register: function() {return 'test';}};
+    mockDispatcher = {register: function() {return 12345;}};
+    DispatcherInstance.get.mockReturnValue(mockDispatcher);
     storeDefinition = new StoreDefinition()
   });
 

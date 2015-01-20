@@ -1,5 +1,7 @@
 /* @flow */
 
+var Dispatcher = require('../dispatcher/Dispatcher.js');
+var DispatcherInstance = require('../dispatcher/DispatcherInstance.js');
 var StoreConstants = require('./StoreConstants.js');
 var StoreFacade = require('./StoreFacade.js');
 
@@ -71,16 +73,16 @@ class StoreDefinition {
     }
   }
 
-  register(
-    dispatcher: Object
-  ): StoreFacade {
-    enforceDispatcherInterface(dispatcher, SCOPE_HINT);
+  register(dispatcher: ?Dispatcher): StoreFacade {
     this._enforceIsReadyForRegistration();
+    if (dispatcher) {
+      enforceDispatcherInterface(dispatcher, SCOPE_HINT);
+    }
     var facade =
       this._facade || new StoreFacade(
         this._getter || emptyGetter,
         this._responses,
-        dispatcher
+        dispatcher || DispatcherInstance.get()
       );
     if (this._facade === null) {
       this._facade = facade;

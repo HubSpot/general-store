@@ -4,6 +4,7 @@ describe('index', () => {
 
   var exportList = [
     'define',
+    'DispatcherInstance',
     'StoreListenerMixin'
   ];
   var HSStore;

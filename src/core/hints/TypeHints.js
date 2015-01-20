@@ -1,11 +1,9 @@
 /* @flow */
 
+var Dispatcher = require('../../dispatcher/Dispatcher.js');
+
 function composeError(args: Array<any>): Error {
   return new Error(args.join(' '));
-}
-
-type Dispatcher = {
-  register: (callback: (payload: Object) => void) => number;
 }
 
 var TypeHints = {
@@ -15,6 +13,12 @@ var TypeHints = {
     scope: string
   ): void {
     if (process.env.NODE_ENV !== 'production') {
+      if (dispatcher === null || dispatcher === undefined) {
+        throw composeError([
+          scope,
+          ': DispatcherInstance is not defined'
+        ]);
+      }
       if (
         typeof dispatcher !== 'object' ||
         typeof dispatcher.register !== 'function'
