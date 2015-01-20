@@ -26,3 +26,16 @@ echo "Building production version...";
 succeedorexit ./bin/build-prod;
 echo "DONE."
 
+echo ""
+echo "Committing updated builds..."
+./bin/commit-dist;
+echo "DONE."
+
+echo ""
+echo "Pushing to github..."
+succeedorexit git push;
+echo "DONE."
+
+echo ""
+echo "DEPLOY COMPLETE!"
+

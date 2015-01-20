@@ -1,0 +1,1 @@
+git add ./dist && git commit -m 'updated build' ./dist;
