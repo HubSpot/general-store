@@ -5,5 +5,5 @@ browserify \
   -t envify \
   -t uglifyify \
   -o dist/hs-store.min.js \
-  src/index.js
+  src/HSStore.js
 

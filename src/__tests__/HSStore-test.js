@@ -1,6 +1,6 @@
-jest.dontMock('../index.js');
+jest.dontMock('../HSStore.js');
 
-describe('index', () => {
+describe('HSStore', () => {
 
   var exportList = [
     'define',
@@ -10,7 +10,7 @@ describe('index', () => {
   var HSStore;
 
   beforeEach(() => {
-    HSStore = require('../index.js');
+    HSStore = require('../HSStore.js');
   });
 
   it('should match the export list', () => {

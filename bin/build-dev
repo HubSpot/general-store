@@ -4,4 +4,4 @@ browserify \
   -t [ reactify --es6 --strip-types ] \
   -t envify \
   -o dist/hs-store.js \
-  src/index.js
+  src/HSStore.js
