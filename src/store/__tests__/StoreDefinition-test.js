@@ -18,10 +18,6 @@ describe('StoreDefinition', () => {
     storeDefinition = new StoreDefinition()
   });
 
-  afterEach(() => {
-    mocks.dumpCache();
-  });
-
   it('ensures that a function is passed to defineGet', () => {
     // invalid args
     expect(() => storeDefinition.defineGet({})).toThrow();
