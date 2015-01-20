@@ -3,8 +3,6 @@
 var Dispatcher = require('./dispatcher/Dispatcher.js');
 var StoreDefinition = require('./store/StoreDefinition.js');
 
-// testing
-
 var HSStore = {
 
   define(): StoreDefinition {

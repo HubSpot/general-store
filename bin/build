@@ -1,7 +1,2 @@
-NODE_ENV=development \
-browserify \
-  --standalone HSStore \
-  -t [ reactify --es6 --strip-types ] \
-  -t envify \
-  -o dist/hs-store.js \
-  src/index.js
+./bin/build-dev;
+./bin/build-prod;

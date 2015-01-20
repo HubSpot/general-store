@@ -18,7 +18,7 @@ echo "DONE."
 
 echo ""
 echo "Building development version...";
-succeedorexit ./bin/build;
+succeedorexit ./bin/build-dev;
 echo "DONE."
 
 echo ""
