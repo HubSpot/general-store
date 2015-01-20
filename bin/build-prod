@@ -1,0 +1,9 @@
+NODE_ENV=production \
+browserify \
+  --standalone HSStore \
+  -t [ reactify --es6 --strip-types ] \
+  -t envify \
+  -t uglifyify \
+  src/index.js \
+  -o dist/hs-store.min.js
+

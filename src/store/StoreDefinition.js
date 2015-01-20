@@ -50,20 +50,24 @@ class StoreDefinition {
   }
 
   _enforceIsReadyForRegistration(): void {
-    if (typeof this._getter !== 'function') {
-      throw new Error(
-        SCOPE_HINT +
-        ': you must call defineGet before calling register.'
-      );
+    if (process.env.NODE_ENV !== 'production') {
+      if (typeof this._getter !== 'function') {
+        throw new Error(
+          SCOPE_HINT +
+          ': you must call defineGet before calling register.'
+        );
+      }
     }
   }
 
   _enforceIsUnregistered(): void {
-    if (this._facade !== null) {
-      throw new Error(
-        SCOPE_HINT +
-        ': a store definition cannot be modified after it is registered'
-      );
+    if (process.env.NODE_ENV !== 'production') {
+      if (this._facade !== null) {
+        throw new Error(
+          SCOPE_HINT +
+          ': a store definition cannot be modified after it is registered'
+        );
+      }
     }
   }
 

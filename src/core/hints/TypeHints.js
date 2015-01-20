@@ -14,27 +14,31 @@ var TypeHints = {
     dispatcher: Dispatcher,
     scope: string
   ): void {
-    if (
-      typeof dispatcher !== 'object' ||
-      typeof dispatcher.register !== 'function'
-    ) {
-      throw composeError([
-        scope,
-        ': expected an object with a register method but got "',
-        dispatcher,
-        '" instead.'
-      ]);
+    if (process.env.NODE_ENV !== 'production') {
+      if (
+        typeof dispatcher !== 'object' ||
+        typeof dispatcher.register !== 'function'
+      ) {
+        throw composeError([
+          scope,
+          ': expected an object with a register method but got "',
+          dispatcher,
+          '" instead.'
+        ]);
+      }
     }
   },
 
   enforceIsFunction(arg: any, scope: string): void {
-    if (typeof arg !== 'function') {
-      throw composeError([
-        scope,
-        ': expected a function but got "',
-        arg,
-        '" instead.'
-      ]);
+    if (process.env.NODE_ENV !== 'production') {
+      if (typeof arg !== 'function') {
+        throw composeError([
+          scope,
+          ': expected a function but got "',
+          arg,
+          '" instead.'
+        ]);
+      }
     }
   },
 
@@ -42,13 +46,15 @@ var TypeHints = {
     arg: any,
     scope: string
   ): void {
-    if (typeof arg !== 'string') {
-      throw composeError([
-        scope,
-        ': expected a string but got "',
-        arg,
-        '" instead.'
-      ]);
+    if (process.env.NODE_ENV !== 'production') {
+      if (typeof arg !== 'string') {
+        throw composeError([
+          scope,
+          ': expected a string but got "',
+          arg,
+          '" instead.'
+        ]);
+      }
     }
   },
 
@@ -57,13 +63,15 @@ var TypeHints = {
     key: string,
     scope: string
   ): void {
-    if (!context.hasOwnProperty(key)) {
-      throw composeError([
-        scope,
-        ': "',
-        key,
-        '" is not defined.'
-      ]);
+    if (process.env.NODE_ENV !== 'production') {
+      if (!context.hasOwnProperty(key)) {
+        throw composeError([
+          scope,
+          ': "',
+          key,
+          '" is not defined.'
+        ]);
+      }
     }
   },
 
@@ -72,13 +80,15 @@ var TypeHints = {
     key: string,
     scope: string
   ): void {
-    if (context.hasOwnProperty(key)) {
-      throw composeError([
-        scope,
-        ': "',
-        key,
-        '" is already defined.'
-      ]);
+    if (process.env.NODE_ENV !== 'production') {
+      if (context.hasOwnProperty(key)) {
+        throw composeError([
+          scope,
+          ': "',
+          key,
+          '" is already defined.'
+        ]);
+      }
     }
   }
 
