@@ -3,5 +3,4 @@ browserify \
   --standalone HSStore \
   -t [ reactify --es6 --strip-types ] \
   -t envify \
-  -o dist/hs-store.js \
-  src/HSStore.js
+  src/HSStore.js | uglifyjs --beautify indent-level=2 --comments all -o dist/hs-store.js
