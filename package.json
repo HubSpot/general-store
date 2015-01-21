@@ -27,10 +27,10 @@
     "url": "https://github.com/colbyr/store/issues"
   },
   "homepage": "https://github.com/colbyr/store",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "browserify": "^8.1.1",
+    "bundle-collapser": "^1.1.1",
     "envify": "^3.2.0",
     "flux": "^2.0.1",
     "jest-cli": "^0.2.1",
