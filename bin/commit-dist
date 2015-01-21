@@ -1,4 +1,0 @@
-git add ./build &&
-  git commit \
-    -m "$(echo "updated build [" $(git rev-list --abbrev-commit origin..HEAD) "]")" \
-    ./build;

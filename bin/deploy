@@ -11,7 +11,7 @@ succeedorexit ./bin/build-and-test;
 
 echo ""
 echo "Committing updated builds..."
-./bin/commit-dist;
+./bin/commit-build;
 echo "DONE."
 
 echo ""
