@@ -28,15 +28,16 @@
   },
   "homepage": "https://github.com/colbyr/store",
   "dependencies": {
-    "browserify": "^8.1.1",
-    "envify": "^3.2.0",
-    "reactify": "^0.17.1",
-    "uglifyify": "^3.0.1"
   },
   "devDependencies": {
+    "browserify": "^8.1.1",
+    "envify": "^3.2.0",
     "flux": "^2.0.1",
     "jest-cli": "^0.2.1",
-    "react-tools": "^0.12.2"
+    "react-tools": "^0.12.2",
+    "reactify": "^0.17.1",
+    "uglify-js": "^2.4.16",
+    "uglifyify": "^3.0.1"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js",
