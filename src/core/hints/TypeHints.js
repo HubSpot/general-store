@@ -1,6 +1,9 @@
 /* @flow */
 
-var Dispatcher = require('../../dispatcher/Dispatcher.js');
+interface Dispatcher {
+  register(handleAction: (data: any, actionType: string) => void): number;
+  unregister(dispatchToken: number): void;
+}
 
 function composeError(args: Array<any>): Error {
   return new Error(args.join(' '));
@@ -9,7 +12,7 @@ function composeError(args: Array<any>): Error {
 var TypeHints = {
 
   enforceDispatcherInterface(
-    dispatcher: Dispatcher,
+    dispatcher: any,
     scope: string
   ): void {
     if (process.env.NODE_ENV !== 'production') {

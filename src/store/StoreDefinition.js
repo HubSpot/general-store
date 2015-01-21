@@ -1,6 +1,10 @@
 /* @flow */
 
-var Dispatcher = require('../dispatcher/Dispatcher.js');
+interface Dispatcher {
+  register(handleAction: (data: any, actionType: string) => void): number;
+  unregister(dispatchToken: number): void;
+}
+
 var DispatcherInstance = require('../dispatcher/DispatcherInstance.js');
 var StoreConstants = require('./StoreConstants.js');
 var StoreFacade = require('./StoreFacade.js');
