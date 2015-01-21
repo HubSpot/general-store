@@ -44,7 +44,9 @@ type DispatcherPayload = {
 };
 
 type Dispatcher = {
-  register: (handleAction: (payload: DispatcherPayload) => void) => number;
+  register: (
+    handleAction: (payload: DispatcherPayload) => void
+  ) => number;
   unregister: (dispatchToken: number) => void;
 };
 ```
