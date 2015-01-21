@@ -42,49 +42,36 @@ define('UsersStore', [
 HSStore provides a convenient mixin for binding stores to React components:
 
 ```
-define('UsersComponent', [
-  'hs-store',
-  'React',
-  'UsersStore'
-], function(
-  HSStore
-  React,
-  UsersStore
-) {
+var UsersComponent = React.createClass({
+  // the component will re-render each time one of these stores
+  // triggers its change listeners
+  stores: [
+    UsersStore
+  ],
 
-  var UsersComponent = React.createClass({
+  getStoreState: function() {
+    return {
+      users: UsersStore.get()
+    };
+  },
 
-    // the component will re-render each time one of these stores
-    // triggers its change listeners
-    stores: [
-      UsersStore
-    ],
+  render: function() {
+    return (
+      <ul>
+        {this.state.users.map(this.renderUser)}
+      </ul>
+    );
+  },
 
-    getStoreState: function() {
-      return {
-        users: UsersStore.get()
-      };
-    },
-
-    render: function() {
-      return (
-        <ul>
-          {this.state.users.map(this.renderUser)}
-        </ul>
-      );
-    },
-
-    renderUser: function(user) {
-      return (
-        <li>
-          {user.name}
-        </li>
-      );
-    }
-  });
-
-  return UsersComponent;
+  renderUser: function(user) {
+    return (
+      <li>
+        {user.name}
+      </li>
+    );
+  }
 });
+```
 
 ## Dispatcher Interface
 
