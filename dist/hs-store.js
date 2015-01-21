@@ -1,7 +1,6 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.HSStore=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /* @flow */
 
-var Dispatcher = require('./dispatcher/Dispatcher.js');
 var StoreDefinition = require('./store/StoreDefinition.js');
 
 var HSStore = {
@@ -18,10 +17,13 @@ var HSStore = {
 
 module.exports = HSStore;
 
-},{"./dispatcher/Dispatcher.js":3,"./dispatcher/DispatcherInstance.js":4,"./react/StoreListenerMixin.js":5,"./store/StoreDefinition.js":7}],2:[function(require,module,exports){
+},{"./dispatcher/DispatcherInstance.js":3,"./react/StoreListenerMixin.js":4,"./store/StoreDefinition.js":6}],2:[function(require,module,exports){
 /* @flow */
 
-var Dispatcher = require('../../dispatcher/Dispatcher.js');
+                      
+                                                                          
+                                          
+ 
 
 function composeError(args            )        {
   return new Error(args.join(' '));
@@ -30,7 +32,7 @@ function composeError(args            )        {
 var TypeHints = {
 
   enforceDispatcherInterface:function(
-    dispatcher            ,
+    dispatcher     ,
     scope        
   )       {
     if ("development" !== 'production') {
@@ -121,20 +123,17 @@ var TypeHints = {
 
 module.exports = TypeHints;
 
-},{"../../dispatcher/Dispatcher.js":3}],3:[function(require,module,exports){
-/* @flow */
+},{}],3:[function(require,module,exports){
+/**
+ * I'm not sure if it's possible to express the runtime enforcement
+ * of a dispatcher instance, so I'll use weak mode for now.
+ * @flow weak
+ **/
 
-function Dispatcher(){"use strict";}
-                                                 
+                      
+                                                                          
                                           
-
-
-module.exports = Dispatcher;
-
-},{}],4:[function(require,module,exports){
-/* @flow */
-
-var Dispatcher = require('./Dispatcher.js');
+ 
 
 var $__0=  require('../core/hints/TypeHints.js'),enforceDispatcherInterface=$__0.enforceDispatcherInterface;
 
@@ -143,7 +142,10 @@ var instance = null;
 var DispatcherInstance = {
 
   get:function()             {
-    return instance || window.Flux.Dispatcher;
+    if (!instance) {
+      throw new Error('set a dispatcher please');
+    }
+    return instance;
   },
 
   set:function(dispatcher            )       {
@@ -155,7 +157,7 @@ var DispatcherInstance = {
 
 module.exports = DispatcherInstance;
 
-},{"../core/hints/TypeHints.js":2,"./Dispatcher.js":3}],5:[function(require,module,exports){
+},{"../core/hints/TypeHints.js":2}],4:[function(require,module,exports){
 /* @flow */
 
 var StoreFacade = require('../store/StoreFacade.js');
@@ -220,7 +222,7 @@ var StoreListenerMixin = {
 
 module.exports = StoreListenerMixin;
 
-},{"../store/StoreFacade.js":8}],6:[function(require,module,exports){
+},{"../store/StoreFacade.js":7}],5:[function(require,module,exports){
 /* @flow */
 
 var StoreConstants = {
@@ -229,10 +231,14 @@ var StoreConstants = {
 
 module.exports = StoreConstants;
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /* @flow */
 
-var Dispatcher = require('../dispatcher/Dispatcher.js');
+                      
+                                                                          
+                                          
+ 
+
 var DispatcherInstance = require('../dispatcher/DispatcherInstance.js');
 var StoreConstants = require('./StoreConstants.js');
 var StoreFacade = require('./StoreFacade.js');
@@ -326,7 +332,7 @@ actionType        ,
 
 module.exports = StoreDefinition;
 
-},{"../core/hints/TypeHints.js":2,"../dispatcher/Dispatcher.js":3,"../dispatcher/DispatcherInstance.js":4,"./StoreConstants.js":6,"./StoreFacade.js":8}],8:[function(require,module,exports){
+},{"../core/hints/TypeHints.js":2,"../dispatcher/DispatcherInstance.js":3,"./StoreConstants.js":5,"./StoreFacade.js":7}],7:[function(require,module,exports){
 /* @flow */
 var StoreConstants = require('./StoreConstants.js');
 
@@ -405,5 +411,5 @@ $__0 )
 
 module.exports = StoreFacade;
 
-},{"../core/hints/TypeHints.js":2,"./StoreConstants.js":6}]},{},[1])(1)
+},{"../core/hints/TypeHints.js":2,"./StoreConstants.js":5}]},{},[1])(1)
 });
