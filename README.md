@@ -1,7 +1,7 @@
 # HubSpot Store (for Flux)
 
 ```javascript
-define('AwesomeStore', [
+define('UsersStore', [
   'dispatcher',
   'hs-store.js'
 ], function(
@@ -10,30 +10,81 @@ define('AwesomeStore', [
 ) {
 
   // data is stored privately inside the store module's closure
-  var awesomeStoreData = {
-    everythingIsAwesome: true
+  var users = {
+    123: {
+      id: 123,
+      name: 'Mary'
+    }
   };
 
-  var AwesomeStore = HSStore.define()
+  var UsersStore = HSStore.define()
     // the stores getter should return the public subset of the store's data
     .defineGet(function() {
-      return awesomeStoreData;
+      return users;
     })
     // handle actions received from the dispatcher
-    .defineResponseTo('SOMETHING_BAD_HAPPENED', function() {
-      awesomeStoreData.everythingIsAwesome = false;
+    .defineResponseTo('ADD_USER', function(user) {
+      users[user.id] = user;
     })
-    .defineResponseTo('SOMETHING_GREAT_HAPPENED', function() {
-      awesomeStoreData.everythingIsAwesome = true;
+    .defineResponseTo('REMOVE_USER', function(user) {
+      delete users[user.id];
     })
     // after a store is "registered" it's action handlers are bound
     // to the dispatcher
     .register();
 
-    return AwesomeStore;
-
+    return UsersStore;
 });
 ```
+
+## HSStore and React
+
+HSStore provides a convenient mixin for binding stores to React components:
+
+```
+define('UsersComponent', [
+  'hs-store',
+  'React',
+  'UsersStore'
+], function(
+  HSStore
+  React,
+  UsersStore
+) {
+
+  var UsersComponent = React.createClass({
+
+    // the component will re-render each time one of these stores
+    // triggers its change listeners
+    stores: [
+      UsersStore
+    ],
+
+    getStoreState: function() {
+      return {
+        users: UsersStore.get()
+      };
+    },
+
+    render: function() {
+      return (
+        <ul>
+          {this.state.users.map(this.renderUser)}
+        </ul>
+      );
+    },
+
+    renderUser: function(user) {
+      return (
+        <li>
+          {user.name}
+        </li>
+      );
+    }
+  });
+
+  return UsersComponent;
+});
 
 ## Dispatcher Interface
 
