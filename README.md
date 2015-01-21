@@ -56,18 +56,11 @@ var UsersComponent = React.createClass({
   },
 
   render: function() {
+    var users = this.state.users;
     return (
       <ul>
-        {this.state.users.map(this.renderUser)}
+        {Object.keys(users).map(id => <li>{users[id].name}</li>)}
       </ul>
-    );
-  },
-
-  renderUser: function(user) {
-    return (
-      <li>
-        {user.name}
-      </li>
     );
   }
 });
