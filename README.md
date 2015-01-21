@@ -1,10 +1,12 @@
 # HubSpot Store (for Flux)
 
-## TODOs
+### TODOs
 
-[ ] make `StoreListenerMixin` simpler (e.g. lets not have `getStoreState` and the `stores` array)
-[ ] clean up the runtime type checks (easier to read + maintain the same execution flow in the minified build)
-[ ] readme and/or other docs
+- [ ] make `StoreListenerMixin` simpler (e.g. lets not have `getStoreState` and the `stores` array)
+- [ ] clean up the runtime type checks (easier to read + maintain the same execution flow in the minified build)
+- [ ] readme and/or other docs
+
+# Create a store
 
 ```javascript
 define('UsersStore', [
