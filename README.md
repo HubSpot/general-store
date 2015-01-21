@@ -68,7 +68,7 @@ var UsersComponent = React.createClass({
 
 ## Dispatcher Interface
 
-At HubSpot we use the [Facebook Dispatcher](https://github.com/facebook/flux), but any object that conforms to the following interface should work just fine.
+At HubSpot we use the [Facebook Dispatcher](https://github.com/facebook/flux), but any object that conforms to the same interface (i.e. has register and unregister methods) should work just fine.
 
 ```javascript
 type DispatcherPayload = {
