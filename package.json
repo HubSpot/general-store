@@ -34,6 +34,7 @@
     "uglifyify": "^3.0.1"
   },
   "devDependencies": {
+    "flux": "^2.0.1",
     "jest-cli": "^0.2.1",
     "react-tools": "^0.12.2"
   },
