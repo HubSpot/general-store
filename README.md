@@ -30,3 +30,19 @@ define('AwesomeStore', [
 });
 ```
 
+## Build and test
+
+**Install Dependencies**
+
+```
+npm install
+brew install flow
+```
+
+**Run the build**
+```
+# if all tests pass, runs the dev and prod build
+npm run build-and-test
+# if all tests pass, runs the dev and prod build, commits and changes
+npm run deploy
+```
