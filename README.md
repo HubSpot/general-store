@@ -37,7 +37,7 @@ define('UsersStore', [
 });
 ```
 
-## HSStore and React
+## React
 
 HSStore provides a convenient mixin for binding stores to React components:
 
