@@ -1,4 +1,4 @@
-# HubSpot Store
+# HubSpot Store (for Flux)
 
 ```javascript
 define('AwesomeStore', [
@@ -29,6 +29,8 @@ define('AwesomeStore', [
     // after a store is "registered" it's action handlers are bound
     // to the dispatcher
     .register();
+
+    return AwesomeStore;
 
 });
 ```
