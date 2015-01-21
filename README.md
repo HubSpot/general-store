@@ -41,7 +41,7 @@ define('UsersStore', [
 
 HSStore provides a convenient mixin for binding stores to React components:
 
-```
+```javascript
 var UsersComponent = React.createClass({
   // the component will re-render each time one of these stores
   // triggers its change listeners
@@ -77,7 +77,7 @@ var UsersComponent = React.createClass({
 
 At HubSpot we use the [Facebook Dispatcher](https://github.com/facebook/flux), but any object that conforms to the following interface should work just fine.
 
-```
+```javascript
 type DispatcherPayload = {
   actionType: string;
   data: any;
