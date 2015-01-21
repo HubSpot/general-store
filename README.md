@@ -2,9 +2,12 @@
 
 ```javascript
 define('AwesomeStore', [
-  'dispatcher'
+  'dispatcher',
   'hs-store.js'
-], function(Dispatcher, HSStore) {
+], function(
+  Dispatcher,
+  HSStore
+) {
 
   // data is stored privately inside the store module's closure
   var awesomeStoreData = {
@@ -14,7 +17,7 @@ define('AwesomeStore', [
   var AwesomeStore = HSStore.define()
     // the stores getter should return the public subset of the store's data
     .defineGet(function() {
-      return everythingIsAwesome;
+      return awesomeStoreData;
     })
     // handle actions received from the dispatcher
     .defineResponseTo('SOMETHING_BAD_HAPPENED', function() {
@@ -25,9 +28,25 @@ define('AwesomeStore', [
     })
     // after a store is "registered" it's action handlers are bound
     // to the dispatcher
-    .register(Dispatcher);
+    .register();
 
 });
+```
+
+## Dispatcher Interface
+
+At HubSpot we use the [Facebook Dispatcher](https://github.com/facebook/flux), but any object that conforms to the following interface should work just fine.
+
+```
+type DispatcherPayload = {
+  actionType: string;
+  data: any;
+};
+
+type Dispatcher = {
+  register: (handleAction: (payload: DispatcherPayload) => void) => number;
+  unregister: (dispatchToken: number) => void;
+};
 ```
 
 ## Build and test
