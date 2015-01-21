@@ -31,7 +31,7 @@ define('UsersStore', [
     })
     // after a store is "registered" it's action handlers are bound
     // to the dispatcher
-    .register();
+    .register(dispatcher);
 
     return UsersStore;
 });
@@ -43,6 +43,10 @@ HSStore provides a convenient mixin for binding stores to React components:
 
 ```javascript
 var UsersComponent = React.createClass({
+  mixins: [
+    HSStore.StoreListenerMixin
+  ],
+
   // the component will re-render each time one of these stores
   // triggers its change listeners
   stores: [
