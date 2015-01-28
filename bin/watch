@@ -1,7 +1,7 @@
 NODE_ENV=development \
 watchify \
-  --standalone HSStore \
+  --standalone GeneralStore \
   -t [ reactify --es6 --strip-types ] \
   -t envify \
   -o build/hs-store.js \
-  src/HSStore.js
+  src/GeneralStore.js

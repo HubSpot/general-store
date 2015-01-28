@@ -2,7 +2,7 @@
   "name": "hs-store",
   "version": "0.0.1",
   "description": "for flux",
-  "main": "src/HSStore.js",
+  "main": "src/GeneralStore.js",
   "scripts": {
     "build": "./bin/build",
     "build-and-test": "./bin/build-and-test",

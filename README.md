@@ -1,4 +1,6 @@
-# HubSpot Store (for Flux)
+# GeneralStore (for Flux)
+
+It's descriptive *and* punny!
 
 ### TODOs
 
@@ -14,7 +16,7 @@ define('UsersStore', [
   'hs-store.js'
 ], function(
   Dispatcher,
-  HSStore
+  GeneralStore
 ) {
 
   // data is stored privately inside the store module's closure
@@ -25,7 +27,7 @@ define('UsersStore', [
     }
   };
 
-  var UsersStore = HSStore.define()
+  var UsersStore = GeneralStore.define()
     // the stores getter should return the public subset of the store's data
     .defineGet(function() {
       return users;
@@ -47,12 +49,12 @@ define('UsersStore', [
 
 ## React
 
-HSStore provides a convenient mixin for binding stores to React components:
+GeneralStore provides a convenient mixin for binding stores to React components:
 
 ```javascript
 var UsersComponent = React.createClass({
   mixins: [
-    HSStore.StoreListenerMixin
+    GeneralStore.StoreListenerMixin
   ],
 
   // the component will re-render each time one of these stores

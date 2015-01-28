@@ -1,9 +1,9 @@
 NODE_ENV=production \
 browserify \
-  --standalone HSStore \
+  --standalone GeneralStore \
   -p bundle-collapser/plugin \
   -t [ reactify --es6 --strip-types ] \
   -t envify \
   -t uglifyify \
-  src/HSStore.js | uglifyjs -c -o build/hs-store.min.js
+  src/GeneralStore.js | uglifyjs -c -o build/hs-store.min.js
 

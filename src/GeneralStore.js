@@ -2,7 +2,7 @@
 
 var StoreDefinition = require('./store/StoreDefinition.js');
 
-var HSStore = {
+var GeneralStore = {
 
   define(): StoreDefinition {
     return new StoreDefinition();
@@ -14,4 +14,4 @@ var HSStore = {
 
 };
 
-module.exports = HSStore;
+module.exports = GeneralStore;

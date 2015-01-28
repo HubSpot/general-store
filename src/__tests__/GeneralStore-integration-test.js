@@ -1,9 +1,9 @@
 jest.autoMockOff();
 
-describe('HSStore integration test', () => {
+describe('GeneralStore integration test', () => {
 
   var Flux;
-  var HSStore;
+  var GeneralStore;
 
   var ADD_USER = 'ADD_USER';
   var REMOVE_USER = 'REMOVE_USER';
@@ -27,7 +27,7 @@ describe('HSStore integration test', () => {
   }
 
   function defineUserStore() {
-    return HSStore.define()
+    return GeneralStore.define()
       .defineGet(() => users)
       .defineResponseTo(
         ADD_USER,
@@ -42,7 +42,7 @@ describe('HSStore integration test', () => {
 
   beforeEach(() => {
     Flux = require('flux');
-    HSStore = require('../HSStore.js');
+    GeneralStore = require('../GeneralStore.js');
     dispatcher = new Flux.Dispatcher();
     users = {};
 
