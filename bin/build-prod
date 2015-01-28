@@ -5,5 +5,5 @@ browserify \
   -t [ reactify --es6 --strip-types ] \
   -t envify \
   -t uglifyify \
-  src/GeneralStore.js | uglifyjs -c -o build/hs-store.min.js
+  src/GeneralStore.js | uglifyjs -c -o build/general-store.min.js
 

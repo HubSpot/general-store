@@ -13,7 +13,7 @@ It's descriptive *and* punny!
 ```javascript
 define('UsersStore', [
   'dispatcher',
-  'hs-store.js'
+  'general.js'
 ], function(
   Dispatcher,
   GeneralStore

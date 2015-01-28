@@ -1,5 +1,5 @@
 {
-  "name": "hs-store",
+  "name": "general-store",
   "version": "0.0.1",
   "description": "for flux",
   "main": "src/GeneralStore.js",

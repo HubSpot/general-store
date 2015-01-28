@@ -3,5 +3,5 @@ watchify \
   --standalone GeneralStore \
   -t [ reactify --es6 --strip-types ] \
   -t envify \
-  -o build/hs-store.js \
+  -o build/general-store.js \
   src/GeneralStore.js

@@ -3,4 +3,4 @@ browserify \
   --standalone GeneralStore \
   -t [ reactify --es6 --strip-types ] \
   -t envify \
-  src/GeneralStore.js | uglifyjs --beautify indent-level=2 --comments all -o build/hs-store.js
+  src/GeneralStore.js | uglifyjs --beautify indent-level=2 --comments all -o build/general-store.js
