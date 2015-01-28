@@ -2,7 +2,7 @@
   if ("object" == typeof exports && "undefined" != typeof module) module.exports = e(); else if ("function" == typeof define && define.amd) define([], e); else {
     var f;
     "undefined" != typeof window ? f = window : "undefined" != typeof global ? f = global : "undefined" != typeof self && (f = self), 
-    f.HSStore = e();
+    f.GeneralStore = e();
   }
 }(function() {
   var define, module, exports;
@@ -33,14 +33,14 @@
     1: [ function(require, module, exports) {
       /* @flow */
       var StoreDefinition = require("./store/StoreDefinition.js");
-      var HSStore = {
+      var GeneralStore = {
         define: function() {
           return new StoreDefinition();
         },
         DispatcherInstance: require("./dispatcher/DispatcherInstance.js"),
         StoreListenerMixin: require("./react/StoreListenerMixin.js")
       };
-      module.exports = HSStore;
+      module.exports = GeneralStore;
     }, {
       "./dispatcher/DispatcherInstance.js": 3,
       "./react/StoreListenerMixin.js": 4,
