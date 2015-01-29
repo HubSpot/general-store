@@ -2,6 +2,8 @@
 
 It's descriptive *and* punny!
 
+![general-store](https://git.hubteam.com/github-enterprise-assets/0000/0376/0000/7618/b4cf46ea-a7cb-11e4-86f3-fe5c5c53d10e.jpg)
+
 ### TODOs
 
 - [ ] make `StoreListenerMixin` simpler (e.g. lets not have `getStoreState` and the `stores` array)
