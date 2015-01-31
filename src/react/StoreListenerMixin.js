@@ -1,6 +1,5 @@
 /* @flow */
 
-var EventManager = require('../core/events/EventManager.js');
 var StoreFacade = require('../store/StoreFacade.js');
 
 var StoreListenerMixin = {
@@ -11,6 +10,16 @@ var StoreListenerMixin = {
         throw new Error(
           'StoreListenerMixin: expected this.getStoreState to be a function.'
         )
+      }
+      if (!Array.isArray(this.stores)) {
+        throw new Error(
+          'StoreListenerMixin: this.stores must be an array of stores.'
+        );
+      }
+      if (this.stores.length < 1) {
+        throw new Error(
+          'StoreListenerMixin: no stores are defined in this.stores.'
+        );
       }
     }
     this.handleStoreChange = this.handleStoreChange.bind(this);
