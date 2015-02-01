@@ -85,6 +85,10 @@ var StoreListenerMixin = {
  * }
  */
 
+  /**
+   * Forces the mixin to update ALL store dependencies.
+   * Uses this.setState().
+   */
   replaceStoreState(): void {
     var updates = {};
     for(var key in this._storeDependencies) {
@@ -93,6 +97,10 @@ var StoreListenerMixin = {
     this.setState(updates);
   },
 
+  /**
+   * Forces the mixin to update the dependency defined in `key`
+   * Uses this.setState().
+   */
   setStoreState(key: string): void {
     var stateUpdate = {};
     stateUpdate[key] = derefStore(this, key);
