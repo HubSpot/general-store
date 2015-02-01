@@ -10,8 +10,6 @@ var GeneralStore = {
 
   DispatcherInstance: require('./dispatcher/DispatcherInstance.js'),
 
-  StoreListenerMixin: require('./react/StoreListenerMixin.js')
-
 };
 
 module.exports = GeneralStore;

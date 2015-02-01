@@ -5,6 +5,7 @@ jest
 describe('StoreFacade', () => {
 
   var StoreFacade;
+
   var mockAction;
   var mockDispatcher;
   var mockDispatchToken;
@@ -64,29 +65,17 @@ describe('StoreFacade', () => {
     expect(storeFacade.getDispatchToken()).toBe(mockDispatchToken);
   });
 
-  it('run listeners after a definedResponse', () => {
+  it('runs listeners after a definedResponse', () => {
     var mockListener = jest.genMockFn();
+    var mockEvent = require('../../event/Event.js').mock.instances[0];
     storeFacade.addOnChange(mockListener);
 
     var handler = mockDispatcher.register.mock.calls[0][0];
     handler({actionType: 'random action', data: {}});
-    expect(mockListener.mock.calls.length).toBe(0);
+    expect(mockEvent.runHandlers.mock.calls.length).toBe(0);
 
     handler({actionType: mockAction, data: {}});
-    expect(mockListener.mock.calls.length).toBe(1);
-  });
-
-  it('does not run listeners after they are removed', () => {
-    var mockListener = jest.genMockFn();
-    storeFacade.addOnChange(mockListener);
-
-    var handler = mockDispatcher.register.mock.calls[0][0];
-    handler({actionType: mockAction, data: {}});
-    expect(mockListener.mock.calls.length).toBe(1);
-
-    storeFacade.removeOnChange(mockListener);
-    handler({actionType: mockAction, data: {}});
-    expect(mockListener.mock.calls.length).toBe(1);
+    expect(mockEvent.runHandlers.mock.calls.length).toBe(1);
   });
 
 });

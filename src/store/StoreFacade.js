@@ -1,4 +1,6 @@
 /* @flow */
+var Event = require('../event/Event.js');
+var EventHandler = require('../event/EventHandler.js');
 var StoreConstants = require('./StoreConstants.js');
 
 var {
@@ -13,7 +15,7 @@ class StoreFacade {
   _dispatcher: Object;
   _dispatchToken: string;
   _getter: (...args: Array<any>) => any;
-  _listeners: Array<Function>;
+  _event: Event;
   _responses: {[key:string]: (data: any, actionType: string) => any};
 
   constructor(
@@ -24,17 +26,16 @@ class StoreFacade {
     this._dispatcher = dispatcher;
     this._getter = getter;
     this._responses = responses;
-    this._listeners = [];
+    this._event = new Event();
 
     this._dispatchToken =
       this._dispatcher
         .register(data => this._handleDispatch(data));
   }
 
-  addOnChange(callback: Function): StoreFacade {
+  addOnChange(callback: Function): EventHandler {
     enforceIsFunction(callback, SCOPE_HINT);
-    this._listeners.push(callback);
-    return this;
+    return this._event.addHandler(callback);
   }
 
   get(...args: Array<any>): any {
@@ -59,16 +60,8 @@ class StoreFacade {
     this.triggerChange();
   }
 
-  removeOnChange(callback: Function): StoreFacade {
-    var index = this._listeners.indexOf(callback);
-    if (index !== -1) {
-      this._listeners.splice(index, 1);
-    }
-    return this;
-  }
-
   triggerChange(): StoreFacade {
-    this._listeners.forEach(listener => listener.call());
+    this._event.runHandlers();
     return this;
   }
 
