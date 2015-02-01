@@ -18,9 +18,10 @@ function bindStoreHandlers(
 ): Array<EventHandler> {
   return Object.keys(dependencies)
     .map(key => {
-      return dependencies[key].store.addOnChange(
+      var handler = dependencies[key].store.addOnChange(
         component.setStoreState.bind(component, key)
       );
+      return handler;
     });
 }
 
@@ -45,7 +46,9 @@ function unbindStoreHandlers(
   if (!component._storeDependencyHandlers) {
     return;
   }
-  component._storeDependencyHandlers.forEach(handler => handler.remove());
+  while (component._storeDependencyHandlers.length) {
+    component._storeDependencyHandlers.pop().remove();
+  }
   delete component._storeDependencyHandlers;
 }
 
@@ -70,7 +73,7 @@ var StoreListenerMixin = {
  *   return {
  *     example: {
  *       store: ExampleStore
- *       deref: store => ExampleStore.get('some-key')
+ *       deref: store => store.get('some-key')
  *     }
  *   };
  * },

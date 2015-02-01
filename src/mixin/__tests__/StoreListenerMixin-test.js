@@ -1,4 +1,6 @@
-jest.dontMock('../StoreListenerMixin.js');
+jest
+  .dontMock('../StoreListenerMixin.js')
+  .mock('../../store/StoreFacade.js');
 
 describe('StoreListenerMixin', () => {
 
@@ -42,6 +44,15 @@ describe('StoreListenerMixin', () => {
     expect(Array.isArray(mockComponent._storeDependencyHandlers)).toBe(true);
     expect(mockComponent._storeDependencyHandlers.length).toBe(1);
     expect(mockComponent.setState.mock.calls.length).toBe(1);
+  });
+
+  it('removes all event handlers on componentWillUnmount', () => {
+    var EventHandler = require('../../event/EventHandler.js');
+    var mockHandler = new EventHandler();
+    mockStore.addOnChange.mockReturnValue(mockHandler);
+    mockComponent.componentWillMount();
+    mockComponent.componentWillUnmount();
+    expect(mockHandler.remove.mock.calls.length).toBe(1);
   });
 
 });
