@@ -37,10 +37,10 @@ class Event {
     return this;
   }
 
-  static emit(events: Array<Event>): void {
-    events.forEach(evt => evt.runHandlers());
-  }
-
 }
+
+Event.runMultiple = function (events: Array<Event>): void {
+  events.forEach(evt => evt.runHandlers());
+};
 
 module.exports = Event;

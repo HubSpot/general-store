@@ -39,4 +39,20 @@ describe('Event', () => {
     expect(mockCallback.mock.calls.length).toBe(1);
   });
 
+  it('runs handlers for multiple events using runMutliple', () => {
+    var otherEventInstance = new Event();
+    var mockCallback = jest.genMockFunction();
+    var otherMockCallback = jest.genMockFunction();
+    eventInstance.addHandler(mockCallback);
+    otherEventInstance.addHandler(otherMockCallback);
+    Event.runMultiple([eventInstance, otherEventInstance]);
+    expect(mockCallback.mock.calls.length).toBe(1);
+    expect(otherMockCallback.mock.calls.length).toBe(1);
+    Event.runMultiple([eventInstance, otherEventInstance]);
+    Event.runMultiple([eventInstance, otherEventInstance]);
+    Event.runMultiple([eventInstance, otherEventInstance]);
+    expect(mockCallback.mock.calls.length).toBe(4);
+    expect(otherMockCallback.mock.calls.length).toBe(4);
+  });
+
 });
