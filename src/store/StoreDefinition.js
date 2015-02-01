@@ -14,7 +14,7 @@ var {
   enforceIsFunction,
   enforceIsString,
   enforceKeyIsNotDefined
-} = require('../core/hints/TypeHints.js');
+} = require('../hints/TypeHints.js');
 
 var SCOPE_HINT = 'StoreDefinition';
 

@@ -9,7 +9,7 @@ interface Dispatcher {
   unregister(dispatchToken: number): void;
 }
 
-var {enforceDispatcherInterface} = require('../core/hints/TypeHints.js');
+var {enforceDispatcherInterface} = require('../hints/TypeHints.js');
 
 var instance = null;
 

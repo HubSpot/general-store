@@ -4,7 +4,7 @@ var StoreConstants = require('./StoreConstants.js');
 var {
   enforceKeyIsDefined,
   enforceIsFunction
-} = require('../core/hints/TypeHints.js');
+} = require('../hints/TypeHints.js');
 
 var SCOPE_HINT = 'StoreFacade';
 
