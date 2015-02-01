@@ -42,7 +42,8 @@
   "jest": {
     "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js",
     "unmockedModulePathPatterns": [
-      "<rootDir>/src/core"
+      "<rootDir>/src/hints",
+      "<rootDir>/src/uniqueid"
     ]
   }
 }
