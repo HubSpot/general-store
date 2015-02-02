@@ -5,9 +5,9 @@
 var StoreFacade = require('./StoreFacade.js');
 
 type derefingFunction = (
-  store: StoreFacade,
   props: Object,
-  state: Object
+  state: Object,
+  store: StoreFacade
 ) => any;
 
 type StoreDependencyWithDeref = {
@@ -20,6 +20,8 @@ type StoreDependencies = {
 };
 
 function defaultDeref(
+  _,
+  _,
   store: StoreFacade
 ): any {
   return store.get();
@@ -50,9 +52,9 @@ class StoreDependencyDefinition {
     state: Object
   ): any {
     return this._derefs[key](
-      this._stores[key],
       props,
-      state
+      state,
+      this._stores[key]
     );
   }
 

@@ -50,10 +50,10 @@ describe('StoreDependencyDefinition', () => {
   });
 
   it('returns the right field values', () => {
-    expect(dependencies.getStateField('mockkey')).toEqual({
+    expect(dependencies.getStateField('mockkey', {}, {})).toEqual({
       mockkey: mockValue
     });
-    expect(dependencies.getStateField('otherkey')).toEqual({
+    expect(dependencies.getStateField('otherkey', {}, {})).toEqual({
       otherkey: otherMockValue
     });
   });
@@ -64,9 +64,9 @@ describe('StoreDependencyDefinition', () => {
     dependencies.getStateField('mockkey', mockProps, mockState);
     expect(mockDeref.mock.calls.length).toBe(1);
     expect(mockDeref.mock.calls[0]).toEqual([
-      mockStore,
       mockProps,
-      mockState
+      mockState,
+      mockStore,
     ]);
   });
 
