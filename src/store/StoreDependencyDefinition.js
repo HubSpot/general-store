@@ -10,11 +10,13 @@ type derefingFunction = (
   state: Object
 ) => any;
 
+type StoreDependencyWithDeref = {
+  store: StoreFacade;
+  deref: derefingFunction;
+};
+
 type StoreDependencies = {
-  [key:string]: {
-    store: StoreFacade;
-    deref: derefingFunction;
-  };
+  [key:string]: StoreFacade | StoreDependencyWithDeref;
 };
 
 function defaultDeref(
@@ -32,9 +34,13 @@ class StoreDependencyDefinition {
     this._derefs = {};
     this._stores = {};
     Object.keys(dependencyMap).forEach(key => {
-      this._derefs[key] = dependencyMap[key].deref || defaultDeref;
-      this._stores[key] = dependencyMap[key].store;
-
+      if (dependencyMap[key] instanceof StoreFacade) {
+        this._derefs[key] = defaultDeref;
+        this._stores[key] = dependencyMap[key];
+      } else {
+        this._derefs[key] = dependencyMap[key].deref || defaultDeref;
+        this._stores[key] = dependencyMap[key].store;
+      }
     });
   }
 

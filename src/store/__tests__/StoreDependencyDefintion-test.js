@@ -31,9 +31,7 @@ describe('StoreDependencyDefinition', () => {
         store: mockStore,
         deref: mockDeref
       },
-      otherkey: {
-        store: otherMockStore
-      }
+      otherkey: otherMockStore
     });
   });
 
