@@ -6,6 +6,25 @@ var EventHandler = require('../event/EventHandler.js');
 var StoreDependencyDefinition = require('../store/StoreDependencyDefinition.js');
 var StoreFacade = require('../store/StoreFacade.js');
 
+function havePropsChanged(
+  oldProps: Object,
+  nextProps: Object
+): bool {
+  return Object
+    .keys(nextProps)
+    .some(key => oldProps[key] !== nextProps[key]);
+}
+
+function hasStateChanged(
+  stores: Object,
+  oldState: Object,
+  nextState: Object
+): bool {
+  return Object
+    .keys(nextState)
+    .some(key => !stores.hasOwnProperty(key) && oldState[key] !== nextState[key]);
+}
+
 function storeChangeCallback(
   component: Object,
   dependencies: StoreDependencyDefinition,
@@ -25,6 +44,9 @@ function StoreDependencyMixin(
 ): Object {
 
   var dependencies = new StoreDependencyDefinition(dependencyMap);
+  var hasCustomDerefs = Object
+    .keys(dependencyMap)
+    .some(key => dependencyMap[key].deref);
 
   return {
     componentWillMount(): void {
@@ -49,6 +71,15 @@ function StoreDependencyMixin(
     },
 
     componentWillUpdate(nextProps, nextState): void {
+      if (!hasCustomDerefs) {
+        return;
+      }
+      if (
+        !havePropsChanged(this.props, nextProps) &&
+        !hasStateChanged(dependencies.getStores(), this.state, nextState)
+      ) {
+        return;
+      }
       this.setState(
         dependencies.getState(
           nextProps,
