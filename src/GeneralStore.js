@@ -10,7 +10,7 @@ var GeneralStore = {
 
   DispatcherInstance: require('./dispatcher/DispatcherInstance.js'),
 
-  StoreListenerMixin: require('./mixin/StoreListenerMixin.js')
+  StoreDependencyMixin: require('./mixin/StoreDependencyMixin.js')
 
 };
 
