@@ -14,10 +14,10 @@ GeneralStore aims to get at the essence of a Flux store without falling into an 
 
 In other words a store:
 
-* encapsulates an arbitrary value
-* exposes that value to subscribers via a get method
-* changes that value in response to certain events from the Dispatcher
-* notifies subscribers when that value changes
+1. encapsulates an arbitrary value
+2. exposes that value to subscribers via a get method
+3. changes that value in response to certain events from the Dispatcher
+4. notifies subscribers when that value changes
 
 Other features, like Immutability, data fetching, undo, etc., should be implementation details of their individual stores. We also didn’t want to write switch statements anymore… JavaScript switch statements are terrifying.
 
