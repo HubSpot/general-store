@@ -1,3 +1,4 @@
+#!/bin/bash
 NODE_ENV=development \
 browserify \
   --standalone GeneralStore \
