@@ -1,7 +1,7 @@
 {
   "name": "general-store",
   "version": "0.0.1",
-  "description": "for flux",
+  "description": "Simple, flexible store implementation for Flux.",
   "main": "src/GeneralStore.js",
   "scripts": {
     "build": "./bin/build",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/colbyr/store.git"
+    "url": "https://github.com/HubSpot/general-store"
   },
   "keywords": [
     "flux",
@@ -22,11 +22,11 @@
     "react"
   ],
   "author": "Colby Rabideau",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/colbyr/store/issues"
+    "url": "https://github.com/HubSpot/general-store/issues"
   },
-  "homepage": "https://github.com/colbyr/store",
+  "homepage": "https://github.com/HubSpot/general-store",
   "dependencies": {},
   "devDependencies": {
     "browserify": "^8.1.1",
