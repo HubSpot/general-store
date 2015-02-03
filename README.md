@@ -1,14 +1,6 @@
 # GeneralStore (for Flux)
 
-It's descriptive *and* punny!
-
 ![general-store](https://git.hubteam.com/github-enterprise-assets/0000/0376/0000/7618/b4cf46ea-a7cb-11e4-86f3-fe5c5c53d10e.jpg)
-
-### TODOs
-
-- [x] make `StoreListenerMixin` simpler (e.g. lets not have `getStoreState` and the `stores` array)
-- [ ] clean up the runtime type checks (easier to read + maintain the same execution flow in the minified build)
-- [ ] readme and/or other docs
 
 GeneralStore aims to get at the essence of a Flux store without falling into an overly prescriptive data model. A store is a observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.
 
@@ -128,3 +120,11 @@ npm run build-and-test
 # if all tests pass, runs the dev and prod build, commits and changes
 npm run deploy
 ```
+
+### TODOs
+
+- [ ] clean up the runtime type checks (easier to read + maintain the same execution flow in the minified build)
+- [ ] deeper API documentation
+- [ ] more extensive React Mixin docs + example
+- [ ] cookbook examples (ImmutableJS, undo, etc)
+
