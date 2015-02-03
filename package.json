@@ -10,8 +10,7 @@
     "build-prod": "./bin/build-prod",
     "deploy": "./bin/deploy",
     "watch": "./bin/watch",
-    "test": "jest",
-    "type-and-test": "flow check && jest"
+    "test": "flow check && jest"
   },
   "repository": {
     "type": "git",
@@ -33,6 +32,7 @@
     "browserify": "^8.1.1",
     "bundle-collapser": "^1.1.1",
     "envify": "^3.2.0",
+    "flow-bin": "^0.1.2",
     "flux": "^2.0.1",
     "jest-cli": "^0.2.1",
     "react-tools": "^0.12.2",
