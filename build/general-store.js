@@ -80,29 +80,66 @@
         "use strict";
         this.$Event_handlers = {};
       }
+      /**
+   * Add a subscription to this event
+   *
+   * @param  callback  run when the event is triggered.
+   * @return this
+   */
       Event.prototype.addHandler = function(callback) {
         "use strict";
         var key = uniqueID();
         this.$Event_handlers[key] = callback;
         return new EventHandler(this, key);
       };
+      /**
+   * Destroys this event. Removes all handlers.
+   *
+   * @return this
+   */
+      Event.prototype.remove = function() {
+        "use strict";
+        this.$Event_handlers = {};
+        return this;
+      };
+      /**
+   * Removes a subscription by key.
+   *
+   * @param  key   id of the subscription to remove
+   * @return this
+   */
       Event.prototype.removeHandler = function(key) {
         "use strict";
         delete this.$Event_handlers[key];
         return this;
       };
+      /**
+   * @protected
+   * Run a handler by key if it exists
+   *
+   * @param  key  id of the handler to run
+   */
       Event.prototype.$Event_runHandler = function(key) {
         "use strict";
         if (this.$Event_handlers.hasOwnProperty(key)) {
           this.$Event_handlers[key].call();
         }
-        return this;
       };
+      /**
+   * Run all subscribed handlers.
+   *
+   * @return this
+   */
       Event.prototype.runHandlers = function() {
         "use strict";
         Object.keys(this.$Event_handlers).forEach(this.$Event_runHandler.bind(this));
         return this;
       };
+      /**
+ * Convenience method for running multiple events.
+ *
+ * @param  events  a list of events to run.
+ */
       Event.runMultiple = function(events) {
         events.forEach(function(evt) {
           return evt.runHandlers();
@@ -366,34 +403,61 @@
       var StoreConstants = require("./StoreConstants.js");
       var $__0 = require("../hints/TypeHints.js"), enforceKeyIsDefined = $__0.enforceKeyIsDefined, enforceIsFunction = $__0.enforceIsFunction;
       var SCOPE_HINT = "StoreFacade";
+      function getNull() {
+        return null;
+      }
       function StoreFacade(getter, responses, dispatcher) {
         "use strict";
         this.$StoreFacade_dispatcher = dispatcher;
         this.$StoreFacade_getter = getter;
         this.$StoreFacade_responses = responses;
         this.$StoreFacade_event = new Event();
-        this.$StoreFacade_dispatchToken = this.$StoreFacade_dispatcher.register(function(data) {
-          return this.$StoreFacade_handleDispatch(data);
-        }.bind(this));
+        this.$StoreFacade_dispatchToken = this.$StoreFacade_dispatcher.register(this.$StoreFacade_handleDispatch.bind(this));
       }
+      /**
+   * Subscribe to changes on this store.
+   *
+   * @param  callback  will run every time the store responds to a dispatcher
+   * @return this
+   */
       StoreFacade.prototype.addOnChange = function(callback) {
         "use strict";
         enforceIsFunction(callback, SCOPE_HINT);
         return this.$StoreFacade_event.addHandler(callback);
       };
+      /**
+   * Returns the store's referenced value
+   *
+   * @param  ...  accepts any number of params
+   * @return any
+   */
       StoreFacade.prototype.get = function() {
         "use strict";
         for (var args = [], $__0 = 0, $__1 = arguments.length; $__0 < $__1; $__0++) args.push(arguments[$__0]);
         return this.$StoreFacade_getter.apply(null, args);
       };
+      /**
+   * Exposes the store's dispatcher instance.
+   *
+   * @return Dispatcher
+   */
       StoreFacade.prototype.getDispatcher = function() {
         "use strict";
         return this.$StoreFacade_dispatcher;
       };
+      /**
+   * Exposes the token assigned to the store by the dispatcher
+   *
+   * @return number
+   */
       StoreFacade.prototype.getDispatchToken = function() {
         "use strict";
         return this.$StoreFacade_dispatchToken;
       };
+      /**
+   * @protected
+   * Responds to incoming messages from the Dispatcher
+   */
       StoreFacade.prototype.$StoreFacade_handleDispatch = function($__0) {
         "use strict";
         var actionType = $__0.actionType, data = $__0.data;
@@ -403,6 +467,22 @@
         this.$StoreFacade_responses[actionType](data, actionType);
         this.triggerChange();
       };
+      /**
+   * Destroys this instance of the store.
+   * Dispatch callback is unregistered. Subscriptions are removed.
+   */
+      StoreFacade.prototype.remove = function() {
+        "use strict";
+        this.$StoreFacade_dispatcher.unregister(this.getDispatchToken());
+        this.$StoreFacade_event.remove();
+        this.$StoreFacade_getter = getNull;
+        this.$StoreFacade_responses = {};
+      };
+      /**
+   * Runs all of the store's subscription callbacks
+   *
+   * @return this
+   */
       StoreFacade.prototype.triggerChange = function() {
         "use strict";
         this.$StoreFacade_event.runHandlers();
