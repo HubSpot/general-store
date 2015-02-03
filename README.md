@@ -2,6 +2,8 @@
 
 ![general-store](https://git.hubteam.com/github-enterprise-assets/0000/0376/0000/7618/b4cf46ea-a7cb-11e4-86f3-fe5c5c53d10e.jpg)
 
+**This is alpha software. It's going to change.**
+
 GeneralStore aims to get at the essence of a Flux store without falling into an overly prescriptive data model. A store is a observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.
 
 In other words a store:
@@ -123,6 +125,7 @@ npm run deploy
 
 ### TODOs
 
+- [ ] set up TravisCI
 - [ ] clean up the runtime type checks (easier to read + maintain the same execution flow in the minified build)
 - [ ] deeper API documentation
 - [ ] more extensive React Mixin docs + example
