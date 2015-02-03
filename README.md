@@ -6,21 +6,16 @@ It's descriptive *and* punny!
 
 ### TODOs
 
-- [ ] make `StoreListenerMixin` simpler (e.g. lets not have `getStoreState` and the `stores` array)
+- [x] make `StoreListenerMixin` simpler (e.g. lets not have `getStoreState` and the `stores` array)
 - [ ] clean up the runtime type checks (easier to read + maintain the same execution flow in the minified build)
 - [ ] readme and/or other docs
 
 # Create a store
 
-```javascript
-define('UsersStore', [
-  'dispatcher',
-  'general.js'
-], function(
-  Dispatcher,
-  GeneralStore
-) {
+GeneralStore uses functions to encapsulate private data.
 
+```javascript
+function defineUserStore() {
   // data is stored privately inside the store module's closure
   var users = {
     123: {
@@ -29,7 +24,7 @@ define('UsersStore', [
     }
   };
 
-  var UsersStore = GeneralStore.define()
+  return GeneralStore.define()
     // the stores getter should return the public subset of the store's data
     .defineGet(function() {
       return users;
@@ -44,10 +39,26 @@ define('UsersStore', [
     // after a store is "registered" it's action handlers are bound
     // to the dispatcher
     .register(dispatcher);
-
-    return UsersStore;
-});
+}
 ```
+
+If you use a singleton pattern for stores, simply the result of `register` from a module.
+
+```javascript
+var Dispatcher = require('dispatcher');
+var GeneralStore = require('general-store.js');
+
+var users = {};
+
+var UserStore = GeneralStore.define()
+  .defineGet(function() {
+    return users;
+  })
+  .register(dispatcher);
+
+module.exports = UserStore;
+```
+
 
 ## React
 
@@ -56,20 +67,10 @@ GeneralStore provides a convenient mixin for binding stores to React components:
 ```javascript
 var UsersComponent = React.createClass({
   mixins: [
-    GeneralStore.StoreListenerMixin
+    GeneralStore.StoreDependencyMixin({
+      users: UserStore
+    })
   ],
-
-  // the component will re-render each time one of these stores
-  // triggers its change listeners
-  stores: [
-    UsersStore
-  ],
-
-  getStoreState: function() {
-    return {
-      users: UsersStore.get()
-    };
-  },
 
   render: function() {
     var users = this.state.users;

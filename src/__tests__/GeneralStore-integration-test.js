@@ -96,8 +96,8 @@ describe('GeneralStore integration test', () => {
       name: 'Test Person'
     };
     UserStore.addOnChange(mockChangeHandler);
-    UserStore.addOnChange(removedMockChangeHandler);
-    UserStore.removeOnChange(removedMockChangeHandler);
+    var removedMockHandler = UserStore.addOnChange(removedMockChangeHandler);
+    removedMockHandler.remove();
     addUser(user);
     expect(mockChangeHandler.mock.calls.length).toBe(1);
     expect(removedMockChangeHandler.mock.calls.length).toBe(0);

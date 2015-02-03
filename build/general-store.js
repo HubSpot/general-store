@@ -38,15 +38,101 @@
           return new StoreDefinition();
         },
         DispatcherInstance: require("./dispatcher/DispatcherInstance.js"),
-        StoreListenerMixin: require("./react/StoreListenerMixin.js")
+        StoreDependencyMixin: require("./mixin/StoreDependencyMixin.js")
       };
       module.exports = GeneralStore;
     }, {
-      "./dispatcher/DispatcherInstance.js": 3,
-      "./react/StoreListenerMixin.js": 4,
-      "./store/StoreDefinition.js": 6
+      "./dispatcher/DispatcherInstance.js": 2,
+      "./mixin/StoreDependencyMixin.js": 6,
+      "./store/StoreDefinition.js": 8
     } ],
     2: [ function(require, module, exports) {
+      /**
+ * I'm not sure if it's possible to express the runtime enforcement
+ * of a dispatcher instance, so I'll use weak mode for now.
+ * @flow weak
+ **/
+      var $__0 = require("../hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface;
+      var instance = null;
+      var DispatcherInstance = {
+        get: function() {
+          if (!instance) {
+            throw new Error("set a dispatcher please");
+          }
+          return instance;
+        },
+        set: function(dispatcher) {
+          enforceDispatcherInterface(dispatcher, "DispatcherInstance");
+          instance = dispatcher;
+        }
+      };
+      module.exports = DispatcherInstance;
+    }, {
+      "../hints/TypeHints.js": 5
+    } ],
+    3: [ function(require, module, exports) {
+      /**
+ * @flow
+ */
+      var EventHandler = require("./EventHandler.js");
+      var uniqueID = require("../uniqueid/uniqueID.js");
+      function Event() {
+        "use strict";
+        this.$Event_handlers = {};
+      }
+      Event.prototype.addHandler = function(callback) {
+        "use strict";
+        var key = uniqueID();
+        this.$Event_handlers[key] = callback;
+        return new EventHandler(this, key);
+      };
+      Event.prototype.removeHandler = function(key) {
+        "use strict";
+        delete this.$Event_handlers[key];
+        return this;
+      };
+      Event.prototype.$Event_runHandler = function(key) {
+        "use strict";
+        if (this.$Event_handlers.hasOwnProperty(key)) {
+          this.$Event_handlers[key].call();
+        }
+        return this;
+      };
+      Event.prototype.runHandlers = function() {
+        "use strict";
+        Object.keys(this.$Event_handlers).forEach(this.$Event_runHandler.bind(this));
+        return this;
+      };
+      Event.runMultiple = function(events) {
+        events.forEach(function(evt) {
+          return evt.runHandlers();
+        });
+      };
+      module.exports = Event;
+    }, {
+      "../uniqueid/uniqueID.js": 11,
+      "./EventHandler.js": 4
+    } ],
+    4: [ function(require, module, exports) {
+      /**
+ * @flow
+ */
+      function EventHandler(instance, key) {
+        "use strict";
+        this.$EventHandler_key = key;
+        this.$EventHandler_instance = instance;
+      }
+      EventHandler.prototype.remove = function() {
+        "use strict";
+        if (this.$EventHandler_instance === null || this.$EventHandler_instance === undefined) {
+          return;
+        }
+        this.$EventHandler_instance.removeHandler(this.$EventHandler_key);
+        this.$EventHandler_instance = null;
+      };
+      module.exports = EventHandler;
+    }, {} ],
+    5: [ function(require, module, exports) {
       /* @flow */
       function composeError(args) {
         return new Error(args.join(" "));
@@ -93,78 +179,77 @@
       };
       module.exports = TypeHints;
     }, {} ],
-    3: [ function(require, module, exports) {
+    6: [ function(require, module, exports) {
       /**
- * I'm not sure if it's possible to express the runtime enforcement
- * of a dispatcher instance, so I'll use weak mode for now.
- * @flow weak
- **/
-      var $__0 = require("../core/hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface;
-      var instance = null;
-      var DispatcherInstance = {
-        get: function() {
-          if (!instance) {
-            throw new Error("set a dispatcher please");
-          }
-          return instance;
-        },
-        set: function(dispatcher) {
-          enforceDispatcherInterface(dispatcher, "DispatcherInstance");
-          instance = dispatcher;
-        }
-      };
-      module.exports = DispatcherInstance;
-    }, {
-      "../core/hints/TypeHints.js": 2
-    } ],
-    4: [ function(require, module, exports) {
-      /* @flow */
+ * @flow
+ */
+      var EventHandler = require("../event/EventHandler.js");
+      var StoreDependencyDefinition = require("../store/StoreDependencyDefinition.js");
       var StoreFacade = require("../store/StoreFacade.js");
-      var StoreListenerMixin = {
-        componentWillMount: function() {
-          if ("development" !== "production") {
-            if (typeof this.getStoreState !== "function") {
-              throw new Error("StoreListenerMixin: expected this.getStoreState to be a function.");
+      function havePropsChanged(oldProps, nextProps) {
+        return Object.keys(nextProps).some(function(key) {
+          return oldProps[key] !== nextProps[key];
+        });
+      }
+      function hasStateChanged(stores, oldState, nextState) {
+        return Object.keys(nextState).some(function(key) {
+          return !stores.hasOwnProperty(key) && oldState[key] !== nextState[key];
+        });
+      }
+      function storeChangeCallback(component, dependencies, key) {
+        component.setState(dependencies.getStateField(key, component.props, component.state || {}));
+      }
+      function StoreDependencyMixin(dependencyMap) {
+        var dependencies = new StoreDependencyDefinition(dependencyMap);
+        var hasCustomDerefs = Object.keys(dependencyMap).some(function(key) {
+          return dependencyMap[key].deref;
+        });
+        return {
+          componentWillMount: function() {
+            var stores = dependencies.getStores();
+            this._storeDependencyHandlers = Object.keys(stores).map(function(key) {
+              return stores[key].addOnChange(storeChangeCallback.bind(null, this, dependencies, key));
+            }.bind(this));
+          },
+          componentWillUnmount: function() {
+            var handlers = this._storeDependencyHandlers;
+            while (handlers.length) {
+              handlers.pop().remove();
             }
-            if (!Array.isArray(this.stores)) {
-              throw new Error("StoreListenerMixin: this.stores must be an array of stores.");
+          },
+          componentWillUpdate: function(nextProps, nextState) {
+            if (!hasCustomDerefs) {
+              return;
             }
-            if (this.stores.length < 1) {
-              throw new Error("StoreListenerMixin: no stores are defined in this.stores.");
+            if (!havePropsChanged(this.props, nextProps) && !hasStateChanged(dependencies.getStores(), this.state, nextState)) {
+              return;
             }
+            this.setState(dependencies.getState(nextProps, nextState || {}));
+          },
+          getInitialState: function() {
+            return dependencies.getState(this.props, this.state || {});
           }
-          this.handleStoreChange = this.handleStoreChange.bind(this);
-          this.stores.forEach(function(store) {
-            return store.addOnChange(this.handleStoreChange);
-          }.bind(this));
-          this.handleStoreChange();
-        },
-        componentWillUnmount: function() {
-          this.stores.forEach(function(store) {
-            return store.removeOnChange(this._handleStoreChange);
-          }.bind(this));
-        },
-        handleStoreChange: function() {
-          this.setState(this.getStoreState());
-        }
-      };
-      module.exports = StoreListenerMixin;
+        };
+      }
+      module.exports = StoreDependencyMixin;
     }, {
-      "../store/StoreFacade.js": 7
+      "../event/EventHandler.js": 4,
+      "../store/StoreDependencyDefinition.js": 9,
+      "../store/StoreFacade.js": 10
     } ],
-    5: [ function(require, module, exports) {
+    7: [ function(require, module, exports) {
       /* @flow */
       var StoreConstants = {
         DEFAULT_GETTER_KEY: "DEFAULT_GETTER_KEY"
       };
       module.exports = StoreConstants;
     }, {} ],
-    6: [ function(require, module, exports) {
+    8: [ function(require, module, exports) {
       /* @flow */
       var DispatcherInstance = require("../dispatcher/DispatcherInstance.js");
       var StoreConstants = require("./StoreConstants.js");
       var StoreFacade = require("./StoreFacade.js");
-      var $__0 = require("../core/hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface, enforceIsFunction = $__0.enforceIsFunction, enforceIsString = $__0.enforceIsString, enforceKeyIsNotDefined = $__0.enforceKeyIsNotDefined;
+      var $__0 = require("../hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface, enforceIsFunction = $__0.enforceIsFunction, enforceIsString = $__0.enforceIsString, enforceKeyIsNotDefined = $__0.enforceKeyIsNotDefined;
       var SCOPE_HINT = "StoreDefinition";
       function emptyGetter() {
         return null;
@@ -221,22 +306,72 @@
       };
       module.exports = StoreDefinition;
     }, {
-      "../core/hints/TypeHints.js": 2,
-      "../dispatcher/DispatcherInstance.js": 3,
-      "./StoreConstants.js": 5,
-      "./StoreFacade.js": 7
+      "../dispatcher/DispatcherInstance.js": 2,
+      "../hints/TypeHints.js": 5,
+      "./StoreConstants.js": 7,
+      "./StoreFacade.js": 10
     } ],
-    7: [ function(require, module, exports) {
+    9: [ function(require, module, exports) {
+      /**
+ * @flow
+ */
+      var StoreFacade = require("./StoreFacade.js");
+      function defaultDeref(_, _, store) {
+        return store.get();
+      }
+      function StoreDependencyDefinition(dependencyMap) {
+        "use strict";
+        this.$StoreDependencyDefinition_derefs = {};
+        this.$StoreDependencyDefinition_stores = {};
+        Object.keys(dependencyMap).forEach(function(key) {
+          if (dependencyMap[key] instanceof StoreFacade) {
+            this.$StoreDependencyDefinition_derefs[key] = defaultDeref;
+            this.$StoreDependencyDefinition_stores[key] = dependencyMap[key];
+          } else {
+            this.$StoreDependencyDefinition_derefs[key] = dependencyMap[key].deref || defaultDeref;
+            this.$StoreDependencyDefinition_stores[key] = dependencyMap[key].store;
+          }
+        }.bind(this));
+      }
+      StoreDependencyDefinition.prototype.$StoreDependencyDefinition_derefStore = function(key, props, state) {
+        "use strict";
+        return this.$StoreDependencyDefinition_derefs[key](props, state, this.$StoreDependencyDefinition_stores[key]);
+      };
+      StoreDependencyDefinition.prototype.getState = function(props, state) {
+        "use strict";
+        var updates = {};
+        for (var key in this.$StoreDependencyDefinition_stores) {
+          updates[key] = this.$StoreDependencyDefinition_derefStore(key, props, state);
+        }
+        return updates;
+      };
+      StoreDependencyDefinition.prototype.getStateField = function(key, props, state) {
+        "use strict";
+        var update = {};
+        update[key] = this.$StoreDependencyDefinition_derefStore(key, props, state);
+        return update;
+      };
+      StoreDependencyDefinition.prototype.getStores = function() {
+        "use strict";
+        return this.$StoreDependencyDefinition_stores;
+      };
+      module.exports = StoreDependencyDefinition;
+    }, {
+      "./StoreFacade.js": 10
+    } ],
+    10: [ function(require, module, exports) {
       /* @flow */
+      var Event = require("../event/Event.js");
+      var EventHandler = require("../event/EventHandler.js");
       var StoreConstants = require("./StoreConstants.js");
-      var $__0 = require("../core/hints/TypeHints.js"), enforceKeyIsDefined = $__0.enforceKeyIsDefined, enforceIsFunction = $__0.enforceIsFunction;
+      var $__0 = require("../hints/TypeHints.js"), enforceKeyIsDefined = $__0.enforceKeyIsDefined, enforceIsFunction = $__0.enforceIsFunction;
       var SCOPE_HINT = "StoreFacade";
       function StoreFacade(getter, responses, dispatcher) {
         "use strict";
         this.$StoreFacade_dispatcher = dispatcher;
         this.$StoreFacade_getter = getter;
         this.$StoreFacade_responses = responses;
-        this.$StoreFacade_listeners = [];
+        this.$StoreFacade_event = new Event();
         this.$StoreFacade_dispatchToken = this.$StoreFacade_dispatcher.register(function(data) {
           return this.$StoreFacade_handleDispatch(data);
         }.bind(this));
@@ -244,8 +379,7 @@
       StoreFacade.prototype.addOnChange = function(callback) {
         "use strict";
         enforceIsFunction(callback, SCOPE_HINT);
-        this.$StoreFacade_listeners.push(callback);
-        return this;
+        return this.$StoreFacade_event.addHandler(callback);
       };
       StoreFacade.prototype.get = function() {
         "use strict";
@@ -269,25 +403,27 @@
         this.$StoreFacade_responses[actionType](data, actionType);
         this.triggerChange();
       };
-      StoreFacade.prototype.removeOnChange = function(callback) {
-        "use strict";
-        var index = this.$StoreFacade_listeners.indexOf(callback);
-        if (index !== -1) {
-          this.$StoreFacade_listeners.splice(index, 1);
-        }
-        return this;
-      };
       StoreFacade.prototype.triggerChange = function() {
         "use strict";
-        this.$StoreFacade_listeners.forEach(function(listener) {
-          return listener.call();
-        });
+        this.$StoreFacade_event.runHandlers();
         return this;
       };
       module.exports = StoreFacade;
     }, {
-      "../core/hints/TypeHints.js": 2,
-      "./StoreConstants.js": 5
-    } ]
+      "../event/Event.js": 3,
+      "../event/EventHandler.js": 4,
+      "../hints/TypeHints.js": 5,
+      "./StoreConstants.js": 7
+    } ],
+    11: [ function(require, module, exports) {
+      /**
+ * @flow
+ */
+      var nextUid = 0;
+      function uid() {
+        return nextUid++;
+      }
+      module.exports = uid;
+    }, {} ]
   }, {}, [ 1 ])(1);
 });

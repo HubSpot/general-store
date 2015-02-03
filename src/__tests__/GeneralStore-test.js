@@ -5,7 +5,7 @@ describe('GeneralStore', () => {
   var exportList = [
     'define',
     'DispatcherInstance',
-    'StoreListenerMixin'
+    'StoreDependencyMixin'
   ];
   var GeneralStore;
 
