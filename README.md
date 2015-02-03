@@ -127,7 +127,7 @@ npm run deploy
 
 ### TODOs
 
-- [ ] set up TravisCI
+- [x] set up TravisCI
 - [ ] clean up the runtime type checks (easier to read + maintain the same execution flow in the minified build)
 - [ ] deeper API documentation
 - [ ] more extensive React Mixin docs + example
