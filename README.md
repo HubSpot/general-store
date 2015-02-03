@@ -112,18 +112,16 @@ type Dispatcher = {
 **Install Dependencies**
 
 ```
+# pull in dependencies
 npm install
-```
 
-**Run the build**
-```
-# runs static checker and unit tests
+# run the type checker and unit tests
 npm test
 
-# if all tests pass, runs the dev and prod build
+# if all tests pass, run the dev and prod build
 npm run build-and-test
 
-# if all tests pass, runs the dev and prod build, commits and changes
+# if all tests pass, run the dev and prod build then commit and push changes
 npm run deploy
 ```
 
