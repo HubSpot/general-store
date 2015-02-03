@@ -113,22 +113,17 @@ type Dispatcher = {
 
 ```
 npm install
-brew install flow
 ```
 
 **Run the build**
 ```
+# runs static checker and unit tests
+npm test
+
 # if all tests pass, runs the dev and prod build
 npm run build-and-test
+
 # if all tests pass, runs the dev and prod build, commits and changes
 npm run deploy
 ```
-
-### TODOs
-
-- [x] set up TravisCI
-- [ ] clean up the runtime type checks (easier to read + maintain the same execution flow in the minified build)
-- [ ] deeper API documentation
-- [ ] more extensive React Mixin docs + example
-- [ ] cookbook examples (ImmutableJS, undo, etc)
 
