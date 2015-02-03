@@ -10,6 +10,17 @@ It's descriptive *and* punny!
 - [ ] clean up the runtime type checks (easier to read + maintain the same execution flow in the minified build)
 - [ ] readme and/or other docs
 
+GeneralStore aims to get at the essence of a Flux store without falling into an overly prescriptive data model. A store is a observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.
+
+In other words a store:
+
+* encapsulates an arbitrary value
+* exposes that value to subscribers via a get method
+* changes that value in response to certain events from the Dispatcher
+* notifies subscribers when that value changes
+
+Other features, like Immutability, data fetching, undo, etc., should be implementation details of their individual stores. We also didn’t want to write switch statements anymore… JavaScript switch statements are terrifying.
+
 # Create a store
 
 GeneralStore uses functions to encapsulate private data.
