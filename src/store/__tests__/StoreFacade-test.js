@@ -20,7 +20,8 @@ describe('StoreFacade', () => {
     mockAction = 'MOCK_ACTION';
     mockDispatchToken = 'test-token';
     mockDispatcher = {
-      register: jest.genMockFn().mockReturnValue(mockDispatchToken)
+      register: jest.genMockFn().mockReturnValue(mockDispatchToken),
+      unregister: jest.genMockFn(),
     };
     mockGetValue = 'mock value';
     mockGet = jest.genMockFn().mockReturnValue(mockGetValue);
@@ -76,6 +77,31 @@ describe('StoreFacade', () => {
 
     handler({actionType: mockAction, data: {}});
     expect(mockEvent.runHandlers.mock.calls.length).toBe(1);
+  });
+
+  it('unregisters from the dispatcher on remove', () => {
+    storeFacade.remove();
+    expect(mockDispatcher.unregister.mock.calls.length).toBe(1);
+    expect(mockDispatcher.unregister.mock.calls[0][0]).toBe(mockDispatchToken);
+  });
+
+  it('removes its event on remove', () => {
+    var mockEvent = require('../../event/Event.js').mock.instances[0];
+    storeFacade.remove();
+    expect(mockEvent.remove.mock.calls.length).toBe(1);
+  });
+
+  it('returns null from get after remove', () => {
+    storeFacade.remove();
+    expect(storeFacade.get()).toBe(null);
+  });
+
+  it('does NOT run responses after it has been removed', () => {
+    var handler = mockDispatcher.register.mock.calls[0][0];
+    var mockData = {};
+    storeFacade.remove();
+    handler({actionType: mockAction, data: mockData});
+    expect(mockResponse.mock.calls.length).toBe(0);
   });
 
 });

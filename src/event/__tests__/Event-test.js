@@ -55,4 +55,13 @@ describe('Event', () => {
     expect(otherMockCallback.mock.calls.length).toBe(4);
   });
 
+  it('does not run handlers after the event has been removed', () => {
+    var mockCallback = jest.genMockFunction();
+    eventInstance.addHandler(mockCallback);
+    eventInstance.runHandlers();
+    expect(mockCallback.mock.calls.length).toBe(1);
+    eventInstance.remove();
+    eventInstance.runHandlers();
+    expect(mockCallback.mock.calls.length).toBe(1);
+  });
 });
