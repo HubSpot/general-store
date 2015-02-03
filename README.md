@@ -4,6 +4,8 @@
 
 **This is alpha software. It's going to change.**
 
+[![Build Status](https://travis-ci.org/HubSpot/general-store.svg)](https://travis-ci.org/HubSpot/general-store)
+
 GeneralStore aims to get at the essence of a Flux store without falling into an overly prescriptive data model. A store is a observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.
 
 In other words a store:
