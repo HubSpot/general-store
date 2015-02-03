@@ -30,15 +30,15 @@
     for (var o = 0; o < r.length; o++) s(r[o]);
     return s;
   }({
-    1: [ function(require, module, exports) {
+    1: [ function(_dereq_, module, exports) {
       /* @flow */
-      var StoreDefinition = require("./store/StoreDefinition.js");
+      var StoreDefinition = _dereq_("./store/StoreDefinition.js");
       var GeneralStore = {
         define: function() {
           return new StoreDefinition();
         },
-        DispatcherInstance: require("./dispatcher/DispatcherInstance.js"),
-        StoreDependencyMixin: require("./mixin/StoreDependencyMixin.js")
+        DispatcherInstance: _dereq_("./dispatcher/DispatcherInstance.js"),
+        StoreDependencyMixin: _dereq_("./mixin/StoreDependencyMixin.js")
       };
       module.exports = GeneralStore;
     }, {
@@ -46,13 +46,13 @@
       "./mixin/StoreDependencyMixin.js": 6,
       "./store/StoreDefinition.js": 8
     } ],
-    2: [ function(require, module, exports) {
+    2: [ function(_dereq_, module, exports) {
       /**
  * I'm not sure if it's possible to express the runtime enforcement
  * of a dispatcher instance, so I'll use weak mode for now.
  * @flow weak
  **/
-      var $__0 = require("../hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface;
+      var $__0 = _dereq_("../hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface;
       var instance = null;
       var DispatcherInstance = {
         get: function() {
@@ -70,12 +70,12 @@
     }, {
       "../hints/TypeHints.js": 5
     } ],
-    3: [ function(require, module, exports) {
+    3: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
-      var EventHandler = require("./EventHandler.js");
-      var uniqueID = require("../uniqueid/uniqueID.js");
+      var EventHandler = _dereq_("./EventHandler.js");
+      var uniqueID = _dereq_("../uniqueid/uniqueID.js");
       function Event() {
         "use strict";
         this.$Event_handlers = {};
@@ -150,7 +150,7 @@
       "../uniqueid/uniqueID.js": 11,
       "./EventHandler.js": 4
     } ],
-    4: [ function(require, module, exports) {
+    4: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
@@ -169,7 +169,7 @@
       };
       module.exports = EventHandler;
     }, {} ],
-    5: [ function(require, module, exports) {
+    5: [ function(_dereq_, module, exports) {
       /* @flow */
       function composeError(args) {
         return new Error(args.join(" "));
@@ -216,13 +216,13 @@
       };
       module.exports = TypeHints;
     }, {} ],
-    6: [ function(require, module, exports) {
+    6: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
-      var EventHandler = require("../event/EventHandler.js");
-      var StoreDependencyDefinition = require("../store/StoreDependencyDefinition.js");
-      var StoreFacade = require("../store/StoreFacade.js");
+      var EventHandler = _dereq_("../event/EventHandler.js");
+      var StoreDependencyDefinition = _dereq_("../store/StoreDependencyDefinition.js");
+      var StoreFacade = _dereq_("../store/StoreFacade.js");
       function havePropsChanged(oldProps, nextProps) {
         return Object.keys(nextProps).some(function(key) {
           return oldProps[key] !== nextProps[key];
@@ -274,19 +274,19 @@
       "../store/StoreDependencyDefinition.js": 9,
       "../store/StoreFacade.js": 10
     } ],
-    7: [ function(require, module, exports) {
+    7: [ function(_dereq_, module, exports) {
       /* @flow */
       var StoreConstants = {
         DEFAULT_GETTER_KEY: "DEFAULT_GETTER_KEY"
       };
       module.exports = StoreConstants;
     }, {} ],
-    8: [ function(require, module, exports) {
+    8: [ function(_dereq_, module, exports) {
       /* @flow */
-      var DispatcherInstance = require("../dispatcher/DispatcherInstance.js");
-      var StoreConstants = require("./StoreConstants.js");
-      var StoreFacade = require("./StoreFacade.js");
-      var $__0 = require("../hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface, enforceIsFunction = $__0.enforceIsFunction, enforceIsString = $__0.enforceIsString, enforceKeyIsNotDefined = $__0.enforceKeyIsNotDefined;
+      var DispatcherInstance = _dereq_("../dispatcher/DispatcherInstance.js");
+      var StoreConstants = _dereq_("./StoreConstants.js");
+      var StoreFacade = _dereq_("./StoreFacade.js");
+      var $__0 = _dereq_("../hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface, enforceIsFunction = $__0.enforceIsFunction, enforceIsString = $__0.enforceIsString, enforceKeyIsNotDefined = $__0.enforceKeyIsNotDefined;
       var SCOPE_HINT = "StoreDefinition";
       function emptyGetter() {
         return null;
@@ -348,11 +348,11 @@
       "./StoreConstants.js": 7,
       "./StoreFacade.js": 10
     } ],
-    9: [ function(require, module, exports) {
+    9: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
-      var StoreFacade = require("./StoreFacade.js");
+      var StoreFacade = _dereq_("./StoreFacade.js");
       function defaultDeref(_, _, store) {
         return store.get();
       }
@@ -396,12 +396,12 @@
     }, {
       "./StoreFacade.js": 10
     } ],
-    10: [ function(require, module, exports) {
+    10: [ function(_dereq_, module, exports) {
       /* @flow */
-      var Event = require("../event/Event.js");
-      var EventHandler = require("../event/EventHandler.js");
-      var StoreConstants = require("./StoreConstants.js");
-      var $__0 = require("../hints/TypeHints.js"), enforceKeyIsDefined = $__0.enforceKeyIsDefined, enforceIsFunction = $__0.enforceIsFunction;
+      var Event = _dereq_("../event/Event.js");
+      var EventHandler = _dereq_("../event/EventHandler.js");
+      var StoreConstants = _dereq_("./StoreConstants.js");
+      var $__0 = _dereq_("../hints/TypeHints.js"), enforceKeyIsDefined = $__0.enforceKeyIsDefined, enforceIsFunction = $__0.enforceIsFunction;
       var SCOPE_HINT = "StoreFacade";
       function getNull() {
         return null;
@@ -495,7 +495,7 @@
       "../hints/TypeHints.js": 5,
       "./StoreConstants.js": 7
     } ],
-    11: [ function(require, module, exports) {
+    11: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
