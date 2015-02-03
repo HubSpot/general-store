@@ -2,7 +2,7 @@
   "name": "general-store",
   "version": "0.0.1",
   "description": "Simple, flexible store implementation for Flux.",
-  "main": "src/GeneralStore.js",
+  "main": "build/general-store.js",
   "scripts": {
     "build": "./bin/build",
     "build-and-test": "./bin/build-and-test",
