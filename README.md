@@ -5,7 +5,7 @@
 
 **This is alpha software. It's going to change.**
 
-GeneralStore aims to get at the essence of a Flux store without falling into an overly prescriptive data model. A store is a observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.
+GeneralStore aims to get at the essence of a Flux store without falling into an overly prescriptive data model. A store is an observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.
 
 In other words a store:
 
@@ -14,7 +14,7 @@ In other words a store:
 3. updates its value in response to specific messages from the Dispatcher
 4. notifies subscribers when its value changes
 
-Other features, like Immutability, data fetching, undo, etc., should be implementation details of their individual stores. We also didn’t want to write switch statements anymore… JavaScript switch statements are terrifying.
+Other features, like immutability, data fetching, undo, etc., should be implementation details of their individual stores. We also didn’t want to write switch statements anymore… JavaScript switch statements are terrifying.
 
 # Create a store
 
@@ -31,7 +31,7 @@ function defineUserStore() {
   };
 
   return GeneralStore.define()
-    // the stores getter should return the public subset of the store's data
+    // the store's getter should return the public subset of its data
     .defineGet(function() {
       return users;
     })
@@ -42,13 +42,13 @@ function defineUserStore() {
     .defineResponseTo('REMOVE_USER', function(user) {
       delete users[user.id];
     })
-    // after a store is "registered" it's action handlers are bound
+    // after a store is "registered" its action handlers are bound
     // to the dispatcher
     .register(dispatcher);
 }
 ```
 
-If you use a singleton pattern for stores, simply the result of `register` from a module.
+If you use a singleton pattern for stores, simply use the result of `register` from a module.
 
 ```javascript
 var Dispatcher = require('dispatcher');
