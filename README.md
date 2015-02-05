@@ -21,6 +21,7 @@ Other features, like immutability, data fetching, undo, etc., should be implemen
 GeneralStore uses functions to encapsulate private data.
 
 ```javascript
+var dispatcher = new Flux.Dispatcher();
 function defineUserStore() {
   // data is stored privately inside the store module's closure
   var users = {
@@ -51,9 +52,10 @@ function defineUserStore() {
 If you use a singleton pattern for stores, simply use the result of `register` from a module.
 
 ```javascript
-var Dispatcher = require('dispatcher');
+var Dispatcher = require('flux').Dispatcher;
 var GeneralStore = require('general-store.js');
 
+var dispatcher = new Dispatcher();
 var users = {};
 
 var UserStore = GeneralStore.define()
