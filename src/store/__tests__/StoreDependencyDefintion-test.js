@@ -28,17 +28,74 @@ describe('StoreDependencyDefinition', () => {
 
     dependencies = new StoreDependencyDefinition({
       mockkey: {
-        store: mockStore,
+        stores: [mockStore],
         deref: mockDeref
       },
       otherkey: otherMockStore
     });
   });
 
+  it('throws if stores is not defined as a non-empty array in a complex dep', () => {
+    expect(() => {
+      new StoreDependencyDefinition({
+        mockkey: {
+          stores: mockStore,
+          deref: mockDeref
+        }
+      });
+    }).toThrow();
+    expect(() => {
+      new StoreDependencyDefinition({
+        mockkey: {
+          stores: [],
+          deref: mockDeref
+        }
+      });
+    }).toThrow();
+    expect(() => {
+      new StoreDependencyDefinition({
+        mockkey: {
+          stores: [mockStore, otherMockStore],
+          deref: mockDeref
+        }
+      });
+    }).not.toThrow();
+  });
+
+  it('throws if deref is not defined as a function in a complex dep', () => {
+    expect(() => {
+      new StoreDependencyDefinition({
+        mockkey: {
+          stores: [mockStore, otherMockStore]
+        }
+      });
+    }).toThrow();
+    expect(() => {
+      new StoreDependencyDefinition({
+        mockkey: {
+          stores: [mockStore, otherMockStore],
+          deref: []
+        }
+      });
+    }).toThrow();
+    expect(() => {
+      new StoreDependencyDefinition({
+        mockkey: {
+          stores: [mockStore, otherMockStore],
+          deref: mockDeref
+        }
+      });
+    }).not.toThrow();
+  });
+
   it('returns the correct store map', () => {
     expect(dependencies.getStores()).toEqual({
-      mockkey: mockStore,
-      otherkey: otherMockStore
+      mockkey: [
+        mockStore
+      ],
+      otherkey: [
+        otherMockStore
+        ]
     });
   });
 
@@ -66,7 +123,7 @@ describe('StoreDependencyDefinition', () => {
     expect(mockDeref.mock.calls[0]).toEqual([
       mockProps,
       mockState,
-      mockStore,
+      [mockStore],
     ]);
   });
 

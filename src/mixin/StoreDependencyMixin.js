@@ -50,17 +50,27 @@ function StoreDependencyMixin(
 
   return {
     componentWillMount(): void {
-      var stores = dependencies.getStores();
-      this._storeDependencyHandlers = Object.keys(stores).map(key => {
-        return stores[key].addOnChange(
-          storeChangeCallback.bind(
-            null,
-            this,
-            dependencies,
-            key
-          )
-        );
-      });
+      var i;
+      var key;
+      var store;
+      var storeMap = dependencies.getStores();
+      var stores;
+      this._storeDependencyHandlers = [];
+      for (key in storeMap) {
+        stores = storeMap[key];
+        for (i = 0; i < stores.length; i++) {
+          this._storeDependencyHandlers.push(
+            stores[i].addOnChange(
+              storeChangeCallback.bind(
+                null,
+                this,
+                dependencies,
+                key
+              )
+            )
+          );
+        }
+      }
     },
 
     componentWillUnmount(): void {
