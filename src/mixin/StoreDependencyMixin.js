@@ -3,7 +3,8 @@
  */
 
 var EventHandler = require('../event/EventHandler.js');
-var StoreDependencyDefinition = require('../store/StoreDependencyDefinition.js');
+var StoreDependencyDefinition =
+  require('../store/StoreDependencyDefinition.js');
 var StoreFacade = require('../store/StoreFacade.js');
 
 function havePropsChanged(
@@ -22,7 +23,9 @@ function hasStateChanged(
 ): bool {
   return Object
     .keys(nextState)
-    .some(key => !stores.hasOwnProperty(key) && oldState[key] !== nextState[key]);
+    .some(
+      key => !stores.hasOwnProperty(key) && oldState[key] !== nextState[key]
+    );
 }
 
 function storeChangeCallback(

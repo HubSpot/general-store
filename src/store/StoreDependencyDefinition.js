@@ -38,7 +38,8 @@ function extractDeref(
   if (process.env.NODE_ENV !== 'production') {
     if (typeof dependency.deref !== 'function') {
       throw new Error(
-        'StoreDependencyDefinition: you must specify a deref function for "' + key + '"'
+        'StoreDependencyDefinition: you must specify a deref' +
+          ' function for "' + key + '"'
       );
     }
   }
@@ -56,7 +57,8 @@ function extractStores(
   if (process.env.NODE_ENV !== 'production') {
     if (!Array.isArray(dependency.stores) || !dependency.stores.length) {
       throw new Error(
-        'StoreDependencyDefinition: you must specify a stores with at least one store for "' + key + '"'
+        'StoreDependencyDefinition: you must specify a stores' +
+          ' array with at least one store for "' + key + '"'
       );
     }
   }
