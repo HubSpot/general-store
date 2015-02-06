@@ -5,7 +5,7 @@
 
 **This is alpha software. It's going to change.**
 
-GeneralStore aims to get at the essence of a Flux store without falling into an overly prescriptive data model. A store is an observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.
+GeneralStore aims to get at the essence of a [Flux](http://facebook.github.io/flux/) store without falling into an overly prescriptive data model. A store is an observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.
 
 In other words a store:
 
