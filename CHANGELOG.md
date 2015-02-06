@@ -6,6 +6,10 @@
 * compound fields: the `deref` property is required
 * compound fields: the `deref` function now receives an `Array<StoreFacade>` as its thrid argument instead of a single `StoreFacade`
 
+### Other Changes
+
+* more verbose errors with helpful links
+
 ## 0.0.3 (February 3rd, 2015)
 
 * first usable alpha
