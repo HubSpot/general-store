@@ -78,8 +78,8 @@ var ProfileComponent = React.createClass({
     GeneralStore.StoreDependencyMixin({
       // simple fields can be expression in the for `key => store`
       subject: ProfileStore,
-      // complex fields can depend on one or more stores
-      // and specify a function to "dereference" the store's value
+      // compound fields can depend on one or more stores
+      // and/or specify a function to "dereference" the store's value
       friends: {
         stores: [ProfileStore, UsersStore],
         deref: (props, state) => {
