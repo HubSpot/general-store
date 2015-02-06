@@ -1,9 +1,8 @@
 jest.autoMockOff();
 
-describe('GeneralStore integration test', () => {
+function runTest(GeneralStore) {
 
   var Flux;
-  var GeneralStore;
 
   var ADD_USER = 'ADD_USER';
   var REMOVE_USER = 'REMOVE_USER';
@@ -42,7 +41,6 @@ describe('GeneralStore integration test', () => {
 
   beforeEach(() => {
     Flux = require('flux');
-    GeneralStore = require('../GeneralStore.js');
     dispatcher = new Flux.Dispatcher();
     users = {};
 
@@ -103,4 +101,23 @@ describe('GeneralStore integration test', () => {
     expect(removedMockChangeHandler.mock.calls.length).toBe(0);
   });
 
+}
+
+describe('GeneralStore src integration test', () => {
+  runTest(
+    require('../GeneralStore.js')
+  );
 });
+
+describe('GeneralStore dev build integration test', () => {
+  runTest(
+    require('../../build/general-store.js')
+  );
+});
+
+describe('GeneralStore prod build integration test', () => {
+  runTest(
+    require('../../build/general-store.min.js')
+  );
+});
+
