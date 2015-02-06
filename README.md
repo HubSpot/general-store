@@ -91,6 +91,25 @@ var UsersComponent = React.createClass({
 });
 ```
 
+## Default Dispatcher Instance
+
+The common Flux architecture has a single centeral dispatcher. As a convenice `GeneralStore` allows you to set a global dispatcher which will become the default when a store is registered.
+
+```javascript
+var dispatcher = new Flux.Dispatcher();
+GeneralStore.DispatcherInstance.set(dispatcher);
+```
+
+Now you can register a store without explicity passing a dispatcher:
+
+```javascript
+var users = {};
+
+GeneralStore.define()
+  .defineGet(() => users)
+  .register(); // the dispatcher instance is set so no need to explicitly pass it
+```
+
 ## Dispatcher Interface
 
 At HubSpot we use the [Facebook Dispatcher](https://github.com/facebook/flux), but any object that conforms to the same interface (i.e. has register and unregister methods) should work just fine.
