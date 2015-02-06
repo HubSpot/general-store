@@ -16,7 +16,17 @@ In other words a store:
 
 Other features, like immutability, data fetching, undo, etc., should be implementation details of their individual stores. We also didn’t want to write switch statements anymore… JavaScript switch statements are terrifying.
 
-# Create a store
+## Install
+
+```
+# for node, browserify, etc
+npm install general-store
+
+# for bower
+bower install general-store
+```
+
+## Create a store
 
 GeneralStore uses functions to encapsulate private data.
 
