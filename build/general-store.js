@@ -400,30 +400,28 @@
  * @flow
  */
       var StoreFacade = _dereq_("./StoreFacade.js");
+      var invariant = _dereq_("../invariant.js");
+      var HINT_LINK = "Learn more about defining fields with the StoreDependencyMixin:" + " https://github.com/HubSpot/general-store#react";
       function defaultDeref(_, _, stores) {
         return stores[0].get();
       }
-      function extractDeref(dependencies, key) {
-        var dependency = dependencies[key];
+      function extractDeref(dependencies, field) {
+        var dependency = dependencies[field];
         if (dependency instanceof StoreFacade) {
           return defaultDeref;
         }
         if ("development" !== "production") {
-          if (typeof dependency.deref !== "function") {
-            throw new Error("StoreDependencyDefinition: you must specify a deref" + ' function for "' + key + '"');
-          }
+          invariant(typeof dependency.deref === "function", 'StoreDependencyDefinition: the compound field "%s" does not have' + " a `deref` function. Provide one, or make it a simple field instead. %s", field, HINT_LINK);
         }
         return dependency.deref;
       }
-      function extractStores(dependencies, key) {
-        var dependency = dependencies[key];
+      function extractStores(dependencies, field) {
+        var dependency = dependencies[field];
         if (dependency instanceof StoreFacade) {
           return [ dependency ];
         }
         if ("development" !== "production") {
-          if (!Array.isArray(dependency.stores) || !dependency.stores.length) {
-            throw new Error("StoreDependencyDefinition: you must specify a stores" + ' array with at least one store for "' + key + '"');
-          }
+          invariant(Array.isArray(dependency.stores) && dependency.stores.length, "StoreDependencyDefinition: the `stores` property on the compound field" + ' "%s" must be an array of Stores with at least one Store. %s', HINT_LINK);
         }
         return dependency.stores;
       }
@@ -432,28 +430,28 @@
         this.$StoreDependencyDefinition_derefs = {};
         this.$StoreDependencyDefinition_stores = {};
         var dependency;
-        for (var key in dependencyMap) {
-          dependency = dependencyMap[key];
-          this.$StoreDependencyDefinition_derefs[key] = extractDeref(dependencyMap, key);
-          this.$StoreDependencyDefinition_stores[key] = extractStores(dependencyMap, key);
+        for (var field in dependencyMap) {
+          dependency = dependencyMap[field];
+          this.$StoreDependencyDefinition_derefs[field] = extractDeref(dependencyMap, field);
+          this.$StoreDependencyDefinition_stores[field] = extractStores(dependencyMap, field);
         }
       }
-      StoreDependencyDefinition.prototype.$StoreDependencyDefinition_derefStore = function(key, props, state) {
+      StoreDependencyDefinition.prototype.$StoreDependencyDefinition_derefStore = function(field, props, state) {
         "use strict";
-        return this.$StoreDependencyDefinition_derefs[key](props, state, this.$StoreDependencyDefinition_stores[key]);
+        return this.$StoreDependencyDefinition_derefs[field](props, state, this.$StoreDependencyDefinition_stores[field]);
       };
       StoreDependencyDefinition.prototype.getState = function(props, state) {
         "use strict";
         var updates = {};
-        for (var key in this.$StoreDependencyDefinition_stores) {
-          updates[key] = this.$StoreDependencyDefinition_derefStore(key, props, state);
+        for (var field in this.$StoreDependencyDefinition_stores) {
+          updates[field] = this.$StoreDependencyDefinition_derefStore(field, props, state);
         }
         return updates;
       };
-      StoreDependencyDefinition.prototype.getStateField = function(key, props, state) {
+      StoreDependencyDefinition.prototype.getStateField = function(field, props, state) {
         "use strict";
         var update = {};
-        update[key] = this.$StoreDependencyDefinition_derefStore(key, props, state);
+        update[field] = this.$StoreDependencyDefinition_derefStore(field, props, state);
         return update;
       };
       StoreDependencyDefinition.prototype.getStores = function() {
@@ -462,6 +460,7 @@
       };
       module.exports = StoreDependencyDefinition;
     }, {
+      "../invariant.js": 6,
       "./StoreFacade.js": 11
     } ],
     11: [ function(_dereq_, module, exports) {
