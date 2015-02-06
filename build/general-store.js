@@ -243,10 +243,18 @@
         });
         return {
           componentWillMount: function() {
-            var stores = dependencies.getStores();
-            this._storeDependencyHandlers = Object.keys(stores).map(function(key) {
-              return stores[key].addOnChange(storeChangeCallback.bind(null, this, dependencies, key));
-            }.bind(this));
+            var i;
+            var key;
+            var store;
+            var storeMap = dependencies.getStores();
+            var stores;
+            this._storeDependencyHandlers = [];
+            for (key in storeMap) {
+              stores = storeMap[key];
+              for (i = 0; i < stores.length; i++) {
+                this._storeDependencyHandlers.push(stores[i].addOnChange(storeChangeCallback.bind(null, this, dependencies, key)));
+              }
+            }
           },
           componentWillUnmount: function() {
             var handlers = this._storeDependencyHandlers;
@@ -353,22 +361,43 @@
  * @flow
  */
       var StoreFacade = _dereq_("./StoreFacade.js");
-      function defaultDeref(_, _, store) {
-        return store.get();
+      function defaultDeref(_, _, stores) {
+        return stores[0].get();
+      }
+      function extractDeref(dependencies, key) {
+        var dependency = dependencies[key];
+        if (dependency instanceof StoreFacade) {
+          return defaultDeref;
+        }
+        if ("development" !== "production") {
+          if (typeof dependency.deref !== "function") {
+            throw new Error('StoreDependencyDefinition: you must specify a deref function for "' + key + '"');
+          }
+        }
+        return dependency.deref;
+      }
+      function extractStores(dependencies, key) {
+        var dependency = dependencies[key];
+        if (dependency instanceof StoreFacade) {
+          return [ dependency ];
+        }
+        if ("development" !== "production") {
+          if (!Array.isArray(dependency.stores) || !dependency.stores.length) {
+            throw new Error('StoreDependencyDefinition: you must specify a stores with at least one store for "' + key + '"');
+          }
+        }
+        return dependency.stores;
       }
       function StoreDependencyDefinition(dependencyMap) {
         "use strict";
         this.$StoreDependencyDefinition_derefs = {};
         this.$StoreDependencyDefinition_stores = {};
-        Object.keys(dependencyMap).forEach(function(key) {
-          if (dependencyMap[key] instanceof StoreFacade) {
-            this.$StoreDependencyDefinition_derefs[key] = defaultDeref;
-            this.$StoreDependencyDefinition_stores[key] = dependencyMap[key];
-          } else {
-            this.$StoreDependencyDefinition_derefs[key] = dependencyMap[key].deref || defaultDeref;
-            this.$StoreDependencyDefinition_stores[key] = dependencyMap[key].store;
-          }
-        }.bind(this));
+        var dependency;
+        for (var key in dependencyMap) {
+          dependency = dependencyMap[key];
+          this.$StoreDependencyDefinition_derefs[key] = extractDeref(dependencyMap, key);
+          this.$StoreDependencyDefinition_stores[key] = extractStores(dependencyMap, key);
+        }
       }
       StoreDependencyDefinition.prototype.$StoreDependencyDefinition_derefStore = function(key, props, state) {
         "use strict";

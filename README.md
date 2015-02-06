@@ -73,19 +73,43 @@ module.exports = UserStore;
 GeneralStore provides a convenient mixin for binding stores to React components:
 
 ```javascript
-var UsersComponent = React.createClass({
+var ProfileComponent = React.createClass({
   mixins: [
     GeneralStore.StoreDependencyMixin({
-      users: UserStore
+      // simple fields can be expression in the for `key => store`
+      subject: ProfileStore,
+      // compound fields can depend on one or more stores
+      // and/or specify a function to "dereference" the store's value
+      friends: {
+        stores: [ProfileStore, UsersStore],
+        deref: (props, state) => {
+          friendIds = ProfileStore.get().friendIds;
+          users = UsersStore.get();
+          return friendIds.map(id => users[id]);
+        }
+      }
     })
   ],
 
   render: function() {
     var users = this.state.users;
     return (
-      <ul>
-        {Object.keys(users).map(id => <li>{users[id].name}</li>)}
-      </ul>
+      <div>
+        <h1>{this.state.subject.name}</h1>
+        {this.renderFriends()}
+      </div>
+    );
+  },
+
+  renderFriends: function() {
+    var friends = this.state.friends;
+    return (
+      <div>
+        <h3>Friends</h3>
+        <ul>
+          {Object.keys(friends).map(id => <li>{friends[id].name}</li>)}
+        </ul>
+      </div>
     );
   }
 });

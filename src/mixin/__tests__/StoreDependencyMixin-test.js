@@ -30,13 +30,13 @@ describe('StoreDependencyMixin without custom derefs', () => {
 
     mockDependencyMap = {
       mockkey: {
-        store: mockStore
+        stores: [mockStore]
       }
     };
 
     mixinInstance = StoreDependencyMixin(mockDependencyMap);
     mockDefinition = StoreDependencyDefinition.mock.instances[0];
-    mockDefinition.getStores.mockReturnValue({mockkey: mockStore});
+    mockDefinition.getStores.mockReturnValue({mockkey: [mockStore]});
     mockDefinition.getState.mockReturnValue({mockkey: mockValue});
 
     mockComponent = {
@@ -112,14 +112,14 @@ describe('StoreDependencyMixin with custom derefs', () => {
 
     mockDependencyMap = {
       mockkey: {
-        store: mockStore,
+        stores: [mockStore],
         deref: () => mockStore.get()
       }
     };
 
     mixinInstance = StoreDependencyMixin(mockDependencyMap);
     mockDefinition = StoreDependencyDefinition.mock.instances[0];
-    mockDefinition.getStores.mockReturnValue({mockkey: mockStore});
+    mockDefinition.getStores.mockReturnValue({mockkey: [mockStore]});
     mockDefinition.getState.mockReturnValue({mockkey: mockValue});
 
     mockComponent = {

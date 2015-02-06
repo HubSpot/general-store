@@ -7,43 +7,78 @@ var StoreFacade = require('./StoreFacade.js');
 type derefingFunction = (
   props: Object,
   state: Object,
-  store: StoreFacade
+  stores: Array<StoreFacade>
 ) => any;
 
-type StoreDependencyWithDeref = {
-  store: StoreFacade;
+type CompoundStoreDependency = {
+  stores: Array<StoreFacade>;
   deref: derefingFunction;
 };
 
 type StoreDependencies = {
-  [key:string]: StoreFacade | StoreDependencyWithDeref;
+  [key:string]: StoreFacade | CompoundStoreDependency;
 };
 
 function defaultDeref(
   _,
   _,
-  store: StoreFacade
+  stores: Array<StoreFacade>
 ): any {
-  return store.get();
+  return stores[0].get();
+}
+
+function extractDeref(
+  dependencies: StoreDependencies,
+  key: string
+): derefingFunction {
+  var dependency = dependencies[key];
+  if (dependency instanceof StoreFacade) {
+    return defaultDeref;
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    if (typeof dependency.deref !== 'function') {
+      throw new Error(
+        'StoreDependencyDefinition: you must specify a deref' +
+          ' function for "' + key + '"'
+      );
+    }
+  }
+  return dependency.deref;
+}
+
+function extractStores(
+  dependencies: StoreDependencies,
+  key: string
+): Array<StoreFacade> {
+  var dependency = dependencies[key];
+  if (dependency instanceof StoreFacade) {
+    return [dependency];
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    if (!Array.isArray(dependency.stores) || !dependency.stores.length) {
+      throw new Error(
+        'StoreDependencyDefinition: you must specify a stores' +
+          ' array with at least one store for "' + key + '"'
+      );
+    }
+  }
+  return dependency.stores;
 }
 
 class StoreDependencyDefinition {
 
   _derefs: {[key:string]: derefingFunction};
-  _stores: {[key:string]: StoreFacade};
+  _stores: {[key:string]: Array<StoreFacade>};
 
   constructor(dependencyMap: StoreDependencies) {
     this._derefs = {};
     this._stores = {};
-    Object.keys(dependencyMap).forEach(key => {
-      if (dependencyMap[key] instanceof StoreFacade) {
-        this._derefs[key] = defaultDeref;
-        this._stores[key] = dependencyMap[key];
-      } else {
-        this._derefs[key] = dependencyMap[key].deref || defaultDeref;
-        this._stores[key] = dependencyMap[key].store;
-      }
-    });
+    var dependency;
+    for (var key in dependencyMap) {
+      dependency = dependencyMap[key];
+      this._derefs[key] = extractDeref(dependencyMap, key);
+      this._stores[key] = extractStores(dependencyMap, key);
+    }
   }
 
   _derefStore(
@@ -79,7 +114,7 @@ class StoreDependencyDefinition {
     return update;
   }
 
-  getStores(): {[key:string]: StoreFacade} {
+  getStores(): {[key:string]: Array<StoreFacade>} {
     return this._stores;
   }
 
