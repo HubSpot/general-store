@@ -77,6 +77,20 @@ var UserStore = GeneralStore.define()
 module.exports = UserStore;
 ```
 
+## Using the Store API
+
+A registered Store provides methods for "getting" its value and subscribing to changes to that value.
+
+```javascript
+UserStore.get() // returns {}
+var subscription = UserStore.addOnChange(function() {
+  // handle changes!
+});
+// addOnChange returns an object with a `remove` method.
+// When you're ready to unsuscribe from a store's changes,
+// simply call that method.
+subscription.remove();
+```
 
 ## React
 
