@@ -9,21 +9,34 @@ interface Dispatcher {
   unregister(dispatchToken: number): void;
 }
 
-var {enforceDispatcherInterface} = require('../hints/TypeHints.js');
+var Hints = require('../hints/Hints.js');
+
+var invariant = require('../invariant.js');
 
 var instance = null;
 
 var DispatcherInstance = {
 
   get(): Dispatcher {
-    if (!instance) {
-      throw new Error('set a dispatcher please');
+    if (process.env.NODE_ENV !== 'production') {
+      invariant(
+        instance !== null,
+        'DispatcherInstance.get: you haven\'t provide a dispatcher instance.' +
+        ' You can pass an instance to GeneralStore.define().register(dispatcher) ' +
+        ' or use GeneralStore.DispatcherInstance.set(dispatcher) to set a global instance.' +
+        ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
+      );
     }
     return instance;
   },
 
   set(dispatcher: Dispatcher): void {
-    enforceDispatcherInterface(dispatcher, 'DispatcherInstance');
+    if (process.env.NODE_ENV !== 'production') {
+      Hints.enforceDispatcherInterface(
+        'DispatcherInstance.set',
+        dispatcher
+      );
+    }
     instance = dispatcher;
   }
 

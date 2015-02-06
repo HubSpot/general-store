@@ -9,17 +9,28 @@ var DispatcherInstance = require('../dispatcher/DispatcherInstance.js');
 var StoreConstants = require('./StoreConstants.js');
 var StoreFacade = require('./StoreFacade.js');
 
-var {
-  enforceDispatcherInterface,
-  enforceIsFunction,
-  enforceIsString,
-  enforceKeyIsNotDefined
-} = require('../hints/TypeHints.js');
-
-var SCOPE_HINT = 'StoreDefinition';
+var { enforceDispatcherInterface } = require('../hints/Hints.js');
+var invariant = require('../invariant.js');
 
 function emptyGetter() {
   return null;
+}
+
+var HINT_LINK =
+  'Learn more about defining stores:' +
+  ' https://github.com/HubSpot/general-store#create-a-store';
+
+function enforceIsUnregistered(
+  scope: string,
+  facade: any
+): void {
+  invariant(
+    !(facade instanceof StoreFacade),
+    '%s: this store definition cannot be modified because is has already been' +
+    ' registered with a dispatcher. %s',
+    scope,
+    HINT_LINK
+  );
 }
 
 class StoreDefinition {
@@ -37,8 +48,18 @@ class StoreDefinition {
   defineGet(
     getter: () => any
   ): StoreDefinition {
-    enforceIsFunction(getter, SCOPE_HINT);
-    this._enforceIsUnregistered();
+    if (process.env.NODE_ENV !== 'production') {
+      enforceIsUnregistered(
+        'StoreDefinition.defineGet',
+        this._facade
+      );
+      invariant(
+        typeof getter === 'function',
+        'StoreDefinition.defineGet: expected getter to be a function but got "%s" instead. %s' +
+        getter,
+        HINT_LINK
+      );
+    }
     this._getter = getter;
     return this;
   }
@@ -47,40 +68,50 @@ class StoreDefinition {
     actionType: string,
     response: (data: any) => void
   ): StoreDefinition {
-    enforceIsString(actionType, SCOPE_HINT);
-    enforceIsFunction(response, SCOPE_HINT);
-    enforceKeyIsNotDefined(this._responses, actionType, SCOPE_HINT);
-    this._enforceIsUnregistered();
+    if (process.env.NODE_ENV !== 'production') {
+      enforceIsUnregistered(
+        'StoreDefinition.defineResponseTo',
+        this._facade
+      );
+      invariant(
+        typeof actionType === 'string',
+        'StoreDefinition.defineResponseTo: expected actionType to be a string' +
+        ' but got "%s" instead. %s',
+        actionType,
+        HINT_LINK
+      );
+      invariant(
+        !this._responses.hasOwnProperty(actionType),
+        'StoreDefinition.defineResponseTo: conflicting resposes for actionType "%s".' +
+        ' Only one response can be defined per actionType per Store. %s',
+        actionType,
+        HINT_LINK
+      );
+      invariant(
+        typeof response === 'function',
+        'StoreDefinition.defineResponseTo: expected response to be a function' +
+        ' but got "%s" instead. %s',
+        response
+      );
+    }
     this._responses[actionType] = response;
     return this;
   }
 
-  _enforceIsReadyForRegistration(): void {
-    if (process.env.NODE_ENV !== 'production') {
-      if (typeof this._getter !== 'function') {
-        throw new Error(
-          SCOPE_HINT +
-          ': you must call defineGet before calling register.'
-        );
-      }
-    }
-  }
-
-  _enforceIsUnregistered(): void {
-    if (process.env.NODE_ENV !== 'production') {
-      if (this._facade !== null) {
-        throw new Error(
-          SCOPE_HINT +
-          ': a store definition cannot be modified after it is registered'
-        );
-      }
-    }
-  }
-
   register(dispatcher: ?Dispatcher): StoreFacade {
-    this._enforceIsReadyForRegistration();
-    if (dispatcher) {
-      enforceDispatcherInterface(dispatcher, SCOPE_HINT);
+    if (process.env.NODE_ENV !== 'production') {
+      invariant(
+        typeof this._getter === 'function',
+        'StoreDefinition.register: a store cannot be registered without a getter.' +
+        ' Use GeneralStore.define().defineGet(getter) to define a getter. %s',
+        HINT_LINK
+      );
+      if (dispatcher) {
+        enforceDispatcherInterface(
+          'StoreDefinition.register',
+          dispatcher
+        );
+      }
     }
     var facade =
       this._facade || new StoreFacade(

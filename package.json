@@ -27,7 +27,9 @@
     "url": "https://github.com/HubSpot/general-store/issues"
   },
   "homepage": "https://github.com/HubSpot/general-store",
-  "dependencies": {},
+  "dependencies": {
+    "invariant": "^1.0.2"
+  },
   "devDependencies": {
     "browserify": "^8.1.1",
     "browserify-derequire": "^0.9.1",
@@ -44,7 +46,8 @@
   "jest": {
     "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js",
     "unmockedModulePathPatterns": [
-      "<rootDir>/src/hints",
+      "<rootDir>/src/invariant.js",
+      "<rootDir>/src/hints/Hints.js",
       "<rootDir>/src/uniqueid"
     ]
   }
