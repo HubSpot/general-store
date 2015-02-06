@@ -1,0 +1,29 @@
+{
+  "name": "general-store",
+  "version": "0.0.3",
+  "homepage": "https://github.com/HubSpot/general-store",
+  "authors": [
+    "Colby Rabideau <crabideau@hubspot.com>"
+  ],
+  "description": "Simple, flexible store implementation for Flux.",
+  "main": "build/general-store.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "flux",
+    "react",
+    "store"
+  ],
+  "license": "Apache-2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/bower_components",
+    "test",
+    "tests"
+  ]
+}
