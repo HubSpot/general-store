@@ -4,6 +4,12 @@
 
 var StoreFacade = require('./StoreFacade.js');
 
+var invariant = require('../invariant.js');
+
+var HINT_LINK =
+  'Learn more about defining fields with the StoreDependencyMixin:' +
+  ' https://github.com/HubSpot/general-store#react';
+
 type derefingFunction = (
   props: Object,
   state: Object,
@@ -29,38 +35,39 @@ function defaultDeref(
 
 function extractDeref(
   dependencies: StoreDependencies,
-  key: string
+  field: string
 ): derefingFunction {
-  var dependency = dependencies[key];
+  var dependency = dependencies[field];
   if (dependency instanceof StoreFacade) {
     return defaultDeref;
   }
   if (process.env.NODE_ENV !== 'production') {
-    if (typeof dependency.deref !== 'function') {
-      throw new Error(
-        'StoreDependencyDefinition: you must specify a deref' +
-          ' function for "' + key + '"'
-      );
-    }
+    invariant(
+      typeof dependency.deref === 'function',
+      'StoreDependencyDefinition: the compound field "%s" does not have' +
+      ' a `deref` function. Provide one, or make it a simple field instead. %s',
+      field,
+      HINT_LINK
+    );
   }
   return dependency.deref;
 }
 
 function extractStores(
   dependencies: StoreDependencies,
-  key: string
+  field: string
 ): Array<StoreFacade> {
-  var dependency = dependencies[key];
+  var dependency = dependencies[field];
   if (dependency instanceof StoreFacade) {
     return [dependency];
   }
   if (process.env.NODE_ENV !== 'production') {
-    if (!Array.isArray(dependency.stores) || !dependency.stores.length) {
-      throw new Error(
-        'StoreDependencyDefinition: you must specify a stores' +
-          ' array with at least one store for "' + key + '"'
-      );
-    }
+    invariant(
+      Array.isArray(dependency.stores) && dependency.stores.length,
+      'StoreDependencyDefinition: the `stores` property on the compound field' +
+      ' "%s" must be an array of Stores with at least one Store. %s',
+      HINT_LINK
+    )
   }
   return dependency.stores;
 }
@@ -74,22 +81,22 @@ class StoreDependencyDefinition {
     this._derefs = {};
     this._stores = {};
     var dependency;
-    for (var key in dependencyMap) {
-      dependency = dependencyMap[key];
-      this._derefs[key] = extractDeref(dependencyMap, key);
-      this._stores[key] = extractStores(dependencyMap, key);
+    for (var field in dependencyMap) {
+      dependency = dependencyMap[field];
+      this._derefs[field] = extractDeref(dependencyMap, field);
+      this._stores[field] = extractStores(dependencyMap, field);
     }
   }
 
   _derefStore(
-    key: string,
+    field: string,
     props: Object,
     state: Object
   ): any {
-    return this._derefs[key](
+    return this._derefs[field](
       props,
       state,
-      this._stores[key]
+      this._stores[field]
     );
   }
 
@@ -98,19 +105,19 @@ class StoreDependencyDefinition {
     state: Object
   ): Object {
     var updates = {};
-    for(var key in this._stores) {
-      updates[key] = this._derefStore(key, props, state);
+    for(var field in this._stores) {
+      updates[field] = this._derefStore(field, props, state);
     }
     return updates;
   }
 
   getStateField(
-    key: string,
+    field: string,
     props: Object,
     state: Object
   ): Object {
     var update = {};
-    update[key] = this._derefStore(key, props, state);
+    update[field] = this._derefStore(field, props, state);
     return update;
   }
 
