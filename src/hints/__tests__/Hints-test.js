@@ -41,7 +41,34 @@ describe('Hints', () => {
         }
       });
     }).not.toThrow();
+  });
 
+  it('throws from enforceDispatcherPayloadInterface', () => {
+    // invalid payloads
+    expect(() => {
+      Hints.enforceDispatcherPayloadInterface({});
+    }).toThrow();
+
+    expect(() => {
+      Hints.enforceDispatcherPayloadInterface({
+        actionType: 210395,
+        data: 14
+      });
+    }).toThrow();
+
+    expect(() => {
+      Hints.enforceDispatcherPayloadInterface({
+        actionType: 'test-action'
+      });
+    }).toThrow();
+
+    // valid paylod
+    expect(() => {
+      Hints.enforceDispatcherPayloadInterface({
+        actionType: 'test-action',
+        data: {}
+      });
+    }).not.toThrow();
   });
 
 });
