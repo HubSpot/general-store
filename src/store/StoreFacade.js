@@ -1,14 +1,13 @@
 /* @flow */
 var Event = require('../event/Event.js');
 var EventHandler = require('../event/EventHandler.js');
+var Hints = require('../hints/Hints.js');
 var StoreConstants = require('./StoreConstants.js');
 
-var {
-  enforceKeyIsDefined,
-  enforceIsFunction
-} = require('../hints/TypeHints.js');
+var invariant = require('../invariant.js');
 
-var SCOPE_HINT = 'StoreFacade';
+var HINT_LINK = 'Learn more about using the Store API:' +
+  ' https://github.com/HubSpot/general-store#using-the-store-api';
 
 function getNull() {
   return null;
@@ -44,7 +43,15 @@ class StoreFacade {
    * @return this
    */
   addOnChange(callback: Function): EventHandler {
-    enforceIsFunction(callback, SCOPE_HINT);
+    if (process.env.NODE_ENV !== 'production') {
+      invariant(
+        typeof callback === 'function',
+        'StoreFacade.addOnChange: expected callback to be a function' +
+        ' but got "%s" instead. %s',
+        callback,
+        HINT_LINK
+      );
+    }
     return this._event.addHandler(callback);
   }
 
@@ -81,12 +88,18 @@ class StoreFacade {
    * Responds to incoming messages from the Dispatcher
    */
   _handleDispatch(
-    {actionType, data}: {actionType: string; data: any}
+    payload: {actionType: string; data: any}
   ): void {
-    if (!this._responses.hasOwnProperty(actionType)) {
+    if (process.env.NODE_ENV !== 'production') {
+      Hints.enforceDispatcherPayloadInterface(payload);
+    }
+    if (!this._responses.hasOwnProperty(payload.actionType)) {
       return;
     }
-    this._responses[actionType](data, actionType);
+    this._responses[payload.actionType](
+      payload.data,
+      payload.actionType
+    );
     this.triggerChange();
   }
 
