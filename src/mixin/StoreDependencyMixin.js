@@ -2,7 +2,6 @@
  * @flow
  */
 
-var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
 var EventHandler = require('../event/EventHandler.js');
 var StoreDependencyDefinition =
   require('../store/StoreDependencyDefinition.js');
