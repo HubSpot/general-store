@@ -52,25 +52,39 @@
  * of a dispatcher instance, so I'll use weak mode for now.
  * @flow weak
  **/
-      var Hints = _dereq_("../hints/Hints.js");
+      var DispatcherInterface = _dereq_("./DispatcherInterface.js");
       var invariant = _dereq_("../invariant.js");
       var instance = null;
       var DispatcherInstance = {
         get: function() {
-          invariant(instance !== null, "DispatcherInstance.get: you haven't provide a dispatcher instance." + " You can pass an instance to GeneralStore.define().register(dispatcher) " + " or use GeneralStore.DispatcherInstance.set(dispatcher) to set a global instance." + " https://github.com/HubSpot/general-store#default-dispatcher-instance");
+          invariant(instance !== null, "DispatcherInstance.get: you haven't provide a dispatcher instance." + " You can pass an instance to" + " GeneralStore.define().register(dispatcher) or use" + " GeneralStore.DispatcherInstance.set(dispatcher) to set a global" + " instance." + " https://github.com/HubSpot/general-store#default-dispatcher-instance");
           return instance;
         },
         set: function(dispatcher) {
-          Hints.enforceDispatcherInterface("DispatcherInstance.set", dispatcher);
+          invariant(DispatcherInterface.isDispatcher(dispatcher), "DispatcherInstance.set: Expected dispatcher to be an object" + ' with a register method, and an unregister method but got "%s".' + " Learn more about the dispatcher interface:" + " https://github.com/HubSpot/general-store#dispatcher-interface", dispatcher);
           instance = dispatcher;
         }
       };
       module.exports = DispatcherInstance;
     }, {
-      "../hints/Hints.js": 5,
-      "../invariant.js": 6
+      "../invariant.js": 6,
+      "./DispatcherInterface.js": 3
     } ],
     3: [ function(_dereq_, module, exports) {
+      /**
+ * @flow
+ */
+      var DispatcherInterface = {
+        isDispatcher: function(dispatcher) {
+          return typeof dispatcher === "object" && typeof dispatcher.register === "function" && typeof dispatcher.unregister === "function";
+        },
+        isPayload: function(payload) {
+          return typeof payload === "object" && typeof payload.actionType === "string" && payload.hasOwnProperty("data");
+        }
+      };
+      module.exports = DispatcherInterface;
+    }, {} ],
+    4: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
@@ -148,9 +162,9 @@
       module.exports = Event;
     }, {
       "../uniqueid/uniqueID.js": 12,
-      "./EventHandler.js": 4
+      "./EventHandler.js": 5
     } ],
-    4: [ function(_dereq_, module, exports) {
+    5: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
@@ -169,24 +183,6 @@
       };
       module.exports = EventHandler;
     }, {} ],
-    5: [ function(_dereq_, module, exports) {
-      /**
- * @flow
- */
-      var invariant = _dereq_("../invariant.js");
-      var DISPATCHER_HINT_LINK = "Learn more about the dispatcher interface:" + " https://github.com/HubSpot/general-store#dispatcher-interface";
-      var Hints = {
-        enforceDispatcherInterface: function(scope, dispatcher) {
-          invariant(typeof dispatcher === "object" && typeof dispatcher.register === "function" && typeof dispatcher.unregister === "function", "%s: Expected dispatcher to be an object with a register method," + ' and an unregister method but got "%s". %s', scope, dispatcher, DISPATCHER_HINT_LINK);
-        },
-        enforceDispatcherPayloadInterface: function(payload) {
-          invariant(typeof payload === "object" && typeof payload.actionType === "string" && payload.hasOwnProperty("data"), "Dispatcher.dispatch: expected payload to be an object with a property" + ' "actionType" containing a string and a property "data" containing any value' + ' but got "%s" instead. %s', payload, DISPATCHER_HINT_LINK);
-        }
-      };
-      module.exports = Hints;
-    }, {
-      "../invariant.js": 6
-    } ],
     6: [ function(_dereq_, module, exports) {
       /**
  * BSD License
@@ -259,6 +255,7 @@
       /**
  * @flow
  */
+      var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
       var EventHandler = _dereq_("../event/EventHandler.js");
       var StoreDependencyDefinition = _dereq_("../store/StoreDependencyDefinition.js");
       var StoreFacade = _dereq_("../store/StoreFacade.js");
@@ -317,7 +314,8 @@
       }
       module.exports = StoreDependencyMixin;
     }, {
-      "../event/EventHandler.js": 4,
+      "../dispatcher/DispatcherInterface.js": 3,
+      "../event/EventHandler.js": 5,
       "../store/StoreDependencyDefinition.js": 10,
       "../store/StoreFacade.js": 11
     } ],
@@ -331,17 +329,14 @@
     9: [ function(_dereq_, module, exports) {
       /* @flow */
       var DispatcherInstance = _dereq_("../dispatcher/DispatcherInstance.js");
+      var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
       var StoreConstants = _dereq_("./StoreConstants.js");
       var StoreFacade = _dereq_("./StoreFacade.js");
-      var $__0 = _dereq_("../hints/Hints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface;
       var invariant = _dereq_("../invariant.js");
       function emptyGetter() {
         return null;
       }
       var HINT_LINK = "Learn more about defining stores:" + " https://github.com/HubSpot/general-store#create-a-store";
-      function enforceIsUnregistered(scope, facade) {
-        invariant(!(facade instanceof StoreFacade), "%s: this store definition cannot be modified because is has already been" + " registered with a dispatcher. %s", scope, HINT_LINK);
-      }
       function StoreDefinition() {
         "use strict";
         this.$StoreDefinition_facade = null;
@@ -350,26 +345,28 @@
       }
       StoreDefinition.prototype.defineGet = function(getter) {
         "use strict";
-        enforceIsUnregistered("StoreDefinition.defineGet", this.$StoreDefinition_facade);
-        invariant(typeof getter === "function", 'StoreDefinition.defineGet: expected getter to be a function but got "%s" instead. %s' + getter, HINT_LINK);
+        invariant(!this.isRegistered(), "StoreDefinition.defineGet: this store definition cannot be modified" + " because is has already been registered with a dispatcher. %s", HINT_LINK);
+        invariant(typeof getter === "function", "StoreDefinition.defineGet: expected getter to be a function but got" + ' "%s" instead. %s', getter, HINT_LINK);
         this.$StoreDefinition_getter = getter;
         return this;
       };
       StoreDefinition.prototype.defineResponseTo = function(actionType, response) {
         "use strict";
-        enforceIsUnregistered("StoreDefinition.defineResponseTo", this.$StoreDefinition_facade);
+        invariant(!this.isRegistered(), "StoreDefinition.defineResponseTo: this store definition cannot be" + " modified because is has already been registered with a dispatcher. %s", HINT_LINK);
         invariant(typeof actionType === "string", "StoreDefinition.defineResponseTo: expected actionType to be a string" + ' but got "%s" instead. %s', actionType, HINT_LINK);
-        invariant(!this.$StoreDefinition_responses.hasOwnProperty(actionType), 'StoreDefinition.defineResponseTo: conflicting resposes for actionType "%s".' + " Only one response can be defined per actionType per Store. %s", actionType, HINT_LINK);
+        invariant(!this.$StoreDefinition_responses.hasOwnProperty(actionType), "StoreDefinition.defineResponseTo: conflicting resposes for actionType" + ' "%s". Only one response can be defined per actionType per Store. %s', actionType, HINT_LINK);
         invariant(typeof response === "function", "StoreDefinition.defineResponseTo: expected response to be a function" + ' but got "%s" instead. %s', response);
         this.$StoreDefinition_responses[actionType] = response;
         return this;
       };
+      StoreDefinition.prototype.isRegistered = function() {
+        "use strict";
+        return this.$StoreDefinition_facade instanceof StoreFacade;
+      };
       StoreDefinition.prototype.register = function(dispatcher) {
         "use strict";
-        invariant(typeof this.$StoreDefinition_getter === "function", "StoreDefinition.register: a store cannot be registered without a getter." + " Use GeneralStore.define().defineGet(getter) to define a getter. %s", HINT_LINK);
-        if (dispatcher) {
-          enforceDispatcherInterface("StoreDefinition.register", dispatcher);
-        }
+        invariant(!dispatcher || DispatcherInterface.isDispatcher(dispatcher), "StoreDefinition.register: Expected dispatcher to be an object" + ' with a register method, and an unregister method but got "%s".' + " Learn more about the dispatcher interface:" + " https://github.com/HubSpot/general-store#dispatcher-interface", dispatcher);
+        invariant(typeof this.$StoreDefinition_getter === "function", "StoreDefinition.register: a store cannot be registered without a" + " getter. Use GeneralStore.define().defineGet(getter) to define a" + " getter. %s", HINT_LINK);
         var facade = this.$StoreDefinition_facade || new StoreFacade(this.$StoreDefinition_getter || emptyGetter, this.$StoreDefinition_responses, dispatcher || DispatcherInstance.get());
         if (this.$StoreDefinition_facade === null) {
           this.$StoreDefinition_facade = facade;
@@ -379,7 +376,7 @@
       module.exports = StoreDefinition;
     }, {
       "../dispatcher/DispatcherInstance.js": 2,
-      "../hints/Hints.js": 5,
+      "../dispatcher/DispatcherInterface.js": 3,
       "../invariant.js": 6,
       "./StoreConstants.js": 8,
       "./StoreFacade.js": 11
@@ -450,9 +447,9 @@
     } ],
     11: [ function(_dereq_, module, exports) {
       /* @flow */
+      var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
       var Event = _dereq_("../event/Event.js");
       var EventHandler = _dereq_("../event/EventHandler.js");
-      var Hints = _dereq_("../hints/Hints.js");
       var StoreConstants = _dereq_("./StoreConstants.js");
       var invariant = _dereq_("../invariant.js");
       var HINT_LINK = "Learn more about using the Store API:" + " https://github.com/HubSpot/general-store#using-the-store-api";
@@ -513,7 +510,7 @@
    */
       StoreFacade.prototype.$StoreFacade_handleDispatch = function(payload) {
         "use strict";
-        Hints.enforceDispatcherPayloadInterface(payload);
+        invariant(DispatcherInterface.isPayload(payload), "StoreFacade: expected dispatched payload to be an object with a property" + ' "actionType" containing a string and a property "data" containing any value' + ' but got "%s" instead. Learn more about the dispatcher interface:' + " https://github.com/HubSpot/general-store#dispatcher-interface");
         if (!this.$StoreFacade_responses.hasOwnProperty(payload.actionType)) {
           return;
         }
@@ -543,9 +540,9 @@
       };
       module.exports = StoreFacade;
     }, {
-      "../event/Event.js": 3,
-      "../event/EventHandler.js": 4,
-      "../hints/Hints.js": 5,
+      "../dispatcher/DispatcherInterface.js": 3,
+      "../event/Event.js": 4,
+      "../event/EventHandler.js": 5,
       "../invariant.js": 6,
       "./StoreConstants.js": 8
     } ],
