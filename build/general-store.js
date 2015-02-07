@@ -43,8 +43,8 @@
       module.exports = GeneralStore;
     }, {
       "./dispatcher/DispatcherInstance.js": 2,
-      "./mixin/StoreDependencyMixin.js": 6,
-      "./store/StoreDefinition.js": 8
+      "./mixin/StoreDependencyMixin.js": 7,
+      "./store/StoreDefinition.js": 9
     } ],
     2: [ function(_dereq_, module, exports) {
       /**
@@ -52,25 +52,39 @@
  * of a dispatcher instance, so I'll use weak mode for now.
  * @flow weak
  **/
-      var $__0 = _dereq_("../hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface;
+      var DispatcherInterface = _dereq_("./DispatcherInterface.js");
+      var invariant = _dereq_("../invariant.js");
       var instance = null;
       var DispatcherInstance = {
         get: function() {
-          if (!instance) {
-            throw new Error("set a dispatcher please");
-          }
+          invariant(instance !== null, "DispatcherInstance.get: you haven't provide a dispatcher instance." + " You can pass an instance to" + " GeneralStore.define().register(dispatcher) or use" + " GeneralStore.DispatcherInstance.set(dispatcher) to set a global" + " instance." + " https://github.com/HubSpot/general-store#default-dispatcher-instance");
           return instance;
         },
         set: function(dispatcher) {
-          enforceDispatcherInterface(dispatcher, "DispatcherInstance");
+          invariant(DispatcherInterface.isDispatcher(dispatcher), "DispatcherInstance.set: Expected dispatcher to be an object" + ' with a register method, and an unregister method but got "%s".' + " Learn more about the dispatcher interface:" + " https://github.com/HubSpot/general-store#dispatcher-interface", dispatcher);
           instance = dispatcher;
         }
       };
       module.exports = DispatcherInstance;
     }, {
-      "../hints/TypeHints.js": 5
+      "../invariant.js": 6,
+      "./DispatcherInterface.js": 3
     } ],
     3: [ function(_dereq_, module, exports) {
+      /**
+ * @flow
+ */
+      var DispatcherInterface = {
+        isDispatcher: function(dispatcher) {
+          return typeof dispatcher === "object" && typeof dispatcher.register === "function" && typeof dispatcher.unregister === "function";
+        },
+        isPayload: function(payload) {
+          return typeof payload === "object" && typeof payload.actionType === "string" && payload.hasOwnProperty("data");
+        }
+      };
+      module.exports = DispatcherInterface;
+    }, {} ],
+    4: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
@@ -147,10 +161,10 @@
       };
       module.exports = Event;
     }, {
-      "../uniqueid/uniqueID.js": 11,
-      "./EventHandler.js": 4
+      "../uniqueid/uniqueID.js": 12,
+      "./EventHandler.js": 5
     } ],
-    4: [ function(_dereq_, module, exports) {
+    5: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
@@ -169,54 +183,75 @@
       };
       module.exports = EventHandler;
     }, {} ],
-    5: [ function(_dereq_, module, exports) {
-      /* @flow */
-      function composeError(args) {
-        return new Error(args.join(" "));
-      }
-      var TypeHints = {
-        enforceDispatcherInterface: function(dispatcher, scope) {
-          if ("development" !== "production") {
-            if (dispatcher === null || dispatcher === undefined) {
-              throw composeError([ scope, ": DispatcherInstance is not defined" ]);
-            }
-            if (typeof dispatcher !== "object" || typeof dispatcher.register !== "function") {
-              throw composeError([ scope, ': expected an object with a register method but got "', dispatcher, '" instead.' ]);
-            }
-          }
-        },
-        enforceIsFunction: function(arg, scope) {
-          if ("development" !== "production") {
-            if (typeof arg !== "function") {
-              throw composeError([ scope, ': expected a function but got "', arg, '" instead.' ]);
-            }
-          }
-        },
-        enforceIsString: function(arg, scope) {
-          if ("development" !== "production") {
-            if (typeof arg !== "string") {
-              throw composeError([ scope, ': expected a string but got "', arg, '" instead.' ]);
-            }
-          }
-        },
-        enforceKeyIsDefined: function(context, key, scope) {
-          if ("development" !== "production") {
-            if (!context.hasOwnProperty(key)) {
-              throw composeError([ scope, ': "', key, '" is not defined.' ]);
-            }
-          }
-        },
-        enforceKeyIsNotDefined: function(context, key, scope) {
-          if ("development" !== "production") {
-            if (context.hasOwnProperty(key)) {
-              throw composeError([ scope, ': "', key, '" is already defined.' ]);
-            }
+    6: [ function(_dereq_, module, exports) {
+      /**
+ * BSD License
+ *
+ * For Flux software
+ *
+ * Copyright (c) 2014, Facebook, Inc. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ *  * Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ *  * Neither the name Facebook nor the names of its contributors may be used to
+ *    endorse or promote products derived from this software without specific
+ *    prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @flow
+ */
+      "use strict";
+      /**
+ * Use invariant() to assert state which your program assumes to be true.
+ *
+ * Provide sprintf-style format (only %s is supported) and arguments
+ * to provide information about what broke and what you were
+ * expecting.
+ *
+ * The invariant message will be stripped in production, but the invariant
+ * will remain to ensure logic does not differ in production.
+ */
+      var invariant = function(condition, format, a, b, c, d, e, f) {
+        if ("development" !== "production") {
+          if (format === undefined) {
+            throw new Error("invariant requires an error message argument");
           }
         }
+        if (!condition) {
+          var error;
+          if ("development" !== "production") {
+            var args = [ a, b, c, d, e, f ];
+            var argIndex = 0;
+            error = new Error("Invariant Violation: " + format.replace(/%s/g, function() {
+              return args[argIndex++];
+            }));
+          } else {
+            error = new Error("Minified exception occurred; use the non-minified dev environment " + "for the full error message and additional helpful warnings.");
+          }
+          throw error;
+        }
       };
-      module.exports = TypeHints;
+      module.exports = invariant;
     }, {} ],
-    6: [ function(_dereq_, module, exports) {
+    7: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
@@ -278,27 +313,28 @@
       }
       module.exports = StoreDependencyMixin;
     }, {
-      "../event/EventHandler.js": 4,
-      "../store/StoreDependencyDefinition.js": 9,
-      "../store/StoreFacade.js": 10
+      "../event/EventHandler.js": 5,
+      "../store/StoreDependencyDefinition.js": 10,
+      "../store/StoreFacade.js": 11
     } ],
-    7: [ function(_dereq_, module, exports) {
+    8: [ function(_dereq_, module, exports) {
       /* @flow */
       var StoreConstants = {
         DEFAULT_GETTER_KEY: "DEFAULT_GETTER_KEY"
       };
       module.exports = StoreConstants;
     }, {} ],
-    8: [ function(_dereq_, module, exports) {
+    9: [ function(_dereq_, module, exports) {
       /* @flow */
       var DispatcherInstance = _dereq_("../dispatcher/DispatcherInstance.js");
+      var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
       var StoreConstants = _dereq_("./StoreConstants.js");
       var StoreFacade = _dereq_("./StoreFacade.js");
-      var $__0 = _dereq_("../hints/TypeHints.js"), enforceDispatcherInterface = $__0.enforceDispatcherInterface, enforceIsFunction = $__0.enforceIsFunction, enforceIsString = $__0.enforceIsString, enforceKeyIsNotDefined = $__0.enforceKeyIsNotDefined;
-      var SCOPE_HINT = "StoreDefinition";
+      var invariant = _dereq_("../invariant.js");
       function emptyGetter() {
         return null;
       }
+      var HINT_LINK = "Learn more about defining stores:" + " https://github.com/HubSpot/general-store#create-a-store";
       function StoreDefinition() {
         "use strict";
         this.$StoreDefinition_facade = null;
@@ -307,42 +343,28 @@
       }
       StoreDefinition.prototype.defineGet = function(getter) {
         "use strict";
-        enforceIsFunction(getter, SCOPE_HINT);
-        this.$StoreDefinition_enforceIsUnregistered();
+        invariant(!this.isRegistered(), "StoreDefinition.defineGet: this store definition cannot be modified" + " because is has already been registered with a dispatcher. %s", HINT_LINK);
+        invariant(typeof getter === "function", "StoreDefinition.defineGet: expected getter to be a function but got" + ' "%s" instead. %s', getter, HINT_LINK);
         this.$StoreDefinition_getter = getter;
         return this;
       };
       StoreDefinition.prototype.defineResponseTo = function(actionType, response) {
         "use strict";
-        enforceIsString(actionType, SCOPE_HINT);
-        enforceIsFunction(response, SCOPE_HINT);
-        enforceKeyIsNotDefined(this.$StoreDefinition_responses, actionType, SCOPE_HINT);
-        this.$StoreDefinition_enforceIsUnregistered();
+        invariant(!this.isRegistered(), "StoreDefinition.defineResponseTo: this store definition cannot be" + " modified because is has already been registered with a dispatcher. %s", HINT_LINK);
+        invariant(typeof actionType === "string", "StoreDefinition.defineResponseTo: expected actionType to be a string" + ' but got "%s" instead. %s', actionType, HINT_LINK);
+        invariant(!this.$StoreDefinition_responses.hasOwnProperty(actionType), "StoreDefinition.defineResponseTo: conflicting resposes for actionType" + ' "%s". Only one response can be defined per actionType per Store. %s', actionType, HINT_LINK);
+        invariant(typeof response === "function", "StoreDefinition.defineResponseTo: expected response to be a function" + ' but got "%s" instead. %s', response);
         this.$StoreDefinition_responses[actionType] = response;
         return this;
       };
-      StoreDefinition.prototype.$StoreDefinition_enforceIsReadyForRegistration = function() {
+      StoreDefinition.prototype.isRegistered = function() {
         "use strict";
-        if ("development" !== "production") {
-          if (typeof this.$StoreDefinition_getter !== "function") {
-            throw new Error(SCOPE_HINT + ": you must call defineGet before calling register.");
-          }
-        }
-      };
-      StoreDefinition.prototype.$StoreDefinition_enforceIsUnregistered = function() {
-        "use strict";
-        if ("development" !== "production") {
-          if (this.$StoreDefinition_facade !== null) {
-            throw new Error(SCOPE_HINT + ": a store definition cannot be modified after it is registered");
-          }
-        }
+        return this.$StoreDefinition_facade instanceof StoreFacade;
       };
       StoreDefinition.prototype.register = function(dispatcher) {
         "use strict";
-        this.$StoreDefinition_enforceIsReadyForRegistration();
-        if (dispatcher) {
-          enforceDispatcherInterface(dispatcher, SCOPE_HINT);
-        }
+        invariant(!dispatcher || DispatcherInterface.isDispatcher(dispatcher), "StoreDefinition.register: Expected dispatcher to be an object" + ' with a register method, and an unregister method but got "%s".' + " Learn more about the dispatcher interface:" + " https://github.com/HubSpot/general-store#dispatcher-interface", dispatcher);
+        invariant(typeof this.$StoreDefinition_getter === "function", "StoreDefinition.register: a store cannot be registered without a" + " getter. Use GeneralStore.define().defineGet(getter) to define a" + " getter. %s", HINT_LINK);
         var facade = this.$StoreDefinition_facade || new StoreFacade(this.$StoreDefinition_getter || emptyGetter, this.$StoreDefinition_responses, dispatcher || DispatcherInstance.get());
         if (this.$StoreDefinition_facade === null) {
           this.$StoreDefinition_facade = facade;
@@ -352,40 +374,35 @@
       module.exports = StoreDefinition;
     }, {
       "../dispatcher/DispatcherInstance.js": 2,
-      "../hints/TypeHints.js": 5,
-      "./StoreConstants.js": 7,
-      "./StoreFacade.js": 10
+      "../dispatcher/DispatcherInterface.js": 3,
+      "../invariant.js": 6,
+      "./StoreConstants.js": 8,
+      "./StoreFacade.js": 11
     } ],
-    9: [ function(_dereq_, module, exports) {
+    10: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
       var StoreFacade = _dereq_("./StoreFacade.js");
+      var invariant = _dereq_("../invariant.js");
+      var HINT_LINK = "Learn more about defining fields with the StoreDependencyMixin:" + " https://github.com/HubSpot/general-store#react";
       function defaultDeref(_, _, stores) {
         return stores[0].get();
       }
-      function extractDeref(dependencies, key) {
-        var dependency = dependencies[key];
+      function extractDeref(dependencies, field) {
+        var dependency = dependencies[field];
         if (dependency instanceof StoreFacade) {
           return defaultDeref;
         }
-        if ("development" !== "production") {
-          if (typeof dependency.deref !== "function") {
-            throw new Error('StoreDependencyDefinition: you must specify a deref function for "' + key + '"');
-          }
-        }
+        invariant(typeof dependency.deref === "function", 'StoreDependencyDefinition: the compound field "%s" does not have' + " a `deref` function. Provide one, or make it a simple field instead. %s", field, HINT_LINK);
         return dependency.deref;
       }
-      function extractStores(dependencies, key) {
-        var dependency = dependencies[key];
+      function extractStores(dependencies, field) {
+        var dependency = dependencies[field];
         if (dependency instanceof StoreFacade) {
           return [ dependency ];
         }
-        if ("development" !== "production") {
-          if (!Array.isArray(dependency.stores) || !dependency.stores.length) {
-            throw new Error('StoreDependencyDefinition: you must specify a stores with at least one store for "' + key + '"');
-          }
-        }
+        invariant(Array.isArray(dependency.stores) && dependency.stores.length, "StoreDependencyDefinition: the `stores` property on the compound field" + ' "%s" must be an array of Stores with at least one Store. %s', HINT_LINK);
         return dependency.stores;
       }
       function StoreDependencyDefinition(dependencyMap) {
@@ -393,28 +410,28 @@
         this.$StoreDependencyDefinition_derefs = {};
         this.$StoreDependencyDefinition_stores = {};
         var dependency;
-        for (var key in dependencyMap) {
-          dependency = dependencyMap[key];
-          this.$StoreDependencyDefinition_derefs[key] = extractDeref(dependencyMap, key);
-          this.$StoreDependencyDefinition_stores[key] = extractStores(dependencyMap, key);
+        for (var field in dependencyMap) {
+          dependency = dependencyMap[field];
+          this.$StoreDependencyDefinition_derefs[field] = extractDeref(dependencyMap, field);
+          this.$StoreDependencyDefinition_stores[field] = extractStores(dependencyMap, field);
         }
       }
-      StoreDependencyDefinition.prototype.$StoreDependencyDefinition_derefStore = function(key, props, state) {
+      StoreDependencyDefinition.prototype.$StoreDependencyDefinition_derefStore = function(field, props, state) {
         "use strict";
-        return this.$StoreDependencyDefinition_derefs[key](props, state, this.$StoreDependencyDefinition_stores[key]);
+        return this.$StoreDependencyDefinition_derefs[field](props, state, this.$StoreDependencyDefinition_stores[field]);
       };
       StoreDependencyDefinition.prototype.getState = function(props, state) {
         "use strict";
         var updates = {};
-        for (var key in this.$StoreDependencyDefinition_stores) {
-          updates[key] = this.$StoreDependencyDefinition_derefStore(key, props, state);
+        for (var field in this.$StoreDependencyDefinition_stores) {
+          updates[field] = this.$StoreDependencyDefinition_derefStore(field, props, state);
         }
         return updates;
       };
-      StoreDependencyDefinition.prototype.getStateField = function(key, props, state) {
+      StoreDependencyDefinition.prototype.getStateField = function(field, props, state) {
         "use strict";
         var update = {};
-        update[key] = this.$StoreDependencyDefinition_derefStore(key, props, state);
+        update[field] = this.$StoreDependencyDefinition_derefStore(field, props, state);
         return update;
       };
       StoreDependencyDefinition.prototype.getStores = function() {
@@ -423,15 +440,17 @@
       };
       module.exports = StoreDependencyDefinition;
     }, {
-      "./StoreFacade.js": 10
+      "../invariant.js": 6,
+      "./StoreFacade.js": 11
     } ],
-    10: [ function(_dereq_, module, exports) {
+    11: [ function(_dereq_, module, exports) {
       /* @flow */
+      var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
       var Event = _dereq_("../event/Event.js");
       var EventHandler = _dereq_("../event/EventHandler.js");
       var StoreConstants = _dereq_("./StoreConstants.js");
-      var $__0 = _dereq_("../hints/TypeHints.js"), enforceKeyIsDefined = $__0.enforceKeyIsDefined, enforceIsFunction = $__0.enforceIsFunction;
-      var SCOPE_HINT = "StoreFacade";
+      var invariant = _dereq_("../invariant.js");
+      var HINT_LINK = "Learn more about using the Store API:" + " https://github.com/HubSpot/general-store#using-the-store-api";
       function getNull() {
         return null;
       }
@@ -451,7 +470,7 @@
    */
       StoreFacade.prototype.addOnChange = function(callback) {
         "use strict";
-        enforceIsFunction(callback, SCOPE_HINT);
+        invariant(typeof callback === "function", "StoreFacade.addOnChange: expected callback to be a function" + ' but got "%s" instead. %s', callback, HINT_LINK);
         return this.$StoreFacade_event.addHandler(callback);
       };
       /**
@@ -487,13 +506,13 @@
    * @protected
    * Responds to incoming messages from the Dispatcher
    */
-      StoreFacade.prototype.$StoreFacade_handleDispatch = function($__0) {
+      StoreFacade.prototype.$StoreFacade_handleDispatch = function(payload) {
         "use strict";
-        var actionType = $__0.actionType, data = $__0.data;
-        if (!this.$StoreFacade_responses.hasOwnProperty(actionType)) {
+        invariant(DispatcherInterface.isPayload(payload), "StoreFacade: expected dispatched payload to be an object with a property" + ' "actionType" containing a string and a property "data" containing any value' + ' but got "%s" instead. Learn more about the dispatcher interface:' + " https://github.com/HubSpot/general-store#dispatcher-interface");
+        if (!this.$StoreFacade_responses.hasOwnProperty(payload.actionType)) {
           return;
         }
-        this.$StoreFacade_responses[actionType](data, actionType);
+        this.$StoreFacade_responses[payload.actionType](payload.data, payload.actionType);
         this.triggerChange();
       };
       /**
@@ -519,12 +538,13 @@
       };
       module.exports = StoreFacade;
     }, {
-      "../event/Event.js": 3,
-      "../event/EventHandler.js": 4,
-      "../hints/TypeHints.js": 5,
-      "./StoreConstants.js": 7
+      "../dispatcher/DispatcherInterface.js": 3,
+      "../event/Event.js": 4,
+      "../event/EventHandler.js": 5,
+      "../invariant.js": 6,
+      "./StoreConstants.js": 8
     } ],
-    11: [ function(_dereq_, module, exports) {
+    12: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */

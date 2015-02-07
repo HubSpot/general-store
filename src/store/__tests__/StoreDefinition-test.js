@@ -16,7 +16,10 @@ describe('StoreDefinition', () => {
     DispatcherInstance = require('../../dispatcher/DispatcherInstance.js');
     StoreDefinition = require('../StoreDefinition.js');
 
-    mockDispatcher = {register: function() {return 12345;}};
+    mockDispatcher = {
+      register: function() {return 12345;},
+      unregister: function() {}
+    };
     DispatcherInstance.get.mockReturnValue(mockDispatcher);
     storeDefinition = new StoreDefinition()
   });

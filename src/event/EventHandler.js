@@ -12,7 +12,7 @@ class EventHandler {
   _instance: ?EventManagerInterface;
 
   constructor(
-    instance: Object,
+    instance: EventManagerInterface,
     key: number
   ) {
     this._key = key;

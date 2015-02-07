@@ -58,6 +58,30 @@ function runTest(GeneralStore) {
     expect(UserStore.get()[userId]).toBe(user);
   });
 
+  it('should throw on an invalid payload', () => {
+    expect(() => {
+      dispatcher.dispatch({});
+    }).toThrow();
+    expect(() => {
+      dispatcher.dispatch({
+        actionType: 23876,
+        data: {}
+      });
+    }).toThrow();
+    expect(() => {
+      dispatcher.dispatch({
+        actionType: 'MOCK_ACTION',
+      });
+    }).toThrow();
+
+    expect(() => {
+      dispatcher.dispatch({
+        actionType: 'MOCK_ACTION',
+        data: {}
+      });
+    }).not.toThrow();
+  });
+
   it('should remove users from the store on REMOVE_USER', () => {
     var userId = 123;
     var user = {
@@ -103,6 +127,10 @@ function runTest(GeneralStore) {
 
 }
 
+/**
+ * Just for sanity's sake, we run this basic integration test against
+ * the source, dev, and prod builds of GeneralStore.
+ */
 describe('GeneralStore src integration test', () => {
   runTest(
     require('../GeneralStore.js')

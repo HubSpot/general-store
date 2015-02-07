@@ -27,7 +27,8 @@
     "url": "https://github.com/HubSpot/general-store/issues"
   },
   "homepage": "https://github.com/HubSpot/general-store",
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
     "browserify": "^8.1.1",
     "browserify-derequire": "^0.9.1",
@@ -38,13 +39,16 @@
     "jest-cli": "^0.2.1",
     "react-tools": "^0.12.2",
     "reactify": "^0.17.1",
+    "recast": "^0.9.17",
+    "through2": "^0.6.3",
     "uglify-js": "^2.4.16",
     "uglifyify": "^3.0.1"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js",
     "unmockedModulePathPatterns": [
-      "<rootDir>/src/hints",
+      "<rootDir>/src/invariant.js",
+      "<rootDir>/src/dispatcher/DispatcherInterface.js",
       "<rootDir>/src/uniqueid"
     ]
   }
