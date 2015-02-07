@@ -57,15 +57,11 @@
       var instance = null;
       var DispatcherInstance = {
         get: function() {
-          if ("development" !== "production") {
-            invariant(instance !== null, "DispatcherInstance.get: you haven't provide a dispatcher instance." + " You can pass an instance to GeneralStore.define().register(dispatcher) " + " or use GeneralStore.DispatcherInstance.set(dispatcher) to set a global instance." + " https://github.com/HubSpot/general-store#default-dispatcher-instance");
-          }
+          invariant(instance !== null, "DispatcherInstance.get: you haven't provide a dispatcher instance." + " You can pass an instance to GeneralStore.define().register(dispatcher) " + " or use GeneralStore.DispatcherInstance.set(dispatcher) to set a global instance." + " https://github.com/HubSpot/general-store#default-dispatcher-instance");
           return instance;
         },
         set: function(dispatcher) {
-          if ("development" !== "production") {
-            Hints.enforceDispatcherInterface("DispatcherInstance.set", dispatcher);
-          }
+          Hints.enforceDispatcherInterface("DispatcherInstance.set", dispatcher);
           instance = dispatcher;
         }
       };
@@ -179,7 +175,6 @@
  */
       var invariant = _dereq_("../invariant.js");
       var DISPATCHER_HINT_LINK = "Learn more about the dispatcher interface:" + " https://github.com/HubSpot/general-store#dispatcher-interface";
-      if ("development" !== "production") {}
       var Hints = {
         enforceDispatcherInterface: function(scope, dispatcher) {
           invariant(typeof dispatcher === "object" && typeof dispatcher.register === "function" && typeof dispatcher.unregister === "function", "%s: Expected dispatcher to be an object with a register method," + ' and an unregister method but got "%s". %s', scope, dispatcher, DISPATCHER_HINT_LINK);
@@ -355,31 +350,25 @@
       }
       StoreDefinition.prototype.defineGet = function(getter) {
         "use strict";
-        if ("development" !== "production") {
-          enforceIsUnregistered("StoreDefinition.defineGet", this.$StoreDefinition_facade);
-          invariant(typeof getter === "function", 'StoreDefinition.defineGet: expected getter to be a function but got "%s" instead. %s' + getter, HINT_LINK);
-        }
+        enforceIsUnregistered("StoreDefinition.defineGet", this.$StoreDefinition_facade);
+        invariant(typeof getter === "function", 'StoreDefinition.defineGet: expected getter to be a function but got "%s" instead. %s' + getter, HINT_LINK);
         this.$StoreDefinition_getter = getter;
         return this;
       };
       StoreDefinition.prototype.defineResponseTo = function(actionType, response) {
         "use strict";
-        if ("development" !== "production") {
-          enforceIsUnregistered("StoreDefinition.defineResponseTo", this.$StoreDefinition_facade);
-          invariant(typeof actionType === "string", "StoreDefinition.defineResponseTo: expected actionType to be a string" + ' but got "%s" instead. %s', actionType, HINT_LINK);
-          invariant(!this.$StoreDefinition_responses.hasOwnProperty(actionType), 'StoreDefinition.defineResponseTo: conflicting resposes for actionType "%s".' + " Only one response can be defined per actionType per Store. %s", actionType, HINT_LINK);
-          invariant(typeof response === "function", "StoreDefinition.defineResponseTo: expected response to be a function" + ' but got "%s" instead. %s', response);
-        }
+        enforceIsUnregistered("StoreDefinition.defineResponseTo", this.$StoreDefinition_facade);
+        invariant(typeof actionType === "string", "StoreDefinition.defineResponseTo: expected actionType to be a string" + ' but got "%s" instead. %s', actionType, HINT_LINK);
+        invariant(!this.$StoreDefinition_responses.hasOwnProperty(actionType), 'StoreDefinition.defineResponseTo: conflicting resposes for actionType "%s".' + " Only one response can be defined per actionType per Store. %s", actionType, HINT_LINK);
+        invariant(typeof response === "function", "StoreDefinition.defineResponseTo: expected response to be a function" + ' but got "%s" instead. %s', response);
         this.$StoreDefinition_responses[actionType] = response;
         return this;
       };
       StoreDefinition.prototype.register = function(dispatcher) {
         "use strict";
-        if ("development" !== "production") {
-          invariant(typeof this.$StoreDefinition_getter === "function", "StoreDefinition.register: a store cannot be registered without a getter." + " Use GeneralStore.define().defineGet(getter) to define a getter. %s", HINT_LINK);
-          if (dispatcher) {
-            enforceDispatcherInterface("StoreDefinition.register", dispatcher);
-          }
+        invariant(typeof this.$StoreDefinition_getter === "function", "StoreDefinition.register: a store cannot be registered without a getter." + " Use GeneralStore.define().defineGet(getter) to define a getter. %s", HINT_LINK);
+        if (dispatcher) {
+          enforceDispatcherInterface("StoreDefinition.register", dispatcher);
         }
         var facade = this.$StoreDefinition_facade || new StoreFacade(this.$StoreDefinition_getter || emptyGetter, this.$StoreDefinition_responses, dispatcher || DispatcherInstance.get());
         if (this.$StoreDefinition_facade === null) {
@@ -410,9 +399,7 @@
         if (dependency instanceof StoreFacade) {
           return defaultDeref;
         }
-        if ("development" !== "production") {
-          invariant(typeof dependency.deref === "function", 'StoreDependencyDefinition: the compound field "%s" does not have' + " a `deref` function. Provide one, or make it a simple field instead. %s", field, HINT_LINK);
-        }
+        invariant(typeof dependency.deref === "function", 'StoreDependencyDefinition: the compound field "%s" does not have' + " a `deref` function. Provide one, or make it a simple field instead. %s", field, HINT_LINK);
         return dependency.deref;
       }
       function extractStores(dependencies, field) {
@@ -420,9 +407,7 @@
         if (dependency instanceof StoreFacade) {
           return [ dependency ];
         }
-        if ("development" !== "production") {
-          invariant(Array.isArray(dependency.stores) && dependency.stores.length, "StoreDependencyDefinition: the `stores` property on the compound field" + ' "%s" must be an array of Stores with at least one Store. %s', HINT_LINK);
-        }
+        invariant(Array.isArray(dependency.stores) && dependency.stores.length, "StoreDependencyDefinition: the `stores` property on the compound field" + ' "%s" must be an array of Stores with at least one Store. %s', HINT_LINK);
         return dependency.stores;
       }
       function StoreDependencyDefinition(dependencyMap) {
@@ -490,9 +475,7 @@
    */
       StoreFacade.prototype.addOnChange = function(callback) {
         "use strict";
-        if ("development" !== "production") {
-          invariant(typeof callback === "function", "StoreFacade.addOnChange: expected callback to be a function" + ' but got "%s" instead. %s', callback, HINT_LINK);
-        }
+        invariant(typeof callback === "function", "StoreFacade.addOnChange: expected callback to be a function" + ' but got "%s" instead. %s', callback, HINT_LINK);
         return this.$StoreFacade_event.addHandler(callback);
       };
       /**
@@ -530,9 +513,7 @@
    */
       StoreFacade.prototype.$StoreFacade_handleDispatch = function(payload) {
         "use strict";
-        if ("development" !== "production") {
-          Hints.enforceDispatcherPayloadInterface(payload);
-        }
+        Hints.enforceDispatcherPayloadInterface(payload);
         if (!this.$StoreFacade_responses.hasOwnProperty(payload.actionType)) {
           return;
         }
