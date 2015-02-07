@@ -237,14 +237,14 @@
         }
         if (!condition) {
           var error;
-          if (format === undefined) {
-            error = new Error("Minified exception occurred; use the non-minified dev environment " + "for the full error message and additional helpful warnings.");
-          } else {
+          if ("development" !== "production") {
             var args = [ a, b, c, d, e, f ];
             var argIndex = 0;
             error = new Error("Invariant Violation: " + format.replace(/%s/g, function() {
               return args[argIndex++];
             }));
+          } else {
+            error = new Error("Minified exception occurred; use the non-minified dev environment " + "for the full error message and additional helpful warnings.");
           }
           throw error;
         }
@@ -255,7 +255,6 @@
       /**
  * @flow
  */
-      var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
       var EventHandler = _dereq_("../event/EventHandler.js");
       var StoreDependencyDefinition = _dereq_("../store/StoreDependencyDefinition.js");
       var StoreFacade = _dereq_("../store/StoreFacade.js");
@@ -314,7 +313,6 @@
       }
       module.exports = StoreDependencyMixin;
     }, {
-      "../dispatcher/DispatcherInterface.js": 3,
       "../event/EventHandler.js": 5,
       "../store/StoreDependencyDefinition.js": 10,
       "../store/StoreFacade.js": 11
