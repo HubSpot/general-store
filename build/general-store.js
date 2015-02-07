@@ -79,7 +79,7 @@
           return typeof dispatcher === "object" && typeof dispatcher.register === "function" && typeof dispatcher.unregister === "function";
         },
         isPayload: function(payload) {
-          return typeof payload === "object" && typeof payload.actionType === "string" && payload.hasOwnProperty("data");
+          return payload !== null && typeof payload === "object" && typeof payload.actionType === "string" && payload.hasOwnProperty("data");
         }
       };
       module.exports = DispatcherInterface;
