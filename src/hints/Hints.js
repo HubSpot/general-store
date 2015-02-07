@@ -8,8 +8,6 @@ var DISPATCHER_HINT_LINK =
   'Learn more about the dispatcher interface:' +
   ' https://github.com/HubSpot/general-store#dispatcher-interface';
 
-if (process.env.NODE_ENV !== 'production') {
-}
 var Hints = {
 
   enforceDispatcherInterface(

@@ -43,15 +43,13 @@ class StoreFacade {
    * @return this
    */
   addOnChange(callback: Function): EventHandler {
-    if (process.env.NODE_ENV !== 'production') {
-      invariant(
-        typeof callback === 'function',
-        'StoreFacade.addOnChange: expected callback to be a function' +
-        ' but got "%s" instead. %s',
-        callback,
-        HINT_LINK
-      );
-    }
+    invariant(
+      typeof callback === 'function',
+      'StoreFacade.addOnChange: expected callback to be a function' +
+      ' but got "%s" instead. %s',
+      callback,
+      HINT_LINK
+    );
     return this._event.addHandler(callback);
   }
 
@@ -90,9 +88,7 @@ class StoreFacade {
   _handleDispatch(
     payload: {actionType: string; data: any}
   ): void {
-    if (process.env.NODE_ENV !== 'production') {
-      Hints.enforceDispatcherPayloadInterface(payload);
-    }
+    Hints.enforceDispatcherPayloadInterface(payload);
     if (!this._responses.hasOwnProperty(payload.actionType)) {
       return;
     }

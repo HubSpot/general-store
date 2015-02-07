@@ -41,15 +41,13 @@ function extractDeref(
   if (dependency instanceof StoreFacade) {
     return defaultDeref;
   }
-  if (process.env.NODE_ENV !== 'production') {
-    invariant(
-      typeof dependency.deref === 'function',
-      'StoreDependencyDefinition: the compound field "%s" does not have' +
-      ' a `deref` function. Provide one, or make it a simple field instead. %s',
-      field,
-      HINT_LINK
-    );
-  }
+  invariant(
+    typeof dependency.deref === 'function',
+    'StoreDependencyDefinition: the compound field "%s" does not have' +
+    ' a `deref` function. Provide one, or make it a simple field instead. %s',
+    field,
+    HINT_LINK
+  );
   return dependency.deref;
 }
 
@@ -61,14 +59,12 @@ function extractStores(
   if (dependency instanceof StoreFacade) {
     return [dependency];
   }
-  if (process.env.NODE_ENV !== 'production') {
-    invariant(
-      Array.isArray(dependency.stores) && dependency.stores.length,
-      'StoreDependencyDefinition: the `stores` property on the compound field' +
-      ' "%s" must be an array of Stores with at least one Store. %s',
-      HINT_LINK
-    )
-  }
+  invariant(
+    Array.isArray(dependency.stores) && dependency.stores.length,
+    'StoreDependencyDefinition: the `stores` property on the compound field' +
+    ' "%s" must be an array of Stores with at least one Store. %s',
+    HINT_LINK
+  );
   return dependency.stores;
 }
 

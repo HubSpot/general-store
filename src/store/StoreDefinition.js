@@ -48,18 +48,16 @@ class StoreDefinition {
   defineGet(
     getter: () => any
   ): StoreDefinition {
-    if (process.env.NODE_ENV !== 'production') {
-      enforceIsUnregistered(
-        'StoreDefinition.defineGet',
-        this._facade
-      );
-      invariant(
-        typeof getter === 'function',
-        'StoreDefinition.defineGet: expected getter to be a function but got "%s" instead. %s' +
-        getter,
-        HINT_LINK
-      );
-    }
+    enforceIsUnregistered(
+      'StoreDefinition.defineGet',
+      this._facade
+    );
+    invariant(
+      typeof getter === 'function',
+      'StoreDefinition.defineGet: expected getter to be a function but got "%s" instead. %s' +
+      getter,
+      HINT_LINK
+    );
     this._getter = getter;
     return this;
   }
@@ -68,50 +66,46 @@ class StoreDefinition {
     actionType: string,
     response: (data: any) => void
   ): StoreDefinition {
-    if (process.env.NODE_ENV !== 'production') {
-      enforceIsUnregistered(
-        'StoreDefinition.defineResponseTo',
-        this._facade
-      );
-      invariant(
-        typeof actionType === 'string',
-        'StoreDefinition.defineResponseTo: expected actionType to be a string' +
-        ' but got "%s" instead. %s',
-        actionType,
-        HINT_LINK
-      );
-      invariant(
-        !this._responses.hasOwnProperty(actionType),
-        'StoreDefinition.defineResponseTo: conflicting resposes for actionType "%s".' +
-        ' Only one response can be defined per actionType per Store. %s',
-        actionType,
-        HINT_LINK
-      );
-      invariant(
-        typeof response === 'function',
-        'StoreDefinition.defineResponseTo: expected response to be a function' +
-        ' but got "%s" instead. %s',
-        response
-      );
-    }
+    enforceIsUnregistered(
+      'StoreDefinition.defineResponseTo',
+      this._facade
+    );
+    invariant(
+      typeof actionType === 'string',
+      'StoreDefinition.defineResponseTo: expected actionType to be a string' +
+      ' but got "%s" instead. %s',
+      actionType,
+      HINT_LINK
+    );
+    invariant(
+      !this._responses.hasOwnProperty(actionType),
+      'StoreDefinition.defineResponseTo: conflicting resposes for actionType "%s".' +
+      ' Only one response can be defined per actionType per Store. %s',
+      actionType,
+      HINT_LINK
+    );
+    invariant(
+      typeof response === 'function',
+      'StoreDefinition.defineResponseTo: expected response to be a function' +
+      ' but got "%s" instead. %s',
+      response
+    );
     this._responses[actionType] = response;
     return this;
   }
 
   register(dispatcher: ?Dispatcher): StoreFacade {
-    if (process.env.NODE_ENV !== 'production') {
-      invariant(
-        typeof this._getter === 'function',
-        'StoreDefinition.register: a store cannot be registered without a getter.' +
-        ' Use GeneralStore.define().defineGet(getter) to define a getter. %s',
-        HINT_LINK
+    invariant(
+      typeof this._getter === 'function',
+      'StoreDefinition.register: a store cannot be registered without a getter.' +
+      ' Use GeneralStore.define().defineGet(getter) to define a getter. %s',
+      HINT_LINK
+    );
+    if (dispatcher) {
+      enforceDispatcherInterface(
+        'StoreDefinition.register',
+        dispatcher
       );
-      if (dispatcher) {
-        enforceDispatcherInterface(
-          'StoreDefinition.register',
-          dispatcher
-        );
-      }
     }
     var facade =
       this._facade || new StoreFacade(

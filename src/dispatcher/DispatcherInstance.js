@@ -18,25 +18,21 @@ var instance = null;
 var DispatcherInstance = {
 
   get(): Dispatcher {
-    if (process.env.NODE_ENV !== 'production') {
-      invariant(
-        instance !== null,
-        'DispatcherInstance.get: you haven\'t provide a dispatcher instance.' +
-        ' You can pass an instance to GeneralStore.define().register(dispatcher) ' +
-        ' or use GeneralStore.DispatcherInstance.set(dispatcher) to set a global instance.' +
-        ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
-      );
-    }
+    invariant(
+      instance !== null,
+      'DispatcherInstance.get: you haven\'t provide a dispatcher instance.' +
+      ' You can pass an instance to GeneralStore.define().register(dispatcher) ' +
+      ' or use GeneralStore.DispatcherInstance.set(dispatcher) to set a global instance.' +
+      ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
+    );
     return instance;
   },
 
   set(dispatcher: Dispatcher): void {
-    if (process.env.NODE_ENV !== 'production') {
-      Hints.enforceDispatcherInterface(
-        'DispatcherInstance.set',
-        dispatcher
-      );
-    }
+    Hints.enforceDispatcherInterface(
+      'DispatcherInstance.set',
+      dispatcher
+    );
     instance = dispatcher;
   }
 
