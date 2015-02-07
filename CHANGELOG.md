@@ -9,6 +9,7 @@
 ### Other Changes
 
 * more verbose errors with helpful links
+* strip verbose errors in the production build
 
 ## 0.0.3 (February 3rd, 2015)
 
