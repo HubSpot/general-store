@@ -5,6 +5,7 @@ browserify \
   -p bundle-collapser/plugin \
   -p browserify-derequire \
   -t [ reactify --es6 --strip-types ] \
+  -t ./bin/truncate-invariant.js \
   -t envify \
   -t uglifyify \
   src/GeneralStore.js | uglifyjs -c -o build/general-store.min.js
