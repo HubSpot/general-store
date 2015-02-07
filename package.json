@@ -28,7 +28,6 @@
   },
   "homepage": "https://github.com/HubSpot/general-store",
   "dependencies": {
-    "invariant": "^1.0.2"
   },
   "devDependencies": {
     "browserify": "^8.1.1",
