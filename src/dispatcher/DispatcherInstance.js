@@ -9,7 +9,7 @@ interface Dispatcher {
   unregister(dispatchToken: number): void;
 }
 
-var Hints = require('../hints/Hints.js');
+var DispatcherInterface = require('./DispatcherInterface.js');
 
 var invariant = require('../invariant.js');
 
@@ -21,16 +21,22 @@ var DispatcherInstance = {
     invariant(
       instance !== null,
       'DispatcherInstance.get: you haven\'t provide a dispatcher instance.' +
-      ' You can pass an instance to GeneralStore.define().register(dispatcher) ' +
-      ' or use GeneralStore.DispatcherInstance.set(dispatcher) to set a global instance.' +
+      ' You can pass an instance to' +
+      ' GeneralStore.define().register(dispatcher) or use' +
+      ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' +
+      ' instance.' +
       ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
     );
     return instance;
   },
 
   set(dispatcher: Dispatcher): void {
-    Hints.enforceDispatcherInterface(
-      'DispatcherInstance.set',
+    invariant(
+      DispatcherInterface.isDispatcher(dispatcher),
+      'DispatcherInstance.set: Expected dispatcher to be an object' +
+      ' with a register method, and an unregister method but got "%s".' +
+      ' Learn more about the dispatcher interface:' +
+      ' https://github.com/HubSpot/general-store#dispatcher-interface',
       dispatcher
     );
     instance = dispatcher;

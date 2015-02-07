@@ -1,7 +1,8 @@
 /* @flow */
+
+var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
 var Event = require('../event/Event.js');
 var EventHandler = require('../event/EventHandler.js');
-var Hints = require('../hints/Hints.js');
 var StoreConstants = require('./StoreConstants.js');
 
 var invariant = require('../invariant.js');
@@ -88,7 +89,13 @@ class StoreFacade {
   _handleDispatch(
     payload: {actionType: string; data: any}
   ): void {
-    Hints.enforceDispatcherPayloadInterface(payload);
+    invariant(
+      DispatcherInterface.isPayload(payload),
+      'StoreFacade: expected dispatched payload to be an object with a property' +
+      ' "actionType" containing a string and a property "data" containing any value' +
+      ' but got "%s" instead. Learn more about the dispatcher interface:' +
+      ' https://github.com/HubSpot/general-store#dispatcher-interface'
+    );
     if (!this._responses.hasOwnProperty(payload.actionType)) {
       return;
     }

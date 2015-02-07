@@ -48,7 +48,7 @@
     "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js",
     "unmockedModulePathPatterns": [
       "<rootDir>/src/invariant.js",
-      "<rootDir>/src/hints/Hints.js",
+      "<rootDir>/src/dispatcher/DispatcherInterface.js",
       "<rootDir>/src/uniqueid"
     ]
   }

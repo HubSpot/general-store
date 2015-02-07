@@ -6,10 +6,10 @@ interface Dispatcher {
 }
 
 var DispatcherInstance = require('../dispatcher/DispatcherInstance.js');
+var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
 var StoreConstants = require('./StoreConstants.js');
 var StoreFacade = require('./StoreFacade.js');
 
-var { enforceDispatcherInterface } = require('../hints/Hints.js');
 var invariant = require('../invariant.js');
 
 function emptyGetter() {
@@ -19,19 +19,6 @@ function emptyGetter() {
 var HINT_LINK =
   'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
-
-function enforceIsUnregistered(
-  scope: string,
-  facade: any
-): void {
-  invariant(
-    !(facade instanceof StoreFacade),
-    '%s: this store definition cannot be modified because is has already been' +
-    ' registered with a dispatcher. %s',
-    scope,
-    HINT_LINK
-  );
-}
 
 class StoreDefinition {
 
@@ -48,13 +35,16 @@ class StoreDefinition {
   defineGet(
     getter: () => any
   ): StoreDefinition {
-    enforceIsUnregistered(
-      'StoreDefinition.defineGet',
-      this._facade
+    invariant(
+      !this.isRegistered(),
+      'StoreDefinition.defineGet: this store definition cannot be modified' +
+      ' because is has already been registered with a dispatcher. %s',
+      HINT_LINK
     );
     invariant(
       typeof getter === 'function',
-      'StoreDefinition.defineGet: expected getter to be a function but got "%s" instead. %s' +
+      'StoreDefinition.defineGet: expected getter to be a function but got' +
+      ' "%s" instead. %s',
       getter,
       HINT_LINK
     );
@@ -66,9 +56,11 @@ class StoreDefinition {
     actionType: string,
     response: (data: any) => void
   ): StoreDefinition {
-    enforceIsUnregistered(
-      'StoreDefinition.defineResponseTo',
-      this._facade
+    invariant(
+      !this.isRegistered(),
+      'StoreDefinition.defineResponseTo: this store definition cannot be' +
+      ' modified because is has already been registered with a dispatcher. %s',
+      HINT_LINK
     );
     invariant(
       typeof actionType === 'string',
@@ -79,8 +71,8 @@ class StoreDefinition {
     );
     invariant(
       !this._responses.hasOwnProperty(actionType),
-      'StoreDefinition.defineResponseTo: conflicting resposes for actionType "%s".' +
-      ' Only one response can be defined per actionType per Store. %s',
+      'StoreDefinition.defineResponseTo: conflicting resposes for actionType' +
+      ' "%s". Only one response can be defined per actionType per Store. %s',
       actionType,
       HINT_LINK
     );
@@ -94,19 +86,26 @@ class StoreDefinition {
     return this;
   }
 
+  isRegistered(): bool {
+    return this._facade instanceof StoreFacade;
+  }
+
   register(dispatcher: ?Dispatcher): StoreFacade {
     invariant(
+      !dispatcher || DispatcherInterface.isDispatcher(dispatcher),
+      'StoreDefinition.register: Expected dispatcher to be an object' +
+      ' with a register method, and an unregister method but got "%s".' +
+      ' Learn more about the dispatcher interface:' +
+      ' https://github.com/HubSpot/general-store#dispatcher-interface',
+      dispatcher
+    );
+    invariant(
       typeof this._getter === 'function',
-      'StoreDefinition.register: a store cannot be registered without a getter.' +
-      ' Use GeneralStore.define().defineGet(getter) to define a getter. %s',
+      'StoreDefinition.register: a store cannot be registered without a' +
+      ' getter. Use GeneralStore.define().defineGet(getter) to define a' +
+      ' getter. %s',
       HINT_LINK
     );
-    if (dispatcher) {
-      enforceDispatcherInterface(
-        'StoreDefinition.register',
-        dispatcher
-      );
-    }
     var facade =
       this._facade || new StoreFacade(
         this._getter || emptyGetter,
