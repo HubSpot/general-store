@@ -3,17 +3,17 @@
  */
 
 type EventManagerInterface = {
-  removeHandler: (key: number) => any;
+  removeHandler: (key: string) => any;
 };
 
 class EventHandler {
 
-  _key: number;
+  _key: string;
   _instance: ?EventManagerInterface;
 
   constructor(
     instance: EventManagerInterface,
-    key: number
+    key: string
   ) {
     this._key = key;
     this._instance = instance;

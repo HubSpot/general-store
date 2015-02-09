@@ -1,9 +1,9 @@
 /* @flow */
 
-interface Dispatcher {
+type Dispatcher = {
   register(handleAction: (data: any, actionType: string) => void): number;
   unregister(dispatchToken: number): void;
-}
+};
 
 var DispatcherInstance = require('../dispatcher/DispatcherInstance.js');
 var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
