@@ -42,6 +42,11 @@ describe('StoreDefinition', () => {
     expect(() => storeDefinition.defineResponseTo('testAction')).toThrow()
     expect(() => storeDefinition.defineResponseTo('testAction', [])).toThrow()
 
+    // invalid array of actions
+    expect(() => {
+      storeDefinition.defineResponseTo(['someAction', 5], mockResponse);
+    }).toThrow()
+
     // valid args
     expect(() => {
       storeDefinition.defineResponseTo('testAction', mockResponse);
