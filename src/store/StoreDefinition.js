@@ -53,7 +53,7 @@ class StoreDefinition {
   }
 
   defineResponseTo(
-    actionType: string,
+    actionTypes: Array<string> | string,
     response: (data: any) => void
   ): StoreDefinition {
     invariant(
@@ -62,6 +62,14 @@ class StoreDefinition {
       ' modified because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
+    [].concat(actionTypes).forEach(actionType => this._setResponse(actionType, response));
+    return this;
+  }
+
+  _setResponse(
+    actionType: string,
+    response: (data: any) => void
+  ): void {
     invariant(
       typeof actionType === 'string',
       'StoreDefinition.defineResponseTo: expected actionType to be a string' +
@@ -83,7 +91,6 @@ class StoreDefinition {
       response
     );
     this._responses[actionType] = response;
-    return this;
   }
 
   isRegistered(): bool {
