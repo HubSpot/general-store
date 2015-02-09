@@ -34,7 +34,7 @@ describe('StoreDefinition', () => {
     expect(() => storeDefinition.defineGet(function() {})).not.toThrow();
   });
 
-  it('validates the actionType passed to defineResponseTo', () => {
+  it('validates the actionType(s) passed to defineResponseTo', () => {
     var mockResponse = function() {};
     // invalid args
     expect(() => storeDefinition.defineResponseTo(null, mockResponse)).toThrow()
@@ -42,9 +42,19 @@ describe('StoreDefinition', () => {
     expect(() => storeDefinition.defineResponseTo('testAction')).toThrow()
     expect(() => storeDefinition.defineResponseTo('testAction', [])).toThrow()
 
+    // invalid array of actions
+    expect(() => {
+      storeDefinition.defineResponseTo(['someAction', 5], mockResponse);
+    }).toThrow()
+
     // valid args
     expect(() => {
       storeDefinition.defineResponseTo('testAction', mockResponse);
+    }).not.toThrow()
+
+    // valid array of actions
+    expect(() => {
+      storeDefinition.defineResponseTo(['testAction1', 'testAction2'], mockResponse);
     }).not.toThrow()
 
     // duplicates should throw
@@ -89,6 +99,19 @@ describe('StoreDefinition', () => {
       .defineResponseTo(mockActionType, mockResponse)
       .register(mockDispatcher);
     expect(StoreFacade.mock.calls[0][1][mockActionType]).toBe(mockResponse);
+  });
+
+  it('registers the same response to multiple actions', () => {
+    var mockActionTypeA = 'test-action-a';
+    var mockActionTypeB = 'test-action-b';
+    var mockResponse = function() {};
+    var StoreFacade = require('../StoreFacade.js');
+    storeDefinition
+      .defineGet(mockResponse)
+      .defineResponseTo([mockActionTypeA, mockActionTypeB], mockResponse)
+      .register(mockDispatcher);
+    expect(StoreFacade.mock.calls[0][1][mockActionTypeA]).toBe(mockResponse);
+    expect(StoreFacade.mock.calls[0][1][mockActionTypeB]).toBe(mockResponse);
   });
 
   it('passes along the dispatcher to the StoreFacade on register', () => {
