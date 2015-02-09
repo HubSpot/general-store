@@ -27,14 +27,14 @@
     "url": "https://github.com/HubSpot/general-store/issues"
   },
   "homepage": "https://github.com/HubSpot/general-store",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "browserify": "^8.1.1",
     "browserify-derequire": "^0.9.1",
     "bundle-collapser": "^1.1.1",
     "envify": "^3.2.0",
     "flow-bin": "^0.1.2",
+    "flowcheck": "^0.2.3",
     "flux": "^2.0.1",
     "jest-cli": "^0.2.1",
     "react-tools": "^0.12.2",
