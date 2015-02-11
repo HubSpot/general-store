@@ -104,5 +104,12 @@ describe('StoreFacade', () => {
     expect(mockResponse.mock.calls.length).toBe(0);
   });
 
+  it('throws on an invalid dispatch', () => {
+    var handler = mockDispatcher.register.mock.calls[0][0];
+    expect(() => handler(null)).toThrow();
+    expect(() => handler({})).toThrow();
+    expect(() => handler({actionType: 'test!'})).not.toThrow();
+  });
+
 });
 

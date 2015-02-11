@@ -16,8 +16,7 @@ var DispatcherInterface = {
     return (
       payload !== null &&
       typeof payload === 'object' &&
-      typeof payload.actionType === 'string' &&
-      payload.hasOwnProperty('data')
+      typeof payload.actionType === 'string'
     );
   }
 

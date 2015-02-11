@@ -89,13 +89,15 @@ class StoreFacade {
   _handleDispatch(
     payload: {actionType: string; data: any}
   ): void {
-    invariant(
-      DispatcherInterface.isPayload(payload),
-      'StoreFacade: expected dispatched payload to be an object with a property' +
-      ' "actionType" containing a string and a property "data" containing any value' +
-      ' but got "%s" instead. Learn more about the dispatcher interface:' +
-      ' https://github.com/HubSpot/general-store#dispatcher-interface'
-    );
+    if (process.env.NODE_ENV !== 'production') {
+      invariant(
+        DispatcherInterface.isPayload(payload),
+        'StoreFacade: expected dispatched payload to be an object with a property' +
+        ' "actionType" containing a string and an optional property "data" containing' +
+        ' any value but got "%s" instead. Learn more about the dispatcher interface:' +
+        ' https://github.com/HubSpot/general-store#dispatcher-interface'
+      );
+    }
     if (!this._responses.hasOwnProperty(payload.actionType)) {
       return;
     }

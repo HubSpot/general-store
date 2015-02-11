@@ -58,22 +58,7 @@ function runTest(GeneralStore) {
     expect(UserStore.get()[userId]).toBe(user);
   });
 
-  it('should throw on an invalid payload', () => {
-    expect(() => {
-      dispatcher.dispatch({});
-    }).toThrow();
-    expect(() => {
-      dispatcher.dispatch({
-        actionType: 23876,
-        data: {}
-      });
-    }).toThrow();
-    expect(() => {
-      dispatcher.dispatch({
-        actionType: 'MOCK_ACTION',
-      });
-    }).toThrow();
-
+  it('should not throw on valid payload', () => {
     expect(() => {
       dispatcher.dispatch({
         actionType: 'MOCK_ACTION',

@@ -32,7 +32,7 @@ describe('DispatcherInterface', () => {
     })).toBe(false);
     expect(DispatcherInterface.isPayload({
       actionType: 'ACTION'
-    })).toBe(false);
+    })).toBe(true);
     expect(DispatcherInterface.isPayload({
       actionType: 'ACTION',
       data: null
