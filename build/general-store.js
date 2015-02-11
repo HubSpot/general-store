@@ -348,14 +348,20 @@
         this.$StoreDefinition_getter = getter;
         return this;
       };
-      StoreDefinition.prototype.defineResponseTo = function(actionType, response) {
+      StoreDefinition.prototype.defineResponseTo = function(actionTypes, response) {
         "use strict";
         invariant(!this.isRegistered(), "StoreDefinition.defineResponseTo: this store definition cannot be" + " modified because is has already been registered with a dispatcher. %s", HINT_LINK);
+        [].concat(actionTypes).forEach(function(actionType) {
+          return this.$StoreDefinition_setResponse(actionType, response);
+        }.bind(this));
+        return this;
+      };
+      StoreDefinition.prototype.$StoreDefinition_setResponse = function(actionType, response) {
+        "use strict";
         invariant(typeof actionType === "string", "StoreDefinition.defineResponseTo: expected actionType to be a string" + ' but got "%s" instead. %s', actionType, HINT_LINK);
         invariant(!this.$StoreDefinition_responses.hasOwnProperty(actionType), "StoreDefinition.defineResponseTo: conflicting resposes for actionType" + ' "%s". Only one response can be defined per actionType per Store. %s', actionType, HINT_LINK);
         invariant(typeof response === "function", "StoreDefinition.defineResponseTo: expected response to be a function" + ' but got "%s" instead. %s', response);
         this.$StoreDefinition_responses[actionType] = response;
-        return this;
       };
       StoreDefinition.prototype.isRegistered = function() {
         "use strict";
