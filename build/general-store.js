@@ -79,7 +79,7 @@
           return typeof dispatcher === "object" && typeof dispatcher.register === "function" && typeof dispatcher.unregister === "function";
         },
         isPayload: function(payload) {
-          return payload !== null && typeof payload === "object" && typeof payload.actionType === "string" && payload.hasOwnProperty("data");
+          return payload !== null && typeof payload === "object" && typeof payload.actionType === "string";
         }
       };
       module.exports = DispatcherInterface;
@@ -508,7 +508,9 @@
    */
       StoreFacade.prototype.$StoreFacade_handleDispatch = function(payload) {
         "use strict";
-        invariant(DispatcherInterface.isPayload(payload), "StoreFacade: expected dispatched payload to be an object with a property" + ' "actionType" containing a string and a property "data" containing any value' + ' but got "%s" instead. Learn more about the dispatcher interface:' + " https://github.com/HubSpot/general-store#dispatcher-interface");
+        if ("development" !== "production") {
+          invariant(DispatcherInterface.isPayload(payload), "StoreFacade: expected dispatched payload to be an object with a property" + ' "actionType" containing a string and an optional property "data" containing' + ' any value but got "%s" instead. Learn more about the dispatcher interface:' + " https://github.com/HubSpot/general-store#dispatcher-interface");
+        }
         if (!this.$StoreFacade_responses.hasOwnProperty(payload.actionType)) {
           return;
         }
