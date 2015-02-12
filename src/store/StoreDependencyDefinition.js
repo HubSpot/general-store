@@ -63,6 +63,7 @@ function extractStores(
     Array.isArray(dependency.stores) && dependency.stores.length,
     'StoreDependencyDefinition: the `stores` property on the compound field' +
     ' "%s" must be an array of Stores with at least one Store. %s',
+    field,
     HINT_LINK
   );
   return dependency.stores;
