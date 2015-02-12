@@ -114,10 +114,10 @@ GeneralStore provides a convenient mixin for binding stores to React components:
 var ProfileComponent = React.createClass({
   mixins: [
     GeneralStore.StoreDependencyMixin({
-      // simple fields can be expression in the for `key => store`
+      // simple fields can be expressed in the form `key => store`
       subject: ProfileStore,
       // compound fields can depend on one or more stores
-      // and/or specify a function to "dereference" the store's value
+      // and specify a function to "dereference" the store's value
       friends: {
         stores: [ProfileStore, UsersStore],
         deref: (props, state) => {
