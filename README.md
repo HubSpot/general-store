@@ -77,6 +77,20 @@ var UserStore = GeneralStore.define()
 module.exports = UserStore;
 ```
 
+## Dispatch to the Store
+
+Sending a message to your stores via the dispatcher is easy.
+
+```javascript
+distacher.dispatcher({
+  actionType: 'ADD_USER', // required field
+  data: { // optional field, passed to the store's response
+    id: 12314,
+    name: 'Colby Rabideau'
+  }
+});
+```
+
 ## Using the Store API
 
 A registered Store provides methods for "getting" its value and subscribing to changes to that value.
