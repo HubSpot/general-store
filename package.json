@@ -22,7 +22,7 @@
     "react"
   ],
   "author": "Colby Rabideau",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/HubSpot/general-store/issues"
   },
