@@ -8,9 +8,9 @@ function succeedorexit {
   return $status
 }
 
-echo "Running typechecks...";
-succeedorexit flow check;
-echo "DONE."
+# echo "Running typechecks...";
+# succeedorexit flow check;
+# echo "DONE."
 
 echo ""
 echo "Building development version...";
