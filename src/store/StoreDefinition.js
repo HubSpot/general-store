@@ -62,35 +62,10 @@ class StoreDefinition {
       ' modified because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
-    [].concat(actionTypes).forEach(actionType => this._setResponse(actionType, response));
+    [].concat(actionTypes).forEach(actionType => {
+      return this._setResponse(actionType, response);
+    });
     return this;
-  }
-
-  _setResponse(
-    actionType: string,
-    response: (data: any) => void
-  ): void {
-    invariant(
-      typeof actionType === 'string',
-      'StoreDefinition.defineResponseTo: expected actionType to be a string' +
-      ' but got "%s" instead. %s',
-      actionType,
-      HINT_LINK
-    );
-    invariant(
-      !this._responses.hasOwnProperty(actionType),
-      'StoreDefinition.defineResponseTo: conflicting resposes for actionType' +
-      ' "%s". Only one response can be defined per actionType per Store. %s',
-      actionType,
-      HINT_LINK
-    );
-    invariant(
-      typeof response === 'function',
-      'StoreDefinition.defineResponseTo: expected response to be a function' +
-      ' but got "%s" instead. %s',
-      response
-    );
-    this._responses[actionType] = response;
   }
 
   isRegistered(): bool {
@@ -123,6 +98,33 @@ class StoreDefinition {
       this._facade = facade;
     }
     return facade;
+  }
+
+  _setResponse(
+    actionType: string,
+    response: (data: any) => void
+  ): void {
+    invariant(
+      typeof actionType === 'string',
+      'StoreDefinition.defineResponseTo: expected actionType to be a string' +
+      ' but got "%s" instead. %s',
+      actionType,
+      HINT_LINK
+    );
+    invariant(
+      !this._responses.hasOwnProperty(actionType),
+      'StoreDefinition.defineResponseTo: conflicting resposes for actionType' +
+      ' "%s". Only one response can be defined per actionType per Store. %s',
+      actionType,
+      HINT_LINK
+    );
+    invariant(
+      typeof response === 'function',
+      'StoreDefinition.defineResponseTo: expected response to be a function' +
+      ' but got "%s" instead. %s',
+      response
+    );
+    this._responses[actionType] = response;
   }
 
 }
