@@ -356,13 +356,6 @@
         }.bind(this));
         return this;
       };
-      StoreDefinition.prototype.$StoreDefinition_setResponse = function(actionType, response) {
-        "use strict";
-        invariant(typeof actionType === "string", "StoreDefinition.defineResponseTo: expected actionType to be a string" + ' but got "%s" instead. %s', actionType, HINT_LINK);
-        invariant(!this.$StoreDefinition_responses.hasOwnProperty(actionType), "StoreDefinition.defineResponseTo: conflicting resposes for actionType" + ' "%s". Only one response can be defined per actionType per Store. %s', actionType, HINT_LINK);
-        invariant(typeof response === "function", "StoreDefinition.defineResponseTo: expected response to be a function" + ' but got "%s" instead. %s', response);
-        this.$StoreDefinition_responses[actionType] = response;
-      };
       StoreDefinition.prototype.isRegistered = function() {
         "use strict";
         return this.$StoreDefinition_facade instanceof StoreFacade;
@@ -376,6 +369,13 @@
           this.$StoreDefinition_facade = facade;
         }
         return facade;
+      };
+      StoreDefinition.prototype.$StoreDefinition_setResponse = function(actionType, response) {
+        "use strict";
+        invariant(typeof actionType === "string", "StoreDefinition.defineResponseTo: expected actionType to be a string" + ' but got "%s" instead. %s', actionType, HINT_LINK);
+        invariant(!this.$StoreDefinition_responses.hasOwnProperty(actionType), "StoreDefinition.defineResponseTo: conflicting resposes for actionType" + ' "%s". Only one response can be defined per actionType per Store. %s', actionType, HINT_LINK);
+        invariant(typeof response === "function", "StoreDefinition.defineResponseTo: expected response to be a function" + ' but got "%s" instead. %s', response);
+        this.$StoreDefinition_responses[actionType] = response;
       };
       module.exports = StoreDefinition;
     }, {
@@ -520,7 +520,7 @@
         if (!this.$StoreFacade_responses.hasOwnProperty(payload.actionType)) {
           return;
         }
-        this.$StoreFacade_responses[payload.actionType](payload.data, payload.actionType);
+        this.$StoreFacade_responses[payload.actionType](payload.data, payload.actionType, payload);
         this.triggerChange();
       };
       /**
