@@ -1,4 +1,4 @@
-## 0.0.4 (*add data once we release*)
+## 0.1.0 (February 12th, 2015)
 
 ### Breaking Changes
 
