@@ -103,7 +103,8 @@ class StoreFacade {
     }
     this._responses[payload.actionType](
       payload.data,
-      payload.actionType
+      payload.actionType,
+      payload
     );
     this.triggerChange();
   }
