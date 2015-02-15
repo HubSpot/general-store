@@ -1,6 +1,6 @@
 {
   "name": "general-store",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/HubSpot/general-store",
   "authors": [
     "Colby Rabideau <crabideau@hubspot.com>"
@@ -17,7 +17,7 @@
     "react",
     "store"
   ],
-  "license": "Apache-2.0",
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",

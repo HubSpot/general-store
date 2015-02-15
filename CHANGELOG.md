@@ -1,4 +1,4 @@
-## 0.1.1 (*insert date*)
+## 0.1.1 (February 15th, 2015)
 
 * StoreDependencyMixin: update fields based on props in `componentWillReceiveProps`
 * StoreDependencyMixin: update fields based on state in `componentWillUpdate` and be sure to merge with `nextState`
