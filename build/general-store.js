@@ -268,6 +268,16 @@
           return !stores.hasOwnProperty(key) && oldState[key] !== nextState[key];
         });
       }
+      function mergeState(state, updates) {
+        var merged = {};
+        for (var stateKey in state) {
+          merged[stateKey] = state[stateKey];
+        }
+        for (var updatesKey in updates) {
+          merged[updatesKey] = updates[updatesKey];
+        }
+        return merged;
+      }
       function storeChangeCallback(component, dependencies, key) {
         component.setState(dependencies.getStateField(key, component.props, component.state || {}));
       }
@@ -297,14 +307,17 @@
               handlers.pop().remove();
             }
           },
+          componentWillReceiveProps: function(nextProps) {
+            if (!hasCustomDerefs || !havePropsChanged(this.props, nextProps)) {
+              return;
+            }
+            this.setState(dependencies.getState(nextProps, this.state));
+          },
           componentWillUpdate: function(nextProps, nextState) {
-            if (!hasCustomDerefs) {
+            if (!hasCustomDerefs || !hasStateChanged(dependencies.getStores(), this.state, nextState)) {
               return;
             }
-            if (!havePropsChanged(this.props, nextProps) && !hasStateChanged(dependencies.getStores(), this.state, nextState)) {
-              return;
-            }
-            this.setState(dependencies.getState(nextProps, nextState || {}));
+            this.setState(mergeState(nextState, dependencies.getState(nextProps, nextState)));
           },
           getInitialState: function() {
             return dependencies.getState(this.props, this.state || {});
