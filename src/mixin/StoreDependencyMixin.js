@@ -28,6 +28,17 @@ function hasStateChanged(
     );
 }
 
+function mergeState(state: Object, updates: Object): Object {
+  var merged = {};
+  for (var stateKey in state) {
+    merged[stateKey] = state[stateKey];
+  }
+  for (var updatesKey in updates) {
+    merged[updatesKey] = updates[updatesKey];
+  }
+  return merged;
+}
+
 function storeChangeCallback(
   component: Object,
   dependencies: StoreDependencyDefinition,
@@ -83,20 +94,32 @@ function StoreDependencyMixin(
       }
     },
 
-    componentWillUpdate(nextProps, nextState): void {
-      if (!hasCustomDerefs) {
-        return;
-      }
-      if (
-        !havePropsChanged(this.props, nextProps) &&
-        !hasStateChanged(dependencies.getStores(), this.state, nextState)
-      ) {
+    componentWillReceiveProps(nextProps): void {
+      if (!hasCustomDerefs || !havePropsChanged(this.props, nextProps)) {
         return;
       }
       this.setState(
         dependencies.getState(
           nextProps,
-          nextState || {}
+          this.state
+        )
+      );
+    },
+
+    componentWillUpdate(nextProps, nextState): void {
+      if (
+        !hasCustomDerefs ||
+        !hasStateChanged(dependencies.getStores(), this.state, nextState)
+      ) {
+        return;
+      }
+      this.setState(
+        mergeState(
+          nextState,
+          dependencies.getState(
+            nextProps,
+            nextState
+          )
         )
       );
     },

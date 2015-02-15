@@ -135,15 +135,15 @@ describe('StoreDependencyMixin with custom derefs', () => {
   });
 
   it('does set state in componentWillUpdate', () => {
-    var mockNextProps = {test: false};
-    var mockNextState = {};
-    mockComponent.componentWillUpdate(mockNextProps, mockNextState);
+    var mockNextState = {field: 'blah!'};
+    mockComponent.componentWillUpdate(mockProps, mockNextState);
     expect(mockComponent.setState.mock.calls.length).toBe(1);
     expect(mockComponent.setState.mock.calls[0][0]).toEqual({
-      mockkey: mockValue
+      mockkey: mockValue,
+      field: 'blah!'
     });
     expect(mockDefinition.getState.mock.calls.length).toBe(1);
-    expect(mockDefinition.getState.mock.calls[0][0]).toBe(mockNextProps);
+    expect(mockDefinition.getState.mock.calls[0][0]).toBe(mockProps);
     expect(mockDefinition.getState.mock.calls[0][1]).toBe(mockNextState);
   });
 
@@ -153,7 +153,7 @@ describe('StoreDependencyMixin with custom derefs', () => {
   });
 
   it('sets state if props have changed', () => {
-    mockComponent.componentWillUpdate({test: false}, {});
+    mockComponent.componentWillReceiveProps({test: false}, {});
     expect(mockComponent.setState.mock.calls.length).toBe(1);
   });
 
