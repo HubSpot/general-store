@@ -1,3 +1,8 @@
+## 0.1.1 (*insert date*)
+
+* StoreDependencyMixin: update fields based on props in `componentWillReceiveProps`
+* StoreDependencyMixin: update fields based on state in `componentWillUpdate` and be sure to merge with `nextState`
+
 ## 0.1.0 (February 12th, 2015)
 
 ### Breaking Changes
