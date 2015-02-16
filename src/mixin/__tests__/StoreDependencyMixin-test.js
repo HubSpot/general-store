@@ -59,6 +59,12 @@ describe('StoreDependencyMixin without custom derefs', () => {
     expect(mockComponent._storeDependencyHandlers.length).toBe(1);
   });
 
+  it('doesnt blow away existing handlers in componentWillMount', () => {
+    expect(mockComponent._storeDependencyHandlers.length).toBe(1);
+    mockComponent.componentWillMount();
+    expect(mockComponent._storeDependencyHandlers.length).toBe(2);
+  });
+
   it('unsubscribes from stores in the map on componentWillUnmount', () => {
     var mockHandler = mockComponent._storeDependencyHandlers[0];
     mockComponent.componentWillUnmount();
