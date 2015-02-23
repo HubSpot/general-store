@@ -1,3 +1,7 @@
+## 0.1.2 (February 23th, 2015)
+
+* StoreDependencyMixin: fix a bug when using multiple mixins on one component
+
 ## 0.1.1 (February 15th, 2015)
 
 * StoreDependencyMixin: update fields based on props in `componentWillReceiveProps`
