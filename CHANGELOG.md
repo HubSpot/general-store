@@ -1,7 +1,3 @@
-## 0.1.3 (February 24th, 2015)
-
-* update the build for v0.1.2
-
 ## 0.1.2 (February 23th, 2015)
 
 * StoreDependencyMixin: fix a bug when using multiple mixins on one component
