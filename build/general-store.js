@@ -293,7 +293,11 @@
             var store;
             var storeMap = dependencies.getStores();
             var stores;
-            this._storeDependencyHandlers = [];
+            // there could be another store dependency mixin
+            // so dont blow away existing handlers!
+            if (!this._storeDependencyHandlers) {
+              this._storeDependencyHandlers = [];
+            }
             for (key in storeMap) {
               stores = storeMap[key];
               for (i = 0; i < stores.length; i++) {
