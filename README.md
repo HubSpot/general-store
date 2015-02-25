@@ -1,7 +1,6 @@
-# GeneralStore (for Flux) [![Build Status](https://travis-ci.org/HubSpot/general-store.svg)](https://travis-ci.org/HubSpot/general-store)
+![HubSpot/general-store](https://cloud.githubusercontent.com/assets/478109/6376148/24c3ccf4-bcea-11e4-833a-32f6dff58d86.png)
 
-
-![general-store](https://git.hubteam.com/github-enterprise-assets/0000/0376/0000/7618/b4cf46ea-a7cb-11e4-86f3-fe5c5c53d10e.jpg)
+[![Build Status](https://travis-ci.org/HubSpot/general-store.svg)](https://travis-ci.org/HubSpot/general-store)
 
 **This is beta software. It's going to change.**
 
@@ -208,3 +207,6 @@ npm run build-and-test
 npm run deploy
 ```
 
+## Special Thanks
+
+Logo design by [Chelsea Bathurst](http://www.chelseabathurst.com)
