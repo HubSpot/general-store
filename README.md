@@ -1,4 +1,4 @@
-![HubSpot/general-store](https://cloud.githubusercontent.com/assets/478109/6376148/24c3ccf4-bcea-11e4-833a-32f6dff58d86.png)
+![HubSpot/general-store](https://cloud.githubusercontent.com/assets/478109/6376307/1d3c77dc-bceb-11e4-9a96-0a909810cc69.png)
 
 [![Build Status](https://travis-ci.org/HubSpot/general-store.svg)](https://travis-ci.org/HubSpot/general-store)
 
