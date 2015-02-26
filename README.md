@@ -81,7 +81,7 @@ module.exports = UserStore;
 Sending a message to your stores via the dispatcher is easy.
 
 ```javascript
-distacher.dispatcher({
+dispatcher.dispatch({
   actionType: 'ADD_USER', // required field
   data: { // optional field, passed to the store's response
     id: 12314,
