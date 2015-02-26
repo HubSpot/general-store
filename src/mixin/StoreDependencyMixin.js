@@ -53,6 +53,39 @@ function storeChangeCallback(
   );
 }
 
+var FIELDS_KEY = '__StoreDependencyMixin-Fields';
+var HANDLERS_KEY = '__StoreDependencyMixin-EventHandlers';
+var HAS_DEREF_KEY = '__StoreDependencyMixin-hasDeref';
+var STORES_KEY = '__StoreDependencyMixin-Stores';
+
+function fields(component: Object): Object {
+  if (component.hasOwnProperty(FIELDS_KEY)) {
+    component[FIELDS_KEY] = {};
+  }
+  return component[FIELDS_KEY];
+}
+
+function hasDeref(component: Object): bool {
+  if (component.hasOwnProperty(HAS_DEREF_KEY)) {
+    component[HAS_DEREF_KEY] = false;
+  }
+  return component[HAS_DEREF_KEY];
+}
+
+function handlers(component: Object): Array<EventHandler> {
+  if (component.hasOwnProperty(HANDLERS_KEY)) {
+    component[HANDLERS_KEY] = [];
+  }
+  return component[HANDLERS_KEY];
+}
+
+function stores(component: Object): Array<StoreFacade> {
+  if (component.hasOwnProperty(STORES_KEY)) {
+    component[STORES_KEY] = [];
+  }
+  return component[STORES_KEY];
+}
+
 function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
