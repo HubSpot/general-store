@@ -2,10 +2,18 @@
  * @flow
  */
 
-var EventHandler = require('../event/EventHandler.js');
-var StoreDependencyDefinition =
-  require('../store/StoreDependencyDefinition.js');
 var StoreFacade = require('../store/StoreFacade.js');
+
+var invariant = require('../invariant.js');
+var {fields, handlers, queue, stores} = require('./StoreDependencyMixinFields.js');
+
+function defaultDeref(
+  _,
+  _,
+  stores: Array<StoreFacade>
+): any {
+  return stores[0].get();
+}
 
 function havePropsChanged(
   oldProps: Object,
@@ -39,135 +47,155 @@ function mergeState(state: Object, updates: Object): Object {
   return merged;
 }
 
-function storeChangeCallback(
+function applyDependencies(
   component: Object,
-  dependencies: StoreDependencyDefinition,
-  key: string
+  dependencyMap: Object
 ): void {
-  component.setState(
-    dependencies.getStateField(
-      key,
+  var componentFields = fields(component);
+  var componentHandlers = handlers(component);
+  var componentStores = stores(component);
+  var newComponentStores = [];
+  Object.keys(dependencyMap).forEach(field => {
+    var dependency = dependencyMap[field];
+    var dependencyStores;
+    if (dependency instanceof StoreFacade) {
+      dependencyStores = [dependency];
+      invariant(
+        !componentFields.hasOwnProperty(field),
+        'StoreDependencyMixin: field "%s" is already defined',
+        field
+      );
+      componentFields[field] = {
+        deref: defaultDeref,
+        stores: dependencyStores
+      };
+    } else {
+      dependencyStores = dependency.stores;
+      componentFields[field] = dependency;
+    }
+    // update the store-to-field map
+    dependencyStores.forEach(store => {
+      var storeId = store.getID();
+      if (!componentStores.hasOwnProperty(storeId)) {
+        componentStores[storeId] = [];
+        // if we haven't seen this store bind a change handler
+        componentHandlers.push(
+          store.addOnChange(
+            handleStoreChange.bind(
+              null,
+              component,
+              storeId
+            )
+          )
+        );
+      }
+      componentStores[storeId].push(field);
+    });
+  });
+}
+
+function cleanupDependencies(component: Object): void {
+  var componentHandlers = handlers(component);
+  while (componentHandlers.length) {
+    componentHandlers.pop().remove();
+  }
+}
+
+function getDependencyState(
+  component: Object
+): Object {
+  var componentFields = fields(component);
+  var state = {};
+  Object.keys(componentFields).forEach(field => {
+    var {deref, stores} = componentFields[field];
+    state[field] = deref(
       component.props,
-      component.state || {}
-    )
+      component.state,
+      stores
+    );
+  });
+  return state;
+}
+
+function handleStoreChange(
+  component: Object,
+  storeId: number
+): void {
+  var componentQueue = queue(component);
+  var queueWasEmpty = Object.keys(componentQueue).length === 0;
+  stores(component)[storeId].forEach(field => {
+    if (componentQueue.hasOwnProperty(field)) {
+      return;
+    }
+    componentQueue[field] = true
+    waitForFieldStores(component, field)
+  });
+  if (!queueWasEmpty) {
+    return;
+  }
+  var componentFields = fields(component);
+  var stateUpdate = {};
+  Object.keys(componentQueue).forEach(field => {
+    var {deref, stores} = componentFields[field];
+    stateUpdate[field] = deref(
+      component.props,
+      component.state,
+      stores
+    );
+    delete componentQueue[field];
+  });
+  component.setState(stateUpdate);
+}
+
+function waitForFieldStores(
+  component: Object,
+  field: string
+): void {
+  var dependency = fields(component)[field];
+  dependency.stores.forEach(
+    store => store.getDispatcher().waitFor([store.getDispatchToken()])
   );
-}
-
-var FIELDS_KEY = '__StoreDependencyMixin-Fields';
-var HANDLERS_KEY = '__StoreDependencyMixin-EventHandlers';
-var HAS_DEREF_KEY = '__StoreDependencyMixin-hasDeref';
-var STORES_KEY = '__StoreDependencyMixin-Stores';
-
-function fields(component: Object): Object {
-  if (component.hasOwnProperty(FIELDS_KEY)) {
-    component[FIELDS_KEY] = {};
-  }
-  return component[FIELDS_KEY];
-}
-
-function hasDeref(component: Object): bool {
-  if (component.hasOwnProperty(HAS_DEREF_KEY)) {
-    component[HAS_DEREF_KEY] = false;
-  }
-  return component[HAS_DEREF_KEY];
-}
-
-function handlers(component: Object): Array<EventHandler> {
-  if (component.hasOwnProperty(HANDLERS_KEY)) {
-    component[HANDLERS_KEY] = [];
-  }
-  return component[HANDLERS_KEY];
-}
-
-function stores(component: Object): Array<StoreFacade> {
-  if (component.hasOwnProperty(STORES_KEY)) {
-    component[STORES_KEY] = [];
-  }
-  return component[STORES_KEY];
 }
 
 function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
 
-  var dependencies = new StoreDependencyDefinition(dependencyMap);
-  var hasCustomDerefs = Object
-    .keys(dependencyMap)
-    .some(key => dependencyMap[key].deref);
-
   return {
     componentWillMount(): void {
-      var i;
-      var key;
-      var store;
-      var storeMap = dependencies.getStores();
-      var stores;
-      // there could be another store dependency mixin
-      // so dont blow away existing handlers!
-      if (!this._storeDependencyHandlers) {
-        this._storeDependencyHandlers = [];
-      }
-      for (key in storeMap) {
-        stores = storeMap[key];
-        for (i = 0; i < stores.length; i++) {
-          this._storeDependencyHandlers.push(
-            stores[i].addOnChange(
-              storeChangeCallback.bind(
-                null,
-                this,
-                dependencies,
-                key
-              )
-            )
-          );
-        }
-      }
-    },
-
-    componentWillUnmount(): void {
-      var handlers = this._storeDependencyHandlers;
-      while (handlers.length) {
-        handlers.pop().remove();
-      }
+      applyDependencies(this, dependencyMap);
     },
 
     componentWillReceiveProps(nextProps): void {
-      if (!hasCustomDerefs || !havePropsChanged(this.props, nextProps)) {
+      if (!havePropsChanged(this.props, nextProps)) {
         return;
       }
       this.setState(
-        dependencies.getState(
-          nextProps,
-          this.state
-        )
+        getDependencyState(this)
       );
     },
 
+    componentWillUnmount(): void {
+      cleanupDependencies(this);
+    },
+
     componentWillUpdate(nextProps, nextState): void {
-      if (
-        !hasCustomDerefs ||
-        !hasStateChanged(dependencies.getStores(), this.state, nextState)
-      ) {
+      if (!hasStateChanged(fields(this), this.state, nextState)) {
         return;
       }
       this.setState(
         mergeState(
           nextState,
-          dependencies.getState(
-            nextProps,
-            nextState
-          )
+          getDependencyState(this)
         )
       );
     },
 
     getInitialState(): Object {
-      return dependencies.getState(
-        this.props,
-        this.state || {}
-      );
-    },
+      return getDependencyState(this);
+    }
   };
+
 }
 
 module.exports = StoreDependencyMixin;
