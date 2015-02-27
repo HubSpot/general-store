@@ -14,7 +14,7 @@ function getKey<T>(
   identity: T,
   component: Object
 ): T {
-  if (component.hasOwnProperty(key)) {
+  if (!component.hasOwnProperty(key)) {
     component[key] = identity;
   }
   return component[key];

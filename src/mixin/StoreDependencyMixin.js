@@ -102,11 +102,13 @@ function cleanupDependencies(component: Object): void {
 }
 
 function getDependencyState(
-  component: Object
+  component: Object,
+  fieldNames: ?Array<string>
 ): Object {
   var componentFields = fields(component);
+  fieldNames = fieldNames || Object.keys(componentFields);
   var state = {};
-  Object.keys(componentFields).forEach(field => {
+  fieldNames.forEach(field => {
     var {deref, stores} = componentFields[field];
     state[field] = deref(
       component.props,
@@ -128,7 +130,7 @@ function handleStoreChange(
       return;
     }
     componentQueue[field] = true
-    waitForFieldStores(component, field)
+    waitForFieldStores(component, field, storeId)
   });
   if (!queueWasEmpty) {
     return;
@@ -149,50 +151,63 @@ function handleStoreChange(
 
 function waitForFieldStores(
   component: Object,
-  field: string
+  field: string,
+  currentStoreId: number
 ): void {
   var dependency = fields(component)[field];
-  dependency.stores.forEach(
-    store => store.getDispatcher().waitFor([store.getDispatchToken()])
-  );
+  dependency.stores.forEach(store => {
+    if (store.getID() === currentStoreId) {
+      return;
+    }
+    store.getDispatcher().waitFor([store.getDispatchToken()]);
+  });
 }
 
 function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
+  var fieldNames = Object.keys(dependencyMap);
+  var isFirstMixin = false;
 
   return {
     componentWillMount(): void {
-      applyDependencies(this, dependencyMap);
     },
 
     componentWillReceiveProps(nextProps): void {
-      if (!havePropsChanged(this.props, nextProps)) {
+      if (!isFirstMixin || !havePropsChanged(this.props, nextProps)) {
         return;
       }
       this.setState(
-        getDependencyState(this)
+        getDependencyState(this, null)
       );
     },
 
     componentWillUnmount(): void {
+      if (!isFirstMixin) {
+        return;
+      }
       cleanupDependencies(this);
     },
 
-    componentWillUpdate(nextProps, nextState): void {
+    componentWillUpdate(nextProps, nextState): void { 
+      if (!isFirstMixin) {
+        return;
+      }
       if (!hasStateChanged(fields(this), this.state, nextState)) {
         return;
       }
       this.setState(
         mergeState(
           nextState,
-          getDependencyState(this)
+          getDependencyState(this, null)
         )
       );
     },
 
     getInitialState(): Object {
-      return getDependencyState(this);
+      applyDependencies(this, dependencyMap);
+      isFirstMixin = !handlers(this).length;
+      return getDependencyState(this, Object.keys(dependencyMap));
     }
   };
 
