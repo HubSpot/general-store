@@ -5,7 +5,7 @@
 var StoreFacade = require('../store/StoreFacade.js');
 
 var invariant = require('../invariant.js');
-var {fields, storeFields, stores} = require('./StoreDependencyMixinFields.js');
+var {dependencies, storeFields, stores} = require('./StoreDependencyMixinFields.js');
 
 function defaultDeref(
   _,
@@ -20,7 +20,7 @@ var StoreDependencyMixinInitialize = {
     component: Object,
     dependencyMap: Object
   ): void {
-    var componentFields = fields(component);
+    var componentDependencies = dependencies(component);
     var componentStoreFields = storeFields(component);
     var componentStores = stores(component);
     var newComponentStores = [];
@@ -30,17 +30,17 @@ var StoreDependencyMixinInitialize = {
       if (dependency instanceof StoreFacade) {
         dependencyStores = [dependency];
         invariant(
-          !componentFields.hasOwnProperty(field),
+          !componentDependencies.hasOwnProperty(field),
           'StoreDependencyMixin: field "%s" is already defined',
           field
         );
-        componentFields[field] = {
+        componentDependencies[field] = {
           deref: defaultDeref,
           stores: dependencyStores
         };
       } else {
         dependencyStores = dependency.stores;
-        componentFields[field] = dependency;
+        componentDependencies[field] = dependency;
       }
       // update the store-to-field map
       dependencyStores.forEach(store => {

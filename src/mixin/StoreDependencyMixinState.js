@@ -2,18 +2,18 @@
  * @flow
  */
 
-var {fields} = require('./StoreDependencyMixinFields.js');
+var {dependencies} = require('./StoreDependencyMixinFields.js');
 
 var StoreDependencyMixinState = {
   getDependencyState(
     component: Object,
     fieldNames: ?Array<string>
   ): Object {
-    var componentFields = fields(component);
-    fieldNames = fieldNames || Object.keys(componentFields);
+    var componentDependencies = dependencies(component);
+    fieldNames = fieldNames || Object.keys(componentDependencies);
     var state = {};
     fieldNames.forEach(field => {
-      var {deref, stores} = componentFields[field];
+      var {deref, stores} = componentDependencies[field];
       state[field] = deref(
         component.props,
         component.state,

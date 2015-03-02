@@ -12,14 +12,14 @@ describe('StoreDependencyMixinFields', () => {
     mockComponent = {};
   });
 
-  it('returns the fields Object from fields()', () => {
-    var {fields} = StoreDependencyMixinFields
-    var mockFields = fields(mockComponent);
+  it('returns the dependencies Object from dependencies()', () => {
+    var {dependencies} = StoreDependencyMixinFields
+    var mockDependencies = dependencies(mockComponent);
     var mockValue = 'random';
-    expect(typeof mockFields).toBe('object');
-    mockFields.test = mockValue;
-    expect(fields(mockComponent)).toBe(mockFields);
-    expect(fields(mockComponent).test).toBe(mockValue);
+    expect(typeof mockDependencies).toBe('object');
+    mockDependencies.test = mockValue;
+    expect(dependencies(mockComponent)).toBe(mockDependencies);
+    expect(dependencies(mockComponent).test).toBe(mockValue);
   });
 
   it('returns the handlers Array from handlers()', () => {

@@ -5,7 +5,7 @@
 var EventHandler = require('../event/EventHandler.js');
 var StoreFacade = require('../store/StoreFacade.js');
 
-var FIELDS_KEY = '__StoreDependencyMixin-fields';
+var DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
 var HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
 var QUEUE_KEY = '__StoreDependencyMixin-queue';
 var STORES_KEY = '__StoreDependencyMixin-stores';
@@ -23,8 +23,8 @@ function getKey<T>(
 }
 
 var StoreDependencyMixinFields = {
-  fields(component: Object): Object {
-    return getKey(FIELDS_KEY, {}, component);
+  dependencies(component: Object): Object {
+    return getKey(DEPENDENCIES_KEY, {}, component);
   },
 
   handlers(component: Object): Array<EventHandler> {

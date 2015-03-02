@@ -2,7 +2,13 @@
  * @flow
  */
 
-var {fields, handlers, queue, storeFields, stores} = require('./StoreDependencyMixinFields.js');
+var {
+  dependencies,
+  handlers,
+  queue,
+  storeFields,
+  stores
+} = require('./StoreDependencyMixinFields.js');
 
 function handleStoreChange(
   component: Object,
@@ -20,10 +26,10 @@ function handleStoreChange(
   if (!queueWasEmpty) {
     return;
   }
-  var componentFields = fields(component);
+  var componentDependencies = dependencies(component);
   var stateUpdate = {};
   Object.keys(componentQueue).forEach(field => {
-    var {deref, stores} = componentFields[field];
+    var {deref, stores} = componentDependencies[field];
     stateUpdate[field] = deref(
       component.props,
       component.state,
@@ -39,7 +45,7 @@ function waitForFieldStores(
   field: string,
   currentStoreId: number
 ): void {
-  var dependency = fields(component)[field];
+  var dependency = dependencies(component)[field];
   dependency.stores.forEach(store => {
     if (store.getID() === currentStoreId) {
       return;
