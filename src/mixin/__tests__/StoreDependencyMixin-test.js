@@ -8,9 +8,6 @@ describe('StoreDependencyMixin without custom derefs', () => {
     StoreDependencyMixin = require('../StoreDependencyMixin.js');
   });
 
-  it('instantiates a StoreDependencyDefinition', () => {
-  });
-
   it('subscribes to stores in the map on componentWillMount', () => {
   });
 

@@ -3,11 +3,13 @@
  */
 
 var EventHandler = require('../event/EventHandler.js');
+var StoreFacade = require('../store/StoreFacade.js');
 
-var FIELDS_KEY = '__StoreDependencyMixin-Fields';
-var HANDLERS_KEY = '__StoreDependencyMixin-EventHandlers';
+var FIELDS_KEY = '__StoreDependencyMixin-fields';
+var HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
 var QUEUE_KEY = '__StoreDependencyMixin-queue';
 var STORES_KEY = '__StoreDependencyMixin-stores';
+var STORE_FIELDS_KEY = '__StoreDependencyMixin-storeFields';
 
 function getKey<T>(
   key: string,
@@ -33,8 +35,12 @@ var StoreDependencyMixinFields = {
     return getKey(QUEUE_KEY, {}, component);
   },
 
-  stores(component: Object): {[key:number]: Array<string>} {
-    return getKey(STORES_KEY, {}, component);
+  stores(component: Object): Array<StoreFacade> {
+    return getKey(STORES_KEY, [], component);
+  },
+
+  storeFields(component: Object): {[key:number]: Array<string>} {
+    return getKey(STORE_FIELDS_KEY, {}, component);
   }
 }
 
