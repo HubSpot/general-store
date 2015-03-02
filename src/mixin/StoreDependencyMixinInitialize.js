@@ -5,7 +5,11 @@
 var StoreFacade = require('../store/StoreFacade.js');
 
 var invariant = require('../invariant.js');
-var {dependencies, storeFields, stores} = require('./StoreDependencyMixinFields.js');
+var {
+  dependencies,
+  storeFields,
+  stores
+} = require('./StoreDependencyMixinFields.js');
 
 function defaultDeref(
   _,
