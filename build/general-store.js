@@ -44,7 +44,7 @@
     }, {
       "./dispatcher/DispatcherInstance.js": 2,
       "./mixin/StoreDependencyMixin.js": 7,
-      "./store/StoreDefinition.js": 9
+      "./store/StoreDefinition.js": 8
     } ],
     2: [ function(_dereq_, module, exports) {
       /**
@@ -161,7 +161,7 @@
       };
       module.exports = Event;
     }, {
-      "../uniqueid/uniqueID.js": 12,
+      "../uniqueid/uniqueID.js": 11,
       "./EventHandler.js": 5
     } ],
     5: [ function(_dereq_, module, exports) {
@@ -331,21 +331,13 @@
       module.exports = StoreDependencyMixin;
     }, {
       "../event/EventHandler.js": 5,
-      "../store/StoreDependencyDefinition.js": 10,
-      "../store/StoreFacade.js": 11
+      "../store/StoreDependencyDefinition.js": 9,
+      "../store/StoreFacade.js": 10
     } ],
     8: [ function(_dereq_, module, exports) {
       /* @flow */
-      var StoreConstants = {
-        DEFAULT_GETTER_KEY: "DEFAULT_GETTER_KEY"
-      };
-      module.exports = StoreConstants;
-    }, {} ],
-    9: [ function(_dereq_, module, exports) {
-      /* @flow */
       var DispatcherInstance = _dereq_("../dispatcher/DispatcherInstance.js");
       var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
-      var StoreConstants = _dereq_("./StoreConstants.js");
       var StoreFacade = _dereq_("./StoreFacade.js");
       var invariant = _dereq_("../invariant.js");
       function emptyGetter() {
@@ -399,10 +391,9 @@
       "../dispatcher/DispatcherInstance.js": 2,
       "../dispatcher/DispatcherInterface.js": 3,
       "../invariant.js": 6,
-      "./StoreConstants.js": 8,
-      "./StoreFacade.js": 11
+      "./StoreFacade.js": 10
     } ],
-    10: [ function(_dereq_, module, exports) {
+    9: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
@@ -464,14 +455,13 @@
       module.exports = StoreDependencyDefinition;
     }, {
       "../invariant.js": 6,
-      "./StoreFacade.js": 11
+      "./StoreFacade.js": 10
     } ],
-    11: [ function(_dereq_, module, exports) {
+    10: [ function(_dereq_, module, exports) {
       /* @flow */
       var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
       var Event = _dereq_("../event/Event.js");
       var EventHandler = _dereq_("../event/EventHandler.js");
-      var StoreConstants = _dereq_("./StoreConstants.js");
       var invariant = _dereq_("../invariant.js");
       var HINT_LINK = "Learn more about using the Store API:" + " https://github.com/HubSpot/general-store#using-the-store-api";
       function getNull() {
@@ -571,10 +561,9 @@
       "../dispatcher/DispatcherInterface.js": 3,
       "../event/Event.js": 4,
       "../event/EventHandler.js": 5,
-      "../invariant.js": 6,
-      "./StoreConstants.js": 8
+      "../invariant.js": 6
     } ],
-    12: [ function(_dereq_, module, exports) {
+    11: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
