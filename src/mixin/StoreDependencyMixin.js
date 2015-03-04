@@ -40,18 +40,15 @@ function StoreDependencyMixin(
       cleanupHandlers(this);
     },
 
-    componentWillUpdate(nextProps, nextState): void {
+    componentDidUpdate(oldProps, oldState): void {
       if (
         !isFirstMixin ||
-        !hasStateChanged(dependencies(this), this.state, nextState)
+        !hasStateChanged(dependencies(this), oldState, this.state)
       ) {
         return;
       }
       this.setState(
-        mergeState(
-          nextState,
-          getDependencyState(this, nextProps, nextState, null)
-        )
+        getDependencyState(this, this.props, this.state, null)
       );
     },
 

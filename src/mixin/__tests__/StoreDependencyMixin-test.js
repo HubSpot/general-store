@@ -48,13 +48,13 @@ describe('StoreDependencyMixin', () => {
     expect(mockComponent.setState.mock.calls.length).toBe(1);
   });
 
-  it('sets state if appropriate in componentWillUpdate', () => {
+  it('sets state if appropriate in componentDidUpdate', () => {
     var {hasStateChanged} = require('../StoreDependencyMixinTransitions.js');
     hasStateChanged.mockReturnValueOnce(false);
-    mockMixin.componentWillUpdate.call(mockComponent);
+    mockMixin.componentDidUpdate.call(mockComponent);
     expect(mockComponent.setState.mock.calls.length).toBe(0);
     hasStateChanged.mockReturnValueOnce(true);
-    mockMixin.componentWillUpdate.call(mockComponent);
+    mockMixin.componentDidUpdate.call(mockComponent);
     expect(mockComponent.setState.mock.calls.length).toBe(1);
   });
 
