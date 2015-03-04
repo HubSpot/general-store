@@ -110,6 +110,51 @@ function runTest(GeneralStore) {
     expect(removedMockChangeHandler.mock.calls.length).toBe(0);
   });
 
+  it('set the expected state on store change', () => {
+    var {mergeState} = require('../mixin/StoreDependencyMixinTransitions.js');
+    var mockMixin = GeneralStore.StoreDependencyMixin({
+      users: UserStore,
+      userIds: {
+        stores: [UserStore],
+        deref: () => Object.keys(UserStore.get())
+      }
+    });
+    var mockComponent = {
+      props: {},
+      state: {},
+      setState: jest.genMockFn().mockImpl((updates) => {
+        mockComponent.state = mergeState(
+          mockComponent.state,
+          updates
+        );
+      })
+    };
+    mockComponent.setState(
+      mockMixin.getInitialState.call(mockComponent)
+    );
+    mockMixin.componentWillMount.call(mockComponent);
+    expect(mockComponent.state).toEqual({
+      users: {},
+      userIds: []
+    });
+    addUser({
+      id: '123',
+      name: 'Test Guy'
+    });
+    expect(mockComponent.setState.mock.calls.length).toBe(2);
+    expect(mockComponent.state).toEqual({
+      users: {
+        '123': {
+          id: 123,
+          name: 'Test Guy'
+        }
+      },
+      userIds: [
+        '123'
+      ]
+    });
+  });
+
 }
 
 /**
