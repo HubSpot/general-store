@@ -1,3 +1,8 @@
+## 0.2.0 (March 4th, 2015)
+
+* BREAKING (for non-FB-disapatcher users): adds calls to `dispatcher.waitFor()` and `dispatcher.isDispatching()`
+* deduplicates updates for fields with dependencies on multiple stores
+
 ## 0.1.2 (February 23th, 2015)
 
 * StoreDependencyMixin: fix a bug when using multiple mixins on one component
