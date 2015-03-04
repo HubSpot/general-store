@@ -4,7 +4,7 @@
 
 var StoreFacade = require('../store/StoreFacade.js');
 
-var {dependencies, handlers} = require('./StoreDependencyMixinFields.js');
+var {dependencies, stores} = require('./StoreDependencyMixinFields.js');
 var {cleanupHandlers, setupHandlers} = require('./StoreDependencyMixinHandlers.js');
 var {applyDependencies} = require('./StoreDependencyMixinInitialize.js');
 var {getDependencyState} = require('./StoreDependencyMixinState.js');
@@ -56,8 +56,8 @@ function StoreDependencyMixin(
     },
 
     getInitialState(): Object {
+      isFirstMixin = !stores(this).length;
       applyDependencies(this, dependencyMap);
-      isFirstMixin = !handlers(this).length;
       return getDependencyState(this, Object.keys(dependencyMap));
     }
   };

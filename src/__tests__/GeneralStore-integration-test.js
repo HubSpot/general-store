@@ -8,7 +8,7 @@ function runTest(GeneralStore) {
   var REMOVE_USER = 'REMOVE_USER';
 
   var dispatcher;
-  var users;
+  var mockUser;
   var UserStore;
 
   function addUser(user) {
@@ -25,7 +25,32 @@ function runTest(GeneralStore) {
     });
   }
 
+  function defineMockComponent() {
+    var {mergeState} = require('../mixin/StoreDependencyMixinTransitions.js');
+    var mockComponent = {
+      props: {},
+      state: {},
+      setState: jest.genMockFn().mockImpl((updates) => {
+        mockComponent.state = mergeState(
+          mockComponent.state,
+          updates
+        );
+      })
+    };
+    return mockComponent;
+  }
+
+  function defineUserCountStore() {
+    var userCount = 0;
+    return GeneralStore.define()
+      .defineGet(() => userCount)
+      .defineResponseTo(ADD_USER, () => userCount++)
+      .defineResponseTo(REMOVE_USER, () => userCount--)
+      .register(dispatcher);
+  }
+
   function defineUserStore() {
+    var users = {};
     return GeneralStore.define()
       .defineGet(() => users)
       .defineResponseTo(
@@ -42,7 +67,10 @@ function runTest(GeneralStore) {
   beforeEach(() => {
     Flux = require('flux');
     dispatcher = new Flux.Dispatcher();
-    users = {};
+    mockUser = {
+      id: '123',
+      name: 'Test Person'
+    };
 
     UserStore = defineUserStore();
   });
@@ -111,7 +139,27 @@ function runTest(GeneralStore) {
   });
 
   it('set the expected state on store change', () => {
-    var {mergeState} = require('../mixin/StoreDependencyMixinTransitions.js');
+    var mockMixin = GeneralStore.StoreDependencyMixin({
+      users: UserStore
+    });
+    var mockComponent = defineMockComponent();
+    mockComponent.setState(
+      mockMixin.getInitialState.call(mockComponent)
+    );
+    mockMixin.componentWillMount.call(mockComponent);
+    expect(mockComponent.state).toEqual({
+      users: {}
+    });
+    addUser(mockUser);
+    expect(mockComponent.setState.mock.calls.length).toBe(2);
+    expect(mockComponent.state).toEqual({
+      users: {
+        '123': mockUser
+      }
+    });
+  });
+
+  it('triggers ONE update for fields with a common Store', () => {
     var mockMixin = GeneralStore.StoreDependencyMixin({
       users: UserStore,
       userIds: {
@@ -119,16 +167,7 @@ function runTest(GeneralStore) {
         deref: () => Object.keys(UserStore.get())
       }
     });
-    var mockComponent = {
-      props: {},
-      state: {},
-      setState: jest.genMockFn().mockImpl((updates) => {
-        mockComponent.state = mergeState(
-          mockComponent.state,
-          updates
-        );
-      })
-    };
+    var mockComponent = defineMockComponent();
     mockComponent.setState(
       mockMixin.getInitialState.call(mockComponent)
     );
@@ -137,22 +176,101 @@ function runTest(GeneralStore) {
       users: {},
       userIds: []
     });
-    addUser({
-      id: '123',
-      name: 'Test Guy'
-    });
+    addUser(mockUser);
     expect(mockComponent.setState.mock.calls.length).toBe(2);
     expect(mockComponent.state).toEqual({
       users: {
-        '123': {
-          id: 123,
-          name: 'Test Guy'
-        }
+        '123': mockUser
       },
       userIds: [
-        '123'
+        mockUser.id
       ]
     });
+  });
+
+  it('triggers ONE update for multiple mixins with a common store', () => {
+    var mockMixin = GeneralStore.StoreDependencyMixin({
+      users: UserStore
+    });
+    var otherMockMixin = GeneralStore.StoreDependencyMixin({
+      otherUsers: UserStore
+    });
+    var mockComponent = defineMockComponent();
+    mockComponent.setState(
+      mockMixin.getInitialState.call(mockComponent)
+    );
+    mockComponent.setState(
+      otherMockMixin.getInitialState.call(mockComponent)
+    );
+    mockMixin.componentWillMount.call(mockComponent);
+    otherMockMixin.componentWillMount.call(mockComponent);
+    expect(mockComponent.setState.mock.calls.length).toBe(2);
+    addUser(mockUser);
+    expect(mockComponent.setState.mock.calls.length).toBe(3);
+    expect(mockComponent.state).toEqual({
+      users: {
+        '123': mockUser
+      },
+      otherUsers: {
+        '123': mockUser
+      },
+    });
+  });
+
+  it('triggers ONE update for stores that respond to a common action', () => {
+    var UserCountStore = defineUserCountStore();
+    var mockComponent = defineMockComponent();
+    var mockMixin = GeneralStore.StoreDependencyMixin({
+      users: UserStore,
+      userCount: UserCountStore
+    });
+    mockComponent.setState(
+      mockMixin.getInitialState.call(mockComponent)
+    );
+    mockMixin.componentWillMount.call(mockComponent);
+    expect(mockComponent.state).toEqual({
+      users: {},
+      userCount: 0
+    });
+    addUser(mockUser);
+    expect(mockComponent.state).toEqual({
+      users: {
+        '123': mockUser
+      },
+      userCount: 1
+    });
+    expect(mockComponent.setState.mock.calls.length).toBe(2);
+  });
+
+  it('triggers ONE update for stores across mixins that respond to a common action', () => {
+    var UserCountStore = defineUserCountStore();
+    var mockComponent = defineMockComponent();
+    var mockMixin = GeneralStore.StoreDependencyMixin({
+      users: UserStore,
+    });
+    var otherMockMixin = GeneralStore.StoreDependencyMixin({
+      userCount: UserCountStore
+    });
+    mockComponent.setState(
+      mockMixin.getInitialState.call(mockComponent)
+    );
+    mockComponent.setState(
+      otherMockMixin.getInitialState.call(mockComponent)
+    );
+    mockMixin.componentWillMount.call(mockComponent);
+    otherMockMixin.componentWillMount.call(mockComponent);
+    expect(mockComponent.state).toEqual({
+      users: {},
+      userCount: 0
+    });
+    addUser(mockUser);
+    expect(mockComponent.state).toEqual({
+      users: {
+        '123': mockUser
+      },
+      userCount: 1
+    });
+    expect(mockComponent.setState.mock.calls.length).toBe(3);
   });
 
 }

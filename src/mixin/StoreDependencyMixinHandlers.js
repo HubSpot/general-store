@@ -21,11 +21,11 @@ function handleStoreChange(
       return;
     }
     componentQueue[field] = true
-    waitForFieldStores(component, field, storeId)
   });
   if (!queueWasEmpty) {
     return;
   }
+  waitForOtherStores(component, storeId)
   var componentDependencies = dependencies(component);
   var stateUpdate = {};
   Object.keys(componentQueue).forEach(field => {
@@ -40,18 +40,17 @@ function handleStoreChange(
   component.setState(stateUpdate);
 }
 
-function waitForFieldStores(
+function waitForOtherStores(
   component: Object,
-  field: string,
   currentStoreId: number
 ): void {
-  var dependency = dependencies(component)[field];
-  dependency.stores.forEach(store => {
+  var componentStores = stores(component);
+  componentStores.forEach(store => {
     var dispatcher = store.getDispatcher();
     if (store.getID() === currentStoreId || !dispatcher.isDispatching()) {
       return;
     }
-    store.getDispatcher().waitFor([store.getDispatchToken()]);
+    dispatcher.waitFor([store.getDispatchToken()]);
   });
 }
 
