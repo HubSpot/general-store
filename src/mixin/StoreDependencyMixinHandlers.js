@@ -20,13 +20,24 @@ function handleStoreChange(
     if (componentQueue.hasOwnProperty(field)) {
       return;
     }
-    componentQueue[field] = true
+    componentQueue[field] = true;
   });
+  // if there we already fields in the queue, this isn't the first store to
+  // respond to the action so bail out
   if (!queueWasEmpty) {
     return;
   }
-  waitForOtherStores(component, storeId)
+  // waitFor all other stores this component depends on to ensure we dont
+  // run an extra setState if another store responds to the same action
+  waitForOtherStores(component, storeId);
+  flushQueue(component);
+}
+
+function flushQueue(
+  component: Object
+): void {
   var componentDependencies = dependencies(component);
+  var componentQueue = queue(component);
   var stateUpdate = {};
   Object.keys(componentQueue).forEach(field => {
     var {deref, stores} = componentDependencies[field];
