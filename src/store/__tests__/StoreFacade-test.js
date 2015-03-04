@@ -20,6 +20,7 @@ describe('StoreFacade', () => {
     mockAction = 'MOCK_ACTION';
     mockDispatchToken = 'test-token';
     mockDispatcher = {
+      isDispatching: jest.genMockFn().mockReturnValue(true),
       register: jest.genMockFn().mockReturnValue(mockDispatchToken),
       unregister: jest.genMockFn(),
     };

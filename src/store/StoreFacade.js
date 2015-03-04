@@ -126,6 +126,15 @@ class StoreFacade {
    * @return this
    */
   triggerChange(): StoreFacade {
+    if (process.env.NODE_ENV !== 'production') {
+      if (!this._dispatcher.isDispatching()) {
+        console.warn(
+          'StoreFacade: you called store.triggerChange() outside of a' +
+            ' dispatch loop. Send an action trough the dispatcher to' +
+            ' avoid potentailly confusing behavior.'
+        );
+      }
+    }
     this._event.runHandlers();
     return this;
   }
