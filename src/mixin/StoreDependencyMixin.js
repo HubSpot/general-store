@@ -29,7 +29,7 @@ function StoreDependencyMixin(
         return;
       }
       this.setState(
-        getDependencyState(this, null)
+        getDependencyState(this, nextProps, this.state, null)
       );
     },
 
@@ -50,7 +50,7 @@ function StoreDependencyMixin(
       this.setState(
         mergeState(
           nextState,
-          getDependencyState(this, null)
+          getDependencyState(this, nextProps, nextState, null)
         )
       );
     },
@@ -58,7 +58,12 @@ function StoreDependencyMixin(
     getInitialState(): Object {
       isFirstMixin = !stores(this).length;
       applyDependencies(this, dependencyMap);
-      return getDependencyState(this, Object.keys(dependencyMap));
+      return getDependencyState(
+        this,
+        this.props,
+        this.state,
+        Object.keys(dependencyMap)
+      );
     }
   };
 

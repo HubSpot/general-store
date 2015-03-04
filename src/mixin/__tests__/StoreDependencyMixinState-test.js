@@ -36,7 +36,9 @@ describe('StoreDependencyMixinState', () => {
   });
 
   it('properly dereferences all dependencies', () => {
-    expect(getDependencyState(mockComponent, null)).toEqual({
+    expect(
+      getDependencyState(mockComponent, mockProps, mockState, null)
+    ).toEqual({
       test: mockValue,
       other: 'something'
     });
@@ -52,10 +54,14 @@ describe('StoreDependencyMixinState', () => {
   });
 
   it('properly dereferences select fields', () => {
-    expect(getDependencyState(mockComponent, ['test'])).toEqual({
+    expect(
+      getDependencyState(mockComponent, mockProps, mockState, ['test'])
+    ).toEqual({
       test: mockValue
     });
-    expect(getDependencyState(mockComponent, ['other'])).toEqual({
+    expect(
+      getDependencyState(mockComponent, mockProps, mockState, ['other'])
+    ).toEqual({
       other: 'something'
     });
   });
