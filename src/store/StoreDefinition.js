@@ -7,7 +7,6 @@ interface Dispatcher {
 
 var DispatcherInstance = require('../dispatcher/DispatcherInstance.js');
 var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
-var StoreConstants = require('./StoreConstants.js');
 var StoreFacade = require('./StoreFacade.js');
 
 var invariant = require('../invariant.js');

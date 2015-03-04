@@ -1,6 +1,4 @@
-jest
-  .dontMock('../StoreConstants.js')
-  .dontMock('../StoreDefinition.js');
+jest.dontMock('../StoreDefinition.js');
 
 var mocks = require('mock-modules');
 

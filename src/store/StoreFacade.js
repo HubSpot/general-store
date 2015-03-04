@@ -3,7 +3,6 @@
 var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
 var Event = require('../event/Event.js');
 var EventHandler = require('../event/EventHandler.js');
-var StoreConstants = require('./StoreConstants.js');
 
 var invariant = require('../invariant.js');
 

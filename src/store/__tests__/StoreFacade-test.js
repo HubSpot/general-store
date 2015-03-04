@@ -1,6 +1,4 @@
-jest
-  .dontMock('../StoreConstants.js')
-  .dontMock('../StoreFacade.js');
+jest.dontMock('../StoreFacade.js');
 
 describe('StoreFacade', () => {
 
