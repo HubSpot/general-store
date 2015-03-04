@@ -558,6 +558,11 @@
    */
       StoreFacade.prototype.triggerChange = function() {
         "use strict";
+        if ("development" !== "production") {
+          if (!this.$StoreFacade_dispatcher.isDispatching()) {
+            console.warn("StoreFacade: you called store.triggerChange() outside of a" + " dispatch loop. Send an action trough the dispatcher to" + " avoid potentailly confusing behavior.");
+          }
+        }
         this.$StoreFacade_event.runHandlers();
         return this;
       };
