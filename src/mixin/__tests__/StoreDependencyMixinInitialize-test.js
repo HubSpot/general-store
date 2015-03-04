@@ -18,7 +18,9 @@ describe('StoreDependencyMixinInitialize', () => {
 
     mockComponent = {};
     mockStore = new StoreFacade();
+    mockStore.getID = jest.genMockFn().mockReturnValue(123);
     otherMockStore = new StoreFacade();
+    otherMockStore.getID = jest.genMockFn().mockReturnValue(321);
     mockDependencyMap = {
       test: mockStore,
       otherTest: {
@@ -38,20 +40,31 @@ describe('StoreDependencyMixinInitialize', () => {
   });
 
   it('extracts store->field dependencies', () => {
-    // TODO: I need to have a working mocked uid to do this
     var {storeFields} = StoreDependencyMixinFields;
-    expect(true).toBe(false);
+    var componentStoreFields = storeFields(mockComponent);
+    expect(componentStoreFields).toEqual({
+      123: ['test', 'otherTest'],
+      321: ['otherTest']
+    });
   });
 
   it('extracts stores from the dependencyMap', () => {
-    // TODO: I need to have a working mocked uid to do this
     var {stores} = StoreDependencyMixinFields;
-    expect(true).toBe(false);
-    return
     expect(stores(mockComponent)).toEqual([
       mockStore,
       otherMockStore
     ]);
+  });
+
+  it('throws for duplicate fields', () => {
+    var otherMockComponent = {};
+    var otherMockDependencyMap = {
+      test: mockStore,
+      test: otherMockStore
+    };
+    expect(
+      () => applyDependencies(otherMockComponent, otherMockDependencyMap)
+    ).toThrow()
   });
 
 });

@@ -27,7 +27,6 @@ var StoreDependencyMixinInitialize = {
     var componentDependencies = dependencies(component);
     var componentStoreFields = storeFields(component);
     var componentStores = stores(component);
-    var newComponentStores = [];
     Object.keys(dependencyMap).forEach(field => {
       var dependency = dependencyMap[field];
       var dependencyStores;
