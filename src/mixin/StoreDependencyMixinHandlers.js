@@ -47,7 +47,8 @@ function waitForFieldStores(
 ): void {
   var dependency = dependencies(component)[field];
   dependency.stores.forEach(store => {
-    if (store.getID() === currentStoreId) {
+    var dispatcher = store.getDispatcher();
+    if (store.getID() === currentStoreId || !dispatcher.isDispatching()) {
       return;
     }
     store.getDispatcher().waitFor([store.getDispatchToken()]);
