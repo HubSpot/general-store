@@ -62,17 +62,6 @@ var StoreDependencyMixinTransitions = {
       oldState,
       nextState
     );
-  },
-
-  mergeState(state: Object, updates: Object): Object {
-    var merged = {};
-    for (var stateKey in state) {
-      merged[stateKey] = state[stateKey];
-    }
-    for (var updatesKey in updates) {
-      merged[updatesKey] = updates[updatesKey];
-    }
-    return merged;
   }
 };
 

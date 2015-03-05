@@ -5,10 +5,12 @@
 var StoreFacade = require('../store/StoreFacade.js');
 
 var {dependencies, stores} = require('./StoreDependencyMixinFields.js');
-var {cleanupHandlers, setupHandlers} = require('./StoreDependencyMixinHandlers.js');
+var {cleanupHandlers, setupHandlers} =
+  require('./StoreDependencyMixinHandlers.js');
 var {applyDependencies} = require('./StoreDependencyMixinInitialize.js');
 var {getDependencyState} = require('./StoreDependencyMixinState.js');
-var {hasPropsChanged, hasStateChanged, mergeState} = require('./StoreDependencyMixinTransitions.js');
+var {hasPropsChanged, hasStateChanged} =
+  require('./StoreDependencyMixinTransitions.js');
 
 function StoreDependencyMixin(
   dependencyMap: Object

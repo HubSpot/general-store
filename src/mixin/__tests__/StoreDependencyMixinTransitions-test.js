@@ -4,6 +4,17 @@ describe('StoreDependencyMixinTransitions', () => {
 
   var StoreDependencyMixinTransitions;
 
+  function merge(state, updates) {
+    var merged = {};
+    for (var stateKey in state) {
+      merged[stateKey] = state[stateKey];
+    }
+    for (var updatesKey in updates) {
+      merged[updatesKey] = updates[updatesKey];
+    }
+    return merged;
+  }
+
   beforeEach(() => {
     StoreDependencyMixinTransitions = require('../StoreDependencyMixinTransitions.js');
   });
@@ -71,9 +82,8 @@ describe('StoreDependencyMixinTransitions', () => {
   });
 
   it('merges state', () => {
-    var {mergeState} = StoreDependencyMixinTransitions;
     expect(
-      mergeState({
+      merge({
         one: 1,
         two: 'two'
       }, {

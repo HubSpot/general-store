@@ -11,6 +11,17 @@ function runTest(GeneralStore) {
   var mockUser;
   var UserStore;
 
+  function merge(state, updates) {
+    var merged = {};
+    for (var stateKey in state) {
+      merged[stateKey] = state[stateKey];
+    }
+    for (var updatesKey in updates) {
+      merged[updatesKey] = updates[updatesKey];
+    }
+    return merged;
+  }
+
   function addUser(user) {
     dispatcher.dispatch({
       actionType: ADD_USER,
@@ -26,12 +37,11 @@ function runTest(GeneralStore) {
   }
 
   function defineMockComponent() {
-    var {mergeState} = require('../mixin/StoreDependencyMixinTransitions.js');
     var mockComponent = {
       props: {},
       state: {},
       setState: jest.genMockFn().mockImpl((updates) => {
-        mockComponent.state = mergeState(
+        mockComponent.state = merge(
           mockComponent.state,
           updates
         );
