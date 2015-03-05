@@ -129,7 +129,6 @@ var ProfileComponent = React.createClass({
   ],
 
   render: function() {
-    var users = this.state.users;
     return (
       <div>
         <h1>{this.state.subject.name}</h1>
