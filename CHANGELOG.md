@@ -1,7 +1,7 @@
 ## 0.2.0 (March 6th, 2015)
 
 * BREAKING (for non-FB-disapatcher users): adds calls to `dispatcher.waitFor()` and `dispatcher.isDispatching()`
-* BREAKING: `deref` not long receives a default object for `state` if the actual state is falsey
+* BREAKING: `deref` no longer receives a default object for `state` if the actual state is falsey
 * dedups `setState` for fields with dependencies on multiple stores
 * dedups `setState` across mixin instances
 * dedups `setState` for stores with common action responses
