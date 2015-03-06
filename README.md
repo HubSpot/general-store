@@ -181,10 +181,12 @@ type DispatcherPayload = {
 };
 
 type Dispatcher = {
+  isDispatching: () => bool;
   register: (
     handleAction: (payload: DispatcherPayload) => void
   ) => number;
   unregister: (dispatchToken: number) => void;
+  waitFor: (dispatchTokens: Array<number>) => void;
 };
 ```
 

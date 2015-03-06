@@ -2,139 +2,70 @@
  * @flow
  */
 
-var EventHandler = require('../event/EventHandler.js');
-var StoreDependencyDefinition =
-  require('../store/StoreDependencyDefinition.js');
 var StoreFacade = require('../store/StoreFacade.js');
 
-function havePropsChanged(
-  oldProps: Object,
-  nextProps: Object
-): bool {
-  return Object
-    .keys(nextProps)
-    .some(key => oldProps[key] !== nextProps[key]);
-}
-
-function hasStateChanged(
-  stores: Object,
-  oldState: Object,
-  nextState: Object
-): bool {
-  return Object
-    .keys(nextState)
-    .some(
-      key => !stores.hasOwnProperty(key) && oldState[key] !== nextState[key]
-    );
-}
-
-function mergeState(state: Object, updates: Object): Object {
-  var merged = {};
-  for (var stateKey in state) {
-    merged[stateKey] = state[stateKey];
-  }
-  for (var updatesKey in updates) {
-    merged[updatesKey] = updates[updatesKey];
-  }
-  return merged;
-}
-
-function storeChangeCallback(
-  component: Object,
-  dependencies: StoreDependencyDefinition,
-  key: string
-): void {
-  component.setState(
-    dependencies.getStateField(
-      key,
-      component.props,
-      component.state || {}
-    )
-  );
-}
+var {dependencies, stores} = require('./StoreDependencyMixinFields.js');
+var {cleanupHandlers, setupHandlers} =
+  require('./StoreDependencyMixinHandlers.js');
+var {applyDependencies} = require('./StoreDependencyMixinInitialize.js');
+var {getDependencyState} = require('./StoreDependencyMixinState.js');
+var {hasPropsChanged, hasStateChanged} =
+  require('./StoreDependencyMixinTransitions.js');
 
 function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
-
-  var dependencies = new StoreDependencyDefinition(dependencyMap);
-  var hasCustomDerefs = Object
-    .keys(dependencyMap)
-    .some(key => dependencyMap[key].deref);
+  var fieldNames = Object.keys(dependencyMap);
+  var isFirstMixin = false;
 
   return {
     componentWillMount(): void {
-      var i;
-      var key;
-      var store;
-      var storeMap = dependencies.getStores();
-      var stores;
-      // there could be another store dependency mixin
-      // so dont blow away existing handlers!
-      if (!this._storeDependencyHandlers) {
-        this._storeDependencyHandlers = [];
+      if (!isFirstMixin) {
+        return;
       }
-      for (key in storeMap) {
-        stores = storeMap[key];
-        for (i = 0; i < stores.length; i++) {
-          this._storeDependencyHandlers.push(
-            stores[i].addOnChange(
-              storeChangeCallback.bind(
-                null,
-                this,
-                dependencies,
-                key
-              )
-            )
-          );
-        }
-      }
-    },
-
-    componentWillUnmount(): void {
-      var handlers = this._storeDependencyHandlers;
-      while (handlers.length) {
-        handlers.pop().remove();
-      }
+      setupHandlers(this);
     },
 
     componentWillReceiveProps(nextProps): void {
-      if (!hasCustomDerefs || !havePropsChanged(this.props, nextProps)) {
+      if (!isFirstMixin || !hasPropsChanged(this.props, nextProps)) {
         return;
       }
       this.setState(
-        dependencies.getState(
-          nextProps,
-          this.state
-        )
+        getDependencyState(this, nextProps, this.state, null)
       );
     },
 
-    componentWillUpdate(nextProps, nextState): void {
+    componentWillUnmount(): void {
+      if (!isFirstMixin) {
+        return;
+      }
+      cleanupHandlers(this);
+    },
+
+    componentDidUpdate(oldProps, oldState): void {
       if (
-        !hasCustomDerefs ||
-        !hasStateChanged(dependencies.getStores(), this.state, nextState)
+        !isFirstMixin ||
+        !hasStateChanged(dependencies(this), oldState, this.state)
       ) {
         return;
       }
       this.setState(
-        mergeState(
-          nextState,
-          dependencies.getState(
-            nextProps,
-            nextState
-          )
-        )
+        getDependencyState(this, this.props, this.state, null)
       );
     },
 
     getInitialState(): Object {
-      return dependencies.getState(
+      isFirstMixin = !stores(this).length;
+      applyDependencies(this, dependencyMap);
+      return getDependencyState(
+        this,
         this.props,
-        this.state || {}
+        this.state,
+        Object.keys(dependencyMap)
       );
-    },
+    }
   };
+
 }
 
 module.exports = StoreDependencyMixin;

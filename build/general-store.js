@@ -44,7 +44,7 @@
     }, {
       "./dispatcher/DispatcherInstance.js": 2,
       "./mixin/StoreDependencyMixin.js": 7,
-      "./store/StoreDefinition.js": 8
+      "./store/StoreDefinition.js": 13
     } ],
     2: [ function(_dereq_, module, exports) {
       /**
@@ -161,7 +161,7 @@
       };
       module.exports = Event;
     }, {
-      "../uniqueid/uniqueID.js": 11,
+      "../uniqueid/uniqueID.js": 15,
       "./EventHandler.js": 5
     } ],
     5: [ function(_dereq_, module, exports) {
@@ -255,86 +255,271 @@
       /**
  * @flow
  */
-      var EventHandler = _dereq_("../event/EventHandler.js");
-      var StoreDependencyDefinition = _dereq_("../store/StoreDependencyDefinition.js");
       var StoreFacade = _dereq_("../store/StoreFacade.js");
-      function havePropsChanged(oldProps, nextProps) {
-        return Object.keys(nextProps).some(function(key) {
-          return oldProps[key] !== nextProps[key];
-        });
-      }
-      function hasStateChanged(stores, oldState, nextState) {
-        return Object.keys(nextState).some(function(key) {
-          return !stores.hasOwnProperty(key) && oldState[key] !== nextState[key];
-        });
-      }
-      function mergeState(state, updates) {
-        var merged = {};
-        for (var stateKey in state) {
-          merged[stateKey] = state[stateKey];
-        }
-        for (var updatesKey in updates) {
-          merged[updatesKey] = updates[updatesKey];
-        }
-        return merged;
-      }
-      function storeChangeCallback(component, dependencies, key) {
-        component.setState(dependencies.getStateField(key, component.props, component.state || {}));
-      }
+      var $__0 = _dereq_("./StoreDependencyMixinFields.js"), dependencies = $__0.dependencies, stores = $__0.stores;
+      var $__1 = _dereq_("./StoreDependencyMixinHandlers.js"), cleanupHandlers = $__1.cleanupHandlers, setupHandlers = $__1.setupHandlers;
+      var $__2 = _dereq_("./StoreDependencyMixinInitialize.js"), applyDependencies = $__2.applyDependencies;
+      var $__3 = _dereq_("./StoreDependencyMixinState.js"), getDependencyState = $__3.getDependencyState;
+      var $__4 = _dereq_("./StoreDependencyMixinTransitions.js"), hasPropsChanged = $__4.hasPropsChanged, hasStateChanged = $__4.hasStateChanged;
       function StoreDependencyMixin(dependencyMap) {
-        var dependencies = new StoreDependencyDefinition(dependencyMap);
-        var hasCustomDerefs = Object.keys(dependencyMap).some(function(key) {
-          return dependencyMap[key].deref;
-        });
+        var fieldNames = Object.keys(dependencyMap);
+        var isFirstMixin = false;
         return {
           componentWillMount: function() {
-            var i;
-            var key;
-            var store;
-            var storeMap = dependencies.getStores();
-            var stores;
-            // there could be another store dependency mixin
-            // so dont blow away existing handlers!
-            if (!this._storeDependencyHandlers) {
-              this._storeDependencyHandlers = [];
+            if (!isFirstMixin) {
+              return;
             }
-            for (key in storeMap) {
-              stores = storeMap[key];
-              for (i = 0; i < stores.length; i++) {
-                this._storeDependencyHandlers.push(stores[i].addOnChange(storeChangeCallback.bind(null, this, dependencies, key)));
-              }
-            }
-          },
-          componentWillUnmount: function() {
-            var handlers = this._storeDependencyHandlers;
-            while (handlers.length) {
-              handlers.pop().remove();
-            }
+            setupHandlers(this);
           },
           componentWillReceiveProps: function(nextProps) {
-            if (!hasCustomDerefs || !havePropsChanged(this.props, nextProps)) {
+            if (!isFirstMixin || !hasPropsChanged(this.props, nextProps)) {
               return;
             }
-            this.setState(dependencies.getState(nextProps, this.state));
+            this.setState(getDependencyState(this, nextProps, this.state, null));
           },
-          componentWillUpdate: function(nextProps, nextState) {
-            if (!hasCustomDerefs || !hasStateChanged(dependencies.getStores(), this.state, nextState)) {
+          componentWillUnmount: function() {
+            if (!isFirstMixin) {
               return;
             }
-            this.setState(mergeState(nextState, dependencies.getState(nextProps, nextState)));
+            cleanupHandlers(this);
+          },
+          componentDidUpdate: function(oldProps, oldState) {
+            if (!isFirstMixin || !hasStateChanged(dependencies(this), oldState, this.state)) {
+              return;
+            }
+            this.setState(getDependencyState(this, this.props, this.state, null));
           },
           getInitialState: function() {
-            return dependencies.getState(this.props, this.state || {});
+            isFirstMixin = !stores(this).length;
+            applyDependencies(this, dependencyMap);
+            return getDependencyState(this, this.props, this.state, Object.keys(dependencyMap));
           }
         };
       }
       module.exports = StoreDependencyMixin;
     }, {
-      "../event/EventHandler.js": 5,
-      "../store/StoreDependencyDefinition.js": 9,
-      "../store/StoreFacade.js": 10
+      "../store/StoreFacade.js": 14,
+      "./StoreDependencyMixinFields.js": 8,
+      "./StoreDependencyMixinHandlers.js": 9,
+      "./StoreDependencyMixinInitialize.js": 10,
+      "./StoreDependencyMixinState.js": 11,
+      "./StoreDependencyMixinTransitions.js": 12
     } ],
     8: [ function(_dereq_, module, exports) {
+      /**
+ * @flow
+ */
+      var EventHandler = _dereq_("../event/EventHandler.js");
+      var StoreFacade = _dereq_("../store/StoreFacade.js");
+      var DEPENDENCIES_KEY = "__StoreDependencyMixin-dependencies";
+      var HANDLERS_KEY = "__StoreDependencyMixin-eventHandlers";
+      var QUEUE_KEY = "__StoreDependencyMixin-queue";
+      var STORES_KEY = "__StoreDependencyMixin-stores";
+      var STORE_FIELDS_KEY = "__StoreDependencyMixin-storeFields";
+      function getKey(key, identity, component) {
+        if (!component.hasOwnProperty(key)) {
+          component[key] = identity;
+        }
+        return component[key];
+      }
+      var StoreDependencyMixinFields = {
+        dependencies: function(component) {
+          return getKey(DEPENDENCIES_KEY, {}, component);
+        },
+        handlers: function(component) {
+          return getKey(HANDLERS_KEY, [], component);
+        },
+        queue: function(component) {
+          return getKey(QUEUE_KEY, {}, component);
+        },
+        stores: function(component) {
+          return getKey(STORES_KEY, [], component);
+        },
+        storeFields: function(component) {
+          return getKey(STORE_FIELDS_KEY, {}, component);
+        }
+      };
+      module.exports = StoreDependencyMixinFields;
+    }, {
+      "../event/EventHandler.js": 5,
+      "../store/StoreFacade.js": 14
+    } ],
+    9: [ function(_dereq_, module, exports) {
+      /**
+ * @flow
+ */
+      var $__0 = _dereq_("./StoreDependencyMixinFields.js"), dependencies = $__0.dependencies, handlers = $__0.handlers, queue = $__0.queue, storeFields = $__0.storeFields, stores = $__0.stores;
+      function handleStoreChange(component, storeId) {
+        var componentQueue = queue(component);
+        var queueWasEmpty = Object.keys(componentQueue).length === 0;
+        storeFields(component)[storeId].forEach(function(field) {
+          if (componentQueue.hasOwnProperty(field)) {
+            return;
+          }
+          componentQueue[field] = true;
+        });
+        // if there we already fields in the queue, this isn't the first store to
+        // respond to the action so bail out
+        if (!queueWasEmpty) {
+          return;
+        }
+        // waitFor all other stores this component depends on to ensure we dont
+        // run an extra setState if another store responds to the same action
+        waitForOtherStores(component, storeId);
+        flushQueue(component);
+      }
+      function flushQueue(component) {
+        var componentDependencies = dependencies(component);
+        var componentQueue = queue(component);
+        var stateUpdate = {};
+        Object.keys(componentQueue).forEach(function(field) {
+          var $__0 = componentDependencies[field], deref = $__0.deref, stores = $__0.stores;
+          stateUpdate[field] = deref(component.props, component.state, stores);
+          delete componentQueue[field];
+        });
+        component.setState(stateUpdate);
+      }
+      function waitForOtherStores(component, currentStoreId) {
+        var componentStores = stores(component);
+        componentStores.forEach(function(store) {
+          var dispatcher = store.getDispatcher();
+          if (store.getID() === currentStoreId || !dispatcher.isDispatching()) {
+            return;
+          }
+          dispatcher.waitFor([ store.getDispatchToken() ]);
+        });
+      }
+      var StoreDependencyMixinHandlers = {
+        cleanupHandlers: function(component) {
+          var componentHandlers = handlers(component);
+          while (componentHandlers.length) {
+            componentHandlers.pop().remove();
+          }
+        },
+        setupHandlers: function(component) {
+          var componentHandlers = handlers(component);
+          var componentStores = stores(component);
+          componentStores.forEach(function(store) {
+            componentHandlers.push(store.addOnChange(handleStoreChange.bind(null, component, store.getID())));
+          });
+        }
+      };
+      module.exports = StoreDependencyMixinHandlers;
+    }, {
+      "./StoreDependencyMixinFields.js": 8
+    } ],
+    10: [ function(_dereq_, module, exports) {
+      /**
+ * @flow
+ */
+      var StoreFacade = _dereq_("../store/StoreFacade.js");
+      var invariant = _dereq_("../invariant.js");
+      var $__0 = _dereq_("./StoreDependencyMixinFields.js"), dependencies = $__0.dependencies, storeFields = $__0.storeFields, stores = $__0.stores;
+      function defaultDeref(_, _, stores) {
+        return stores[0].get();
+      }
+      var StoreDependencyMixinInitialize = {
+        applyDependencies: function(component, dependencyMap) {
+          var componentDependencies = dependencies(component);
+          var componentStoreFields = storeFields(component);
+          var componentStores = stores(component);
+          Object.keys(dependencyMap).forEach(function(field) {
+            var dependency = dependencyMap[field];
+            var dependencyStores;
+            if (dependency instanceof StoreFacade) {
+              dependencyStores = [ dependency ];
+              invariant(!componentDependencies.hasOwnProperty(field), 'StoreDependencyMixin: field "%s" is already defined', field);
+              componentDependencies[field] = {
+                deref: defaultDeref,
+                stores: dependencyStores
+              };
+            } else {
+              dependencyStores = dependency.stores;
+              componentDependencies[field] = dependency;
+            }
+            // update the store-to-field map
+            dependencyStores.forEach(function(store) {
+              var storeId = store.getID();
+              if (!componentStoreFields.hasOwnProperty(storeId)) {
+                componentStoreFields[storeId] = [];
+                // if we haven't seen this store bind a change handler
+                componentStores.push(store);
+              }
+              componentStoreFields[storeId].push(field);
+            });
+          });
+        }
+      };
+      module.exports = StoreDependencyMixinInitialize;
+    }, {
+      "../invariant.js": 6,
+      "../store/StoreFacade.js": 14,
+      "./StoreDependencyMixinFields.js": 8
+    } ],
+    11: [ function(_dereq_, module, exports) {
+      /**
+ * @flow
+ */
+      var $__0 = _dereq_("./StoreDependencyMixinFields.js"), dependencies = $__0.dependencies;
+      var StoreDependencyMixinState = {
+        getDependencyState: function(component, props, state, fieldNames) {
+          var componentDependencies = dependencies(component);
+          fieldNames = fieldNames || Object.keys(componentDependencies);
+          var dependencyState = {};
+          fieldNames.forEach(function(field) {
+            var $__0 = componentDependencies[field], deref = $__0.deref, stores = $__0.stores;
+            dependencyState[field] = deref(props, state, stores);
+          });
+          return dependencyState;
+        }
+      };
+      module.exports = StoreDependencyMixinState;
+    }, {
+      "./StoreDependencyMixinFields.js": 8
+    } ],
+    12: [ function(_dereq_, module, exports) {
+      /**
+ * @flow
+ */
+      var compare = window.Immutable && typeof window.Immutable.is === "function" ? window.Immutable.is : function(a, b) {
+        return a === b;
+      };
+      function compareKey(key, objA, objB) {
+        return compare(objA[key], objB[key]);
+      }
+      function shallowEqual(is, objA, objB) {
+        if (objA === objB) {
+          return true;
+        }
+        var key;
+        // Test for A's keys different from B.
+        for (key in objA) {
+          if (objA.hasOwnProperty(key) && (!objB.hasOwnProperty(key) || !is(key, objA, objB))) {
+            return false;
+          }
+        }
+        // Test for B's keys missing from A.
+        for (key in objB) {
+          if (objB.hasOwnProperty(key) && !objA.hasOwnProperty(key)) {
+            return false;
+          }
+        }
+        return true;
+      }
+      var StoreDependencyMixinTransitions = {
+        hasPropsChanged: function(oldProps, nextProps) {
+          return !shallowEqual(compareKey, oldProps, nextProps);
+        },
+        hasStateChanged: function(stores, oldState, nextState) {
+          return !shallowEqual(function(key, objA, objB) {
+            // if the value is a store, ignore it
+            return stores.hasOwnProperty(key) || compare(objA[key], objB[key]);
+          }, oldState, nextState);
+        }
+      };
+      module.exports = StoreDependencyMixinTransitions;
+    }, {} ],
+    13: [ function(_dereq_, module, exports) {
       /* @flow */
       var DispatcherInstance = _dereq_("../dispatcher/DispatcherInstance.js");
       var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
@@ -391,77 +576,14 @@
       "../dispatcher/DispatcherInstance.js": 2,
       "../dispatcher/DispatcherInterface.js": 3,
       "../invariant.js": 6,
-      "./StoreFacade.js": 10
+      "./StoreFacade.js": 14
     } ],
-    9: [ function(_dereq_, module, exports) {
-      /**
- * @flow
- */
-      var StoreFacade = _dereq_("./StoreFacade.js");
-      var invariant = _dereq_("../invariant.js");
-      var HINT_LINK = "Learn more about defining fields with the StoreDependencyMixin:" + " https://github.com/HubSpot/general-store#react";
-      function defaultDeref(_, _, stores) {
-        return stores[0].get();
-      }
-      function extractDeref(dependencies, field) {
-        var dependency = dependencies[field];
-        if (dependency instanceof StoreFacade) {
-          return defaultDeref;
-        }
-        invariant(typeof dependency.deref === "function", 'StoreDependencyDefinition: the compound field "%s" does not have' + " a `deref` function. Provide one, or make it a simple field instead. %s", field, HINT_LINK);
-        return dependency.deref;
-      }
-      function extractStores(dependencies, field) {
-        var dependency = dependencies[field];
-        if (dependency instanceof StoreFacade) {
-          return [ dependency ];
-        }
-        invariant(Array.isArray(dependency.stores) && dependency.stores.length, "StoreDependencyDefinition: the `stores` property on the compound field" + ' "%s" must be an array of Stores with at least one Store. %s', field, HINT_LINK);
-        return dependency.stores;
-      }
-      function StoreDependencyDefinition(dependencyMap) {
-        "use strict";
-        this.$StoreDependencyDefinition_derefs = {};
-        this.$StoreDependencyDefinition_stores = {};
-        var dependency;
-        for (var field in dependencyMap) {
-          dependency = dependencyMap[field];
-          this.$StoreDependencyDefinition_derefs[field] = extractDeref(dependencyMap, field);
-          this.$StoreDependencyDefinition_stores[field] = extractStores(dependencyMap, field);
-        }
-      }
-      StoreDependencyDefinition.prototype.$StoreDependencyDefinition_derefStore = function(field, props, state) {
-        "use strict";
-        return this.$StoreDependencyDefinition_derefs[field](props, state, this.$StoreDependencyDefinition_stores[field]);
-      };
-      StoreDependencyDefinition.prototype.getState = function(props, state) {
-        "use strict";
-        var updates = {};
-        for (var field in this.$StoreDependencyDefinition_stores) {
-          updates[field] = this.$StoreDependencyDefinition_derefStore(field, props, state);
-        }
-        return updates;
-      };
-      StoreDependencyDefinition.prototype.getStateField = function(field, props, state) {
-        "use strict";
-        var update = {};
-        update[field] = this.$StoreDependencyDefinition_derefStore(field, props, state);
-        return update;
-      };
-      StoreDependencyDefinition.prototype.getStores = function() {
-        "use strict";
-        return this.$StoreDependencyDefinition_stores;
-      };
-      module.exports = StoreDependencyDefinition;
-    }, {
-      "../invariant.js": 6,
-      "./StoreFacade.js": 10
-    } ],
-    10: [ function(_dereq_, module, exports) {
+    14: [ function(_dereq_, module, exports) {
       /* @flow */
       var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
       var Event = _dereq_("../event/Event.js");
       var EventHandler = _dereq_("../event/EventHandler.js");
+      var uniqueID = _dereq_("../uniqueid/uniqueID.js");
       var invariant = _dereq_("../invariant.js");
       var HINT_LINK = "Learn more about using the Store API:" + " https://github.com/HubSpot/general-store#using-the-store-api";
       function getNull() {
@@ -473,6 +595,7 @@
         this.$StoreFacade_getter = getter;
         this.$StoreFacade_responses = responses;
         this.$StoreFacade_event = new Event();
+        this.$StoreFacade_uid = uniqueID();
         this.$StoreFacade_dispatchToken = this.$StoreFacade_dispatcher.register(this.$StoreFacade_handleDispatch.bind(this));
       }
       /**
@@ -514,6 +637,10 @@
       StoreFacade.prototype.getDispatchToken = function() {
         "use strict";
         return this.$StoreFacade_dispatchToken;
+      };
+      StoreFacade.prototype.getID = function() {
+        "use strict";
+        return this.$StoreFacade_uid;
       };
       /**
    * @protected
@@ -561,9 +688,10 @@
       "../dispatcher/DispatcherInterface.js": 3,
       "../event/Event.js": 4,
       "../event/EventHandler.js": 5,
-      "../invariant.js": 6
+      "../invariant.js": 6,
+      "../uniqueid/uniqueID.js": 15
     } ],
-    11: [ function(_dereq_, module, exports) {
+    15: [ function(_dereq_, module, exports) {
       /**
  * @flow
  */
