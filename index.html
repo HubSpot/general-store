@@ -36,18 +36,20 @@
 
 <p><strong>This is beta software. It's going to change.</strong></p>
 
-<p>GeneralStore aims to get at the essence of a <a href="http://facebook.github.io/flux/">Flux</a> store without falling into an overly prescriptive data model. A store is an observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.</p>
+<p><code>general-store</code> aims to provide all the features of a <a href="http://facebook.github.io/flux/">Flux</a> store without prescribing the implementation of that store's data or mutations.</p>
 
-<p>In other words a store:</p>
+<p>Briefly, a store:</p>
 
 <ol>
-<li>encapsulates a value (of <em>any kind</em>)</li>
-<li>allows subscribers to read its value</li>
-<li>updates its value in response to specific messages from the Dispatcher</li>
+<li>contains any arbitrary value</li>
+<li>exposes that value via a get method</li>
+<li>responds to specific events from the dispatcher</li>
 <li>notifies subscribers when its value changes</li>
 </ol>
 
-<p>Other features, like immutability, data fetching, undo, etc., should be implementation details of their individual stores. We also didn’t want to write switch statements anymore… JavaScript switch statements are terrifying.</p>
+<p>That's it. All other features, like Immutability, data fetching, undo, etc. are implementation details.</p>
+
+<p>Read more about the <code>general-store</code> rational <a href="http://product.hubspot.com/blog/keeping-flux-flexible-with-general-store">on the HubSpot Product Team Blog</a>.</p>
 
 <h2>
 <a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
@@ -112,7 +114,7 @@ bower install general-store
 
 <p>Sending a message to your stores via the dispatcher is easy.</p>
 
-<div class="highlight highlight-javascript"><pre>distacher.dispatcher({
+<div class="highlight highlight-javascript"><pre>dispatcher.dispatch({
   actionType<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>ADD_USER<span class="pl-pds">'</span></span>, <span class="pl-c">// required field</span>
   data<span class="pl-k">:</span> { <span class="pl-c">// optional field, passed to the store's response</span>
     id<span class="pl-k">:</span> <span class="pl-c1">12314</span>,
@@ -158,7 +160,6 @@ subscription.<span class="pl-s3">remove</span>();</pre></div>
   ],
 
   <span class="pl-en">render</span>: <span class="pl-st">function</span>() {
-    <span class="pl-s">var</span> users <span class="pl-k">=</span> <span class="pl-v">this</span>.state.users;
     <span class="pl-k">return</span> (
       <span class="pl-k">&lt;</span>div<span class="pl-k">&gt;</span>
         <span class="pl-k">&lt;</span>h1<span class="pl-k">&gt;</span>{<span class="pl-v">this</span>.state.subject.<span class="pl-sc">name</span>}<span class="pl-k">&lt;</span>/h1<span class="pl-k">&gt;</span>
@@ -207,10 +208,12 @@ GeneralStore.define()
 };
 
 type Dispatcher <span class="pl-k">=</span> {
+  isDispatching<span class="pl-k">:</span> () <span class="pl-k">=&gt;</span> bool;
   register<span class="pl-k">:</span> (
     handleAction<span class="pl-k">:</span> (payload<span class="pl-k">:</span> DispatcherPayload) <span class="pl-k">=&gt;</span> <span class="pl-k">void</span>
   ) <span class="pl-k">=&gt;</span> number;
   unregister<span class="pl-k">:</span> (dispatchToken<span class="pl-k">:</span> number) <span class="pl-k">=&gt;</span> <span class="pl-k">void</span>;
+  waitFor<span class="pl-k">:</span> (dispatchTokens<span class="pl-k">:</span> <span class="pl-s3">Array</span><span class="pl-k">&lt;</span>number<span class="pl-k">&gt;</span>) <span class="pl-k">=&gt;</span> <span class="pl-k">void</span>;
 };</pre></div>
 
 <h2>
