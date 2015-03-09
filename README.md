@@ -4,16 +4,18 @@
 
 **This is beta software. It's going to change.**
 
-GeneralStore aims to get at the essence of a [Flux](http://facebook.github.io/flux/) store without falling into an overly prescriptive data model. A store is an observable reference to a value, with an explicit set of mutations that are triggered by messages from an event emitter.
+`general-store` aims to provide all the features of a [Flux](http://facebook.github.io/flux/) store without prescribing the implementation of that store's data or mutations.
 
-In other words a store:
+Briefly, a store:
 
-1. encapsulates a value (of *any kind*)
-2. allows subscribers to read its value
-3. updates its value in response to specific messages from the Dispatcher
+1. contains any arbitrary value
+2. exposes that value via a get method
+3. responds to specific events from the dispatcher
 4. notifies subscribers when its value changes
 
-Other features, like immutability, data fetching, undo, etc., should be implementation details of their individual stores. We also didn’t want to write switch statements anymore… JavaScript switch statements are terrifying.
+That's it. All other features, like Immutability, data fetching, undo, etc. are implementation details.
+
+Read more about the `general-store` rational [on the HubSpot Product Team Blog](http://product.hubspot.com/blog/keeping-flux-flexible-with-general-store).
 
 ## Install
 
