@@ -1,3 +1,7 @@
+## 0.2.1 (March 21st, 2015)
+
+* remove a duplicate argument name breaks babel
+
 ## 0.2.0 (March 6th, 2015)
 
 * BREAKING (for non-FB-disapatcher users): adds calls to `dispatcher.waitFor()` and `dispatcher.isDispatching()`
