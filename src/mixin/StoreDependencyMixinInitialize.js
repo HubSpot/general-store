@@ -12,8 +12,8 @@ var {
 } = require('./StoreDependencyMixinFields.js');
 
 function defaultDeref(
-  _,
-  _,
+  props,
+  state,
   stores: Array<StoreFacade>
 ): any {
   return stores[0].get();
