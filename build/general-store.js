@@ -415,7 +415,7 @@
       var StoreFacade = _dereq_("../store/StoreFacade.js");
       var invariant = _dereq_("../invariant.js");
       var $__0 = _dereq_("./StoreDependencyMixinFields.js"), dependencies = $__0.dependencies, storeFields = $__0.storeFields, stores = $__0.stores;
-      function defaultDeref(_, _, stores) {
+      function defaultDeref(props, state, stores) {
         return stores[0].get();
       }
       var StoreDependencyMixinInitialize = {
