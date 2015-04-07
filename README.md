@@ -102,7 +102,7 @@ var subscription = UserStore.addOnChange(function() {
   // handle changes!
 });
 // addOnChange returns an object with a `remove` method.
-// When you're ready to unsuscribe from a store's changes,
+// When you're ready to unsubscribe from a store's changes,
 // simply call that method.
 subscription.remove();
 ```
@@ -155,14 +155,14 @@ var ProfileComponent = React.createClass({
 
 ## Default Dispatcher Instance
 
-The common Flux architecture has a single centeral dispatcher. As a convenice `GeneralStore` allows you to set a global dispatcher which will become the default when a store is registered.
+The common Flux architecture has a single central dispatcher. As a convenience `GeneralStore` allows you to set a global dispatcher which will become the default when a store is registered.
 
 ```javascript
 var dispatcher = new Flux.Dispatcher();
 GeneralStore.DispatcherInstance.set(dispatcher);
 ```
 
-Now you can register a store without explicity passing a dispatcher:
+Now you can register a store without explicitly passing a dispatcher:
 
 ```javascript
 var users = {};
