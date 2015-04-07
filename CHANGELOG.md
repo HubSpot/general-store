@@ -1,3 +1,7 @@
+## 0.2.2 (April 7th, 2015)
+
+* Dont throw from `DispatcherInstance.get()` (still throws from `StoreFacade.register()`)
+
 ## 0.2.1 (March 21st, 2015)
 
 * remove a duplicate argument name breaks babel
