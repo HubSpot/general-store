@@ -50,14 +50,13 @@
       /**
  * I'm not sure if it's possible to express the runtime enforcement
  * of a dispatcher instance, so I'll use weak mode for now.
- * @flow weak
+ * @flow
  **/
       var DispatcherInterface = _dereq_("./DispatcherInterface.js");
       var invariant = _dereq_("../invariant.js");
       var instance = null;
       var DispatcherInstance = {
         get: function() {
-          invariant(instance !== null, "DispatcherInstance.get: you haven't provide a dispatcher instance." + " You can pass an instance to" + " GeneralStore.define().register(dispatcher) or use" + " GeneralStore.DispatcherInstance.set(dispatcher) to set a global" + " instance." + " https://github.com/HubSpot/general-store#default-dispatcher-instance");
           return instance;
         },
         set: function(dispatcher) {
@@ -556,9 +555,11 @@
       };
       StoreDefinition.prototype.register = function(dispatcher) {
         "use strict";
-        invariant(!dispatcher || DispatcherInterface.isDispatcher(dispatcher), "StoreDefinition.register: Expected dispatcher to be an object" + ' with a register method, and an unregister method but got "%s".' + " Learn more about the dispatcher interface:" + " https://github.com/HubSpot/general-store#dispatcher-interface", dispatcher);
+        dispatcher = dispatcher || DispatcherInstance.get();
+        invariant(typeof dispatcher === "object", "StoreDefinition.register: you haven't provide a dispatcher instance." + " You can pass an instance to" + " GeneralStore.define().register(dispatcher) or use" + " GeneralStore.DispatcherInstance.set(dispatcher) to set a global" + " instance." + " https://github.com/HubSpot/general-store#default-dispatcher-instance");
+        invariant(DispatcherInterface.isDispatcher(dispatcher), "StoreDefinition.register: Expected dispatcher to be an object" + ' with a register method, and an unregister method but got "%s".' + " Learn more about the dispatcher interface:" + " https://github.com/HubSpot/general-store#dispatcher-interface", dispatcher);
         invariant(typeof this.$StoreDefinition_getter === "function", "StoreDefinition.register: a store cannot be registered without a" + " getter. Use GeneralStore.define().defineGet(getter) to define a" + " getter. %s", HINT_LINK);
-        var facade = this.$StoreDefinition_facade || new StoreFacade(this.$StoreDefinition_getter || emptyGetter, this.$StoreDefinition_responses, dispatcher || DispatcherInstance.get());
+        var facade = this.$StoreDefinition_facade || new StoreFacade(this.$StoreDefinition_getter || emptyGetter, this.$StoreDefinition_responses, dispatcher);
         if (this.$StoreDefinition_facade === null) {
           this.$StoreDefinition_facade = facade;
         }
