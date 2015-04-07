@@ -16,7 +16,7 @@ function getNull() {
 
 class StoreFacade {
 
-  _dispatcher: Object;
+  _dispatcher: Dispatcher;
   _dispatchToken: number;
   _getter: (...args: Array<any>) => any;
   _event: Event;
@@ -71,7 +71,7 @@ class StoreFacade {
    *
    * @return Dispatcher
    */
-  getDispatcher(): Object {
+  getDispatcher(): Dispatcher {
     return this._dispatcher;
   }
 

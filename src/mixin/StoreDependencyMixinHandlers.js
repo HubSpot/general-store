@@ -57,7 +57,7 @@ function waitForOtherStores(
 ): void {
   var componentStores = stores(component);
   componentStores.forEach(store => {
-    var dispatcher = store.getDispatcher();
+    var dispatcher: Dispatcher = store.getDispatcher();
     if (store.getID() === currentStoreId || !dispatcher.isDispatching()) {
       return;
     }

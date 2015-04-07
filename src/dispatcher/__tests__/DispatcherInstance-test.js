@@ -25,13 +25,8 @@ describe('DispatcherInstance', () => {
     }).not.toThrow();
   });
 
-  it('throws if you get before setting', () => {
-    expect(() => DispatcherInstance.get()).toThrow();
-    DispatcherInstance.set(mockDispatcher);
-    expect(() => DispatcherInstance.get()).not.toThrow();
-  });
-
   it('returns the set dispatcher from get', () => {
+    expect(DispatcherInstance.get()).toBe(null);
     DispatcherInstance.set(mockDispatcher);
     expect(DispatcherInstance.get()).toBe(mockDispatcher);
   });

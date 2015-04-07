@@ -1,10 +1,5 @@
 /* @flow */
 
-interface Dispatcher {
-  register(handleAction: (data: any, actionType: string) => void): number;
-  unregister(dispatchToken: number): void;
-}
-
 var DispatcherInstance = require('../dispatcher/DispatcherInstance.js');
 var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
 var StoreFacade = require('./StoreFacade.js');
@@ -72,8 +67,18 @@ class StoreDefinition {
   }
 
   register(dispatcher: ?Dispatcher): StoreFacade {
+    dispatcher = dispatcher || DispatcherInstance.get();
     invariant(
-      !dispatcher || DispatcherInterface.isDispatcher(dispatcher),
+      typeof dispatcher === 'object',
+      'StoreDefinition.register: you haven\'t provide a dispatcher instance.' +
+      ' You can pass an instance to' +
+      ' GeneralStore.define().register(dispatcher) or use' +
+      ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' +
+      ' instance.' +
+      ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
+    );
+    invariant(
+      DispatcherInterface.isDispatcher(dispatcher),
       'StoreDefinition.register: Expected dispatcher to be an object' +
       ' with a register method, and an unregister method but got "%s".' +
       ' Learn more about the dispatcher interface:' +
@@ -91,7 +96,7 @@ class StoreDefinition {
       this._facade || new StoreFacade(
         this._getter || emptyGetter,
         this._responses,
-        dispatcher || DispatcherInstance.get()
+        dispatcher
       );
     if (this._facade === null) {
       this._facade = facade;

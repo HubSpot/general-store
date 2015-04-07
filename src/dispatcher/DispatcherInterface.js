@@ -4,7 +4,7 @@
 
 var DispatcherInterface = {
 
-  isDispatcher(dispatcher: Object): bool {
+  isDispatcher(dispatcher: Dispatcher): bool {
     return (
       typeof dispatcher === 'object' &&
       typeof dispatcher.register === 'function' &&
@@ -12,7 +12,7 @@ var DispatcherInterface = {
     );
   },
 
-  isPayload(payload: Object): bool {
+  isPayload(payload: Dispatcher): bool {
     return (
       payload !== null &&
       typeof payload === 'object' &&
