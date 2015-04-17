@@ -3,6 +3,7 @@ NODE_ENV=development \
 browserify \
   --standalone GeneralStore \
   -p browserify-derequire \
-  -t [ reactify --es6 --strip-types ] \
+  -t babelify \
   -t envify \
-  src/GeneralStore.js | uglifyjs --beautify indent-level=2 --comments all -o build/general-store.js
+  -o build/general-store.js \
+  src/GeneralStore.js
