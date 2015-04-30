@@ -1,4 +1,4 @@
-var babel = require('babel');
+var babel = require('babel-core');
 
 module.exports = {
   process: function (src, filename) {
