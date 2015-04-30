@@ -183,6 +183,7 @@
       module.exports = EventHandler;
     }, {} ],
     6: [ function(_dereq_, module, exports) {
+      /* eslint max-len:0 */
       /**
  * BSD License
  *
@@ -348,6 +349,27 @@
  * @flow
  */
       var $__0 = _dereq_("./StoreDependencyMixinFields.js"), dependencies = $__0.dependencies, handlers = $__0.handlers, queue = $__0.queue, storeFields = $__0.storeFields, stores = $__0.stores;
+      function flushQueue(component) {
+        var componentDependencies = dependencies(component);
+        var componentQueue = queue(component);
+        var stateUpdate = {};
+        Object.keys(componentQueue).forEach(function(field) {
+          var fieldDef = componentDependencies[field];
+          stateUpdate[field] = fieldDef.deref(component.props, component.state, fieldDef.stores);
+          delete componentQueue[field];
+        });
+        component.setState(stateUpdate);
+      }
+      function waitForOtherStores(component, currentStoreId) {
+        var componentStores = stores(component);
+        componentStores.forEach(function(store) {
+          var dispatcher = store.getDispatcher();
+          if (store.getID() === currentStoreId || !dispatcher.isDispatching()) {
+            return;
+          }
+          dispatcher.waitFor([ store.getDispatchToken() ]);
+        });
+      }
       function handleStoreChange(component, storeId) {
         var componentQueue = queue(component);
         var queueWasEmpty = Object.keys(componentQueue).length === 0;
@@ -366,27 +388,6 @@
         // run an extra setState if another store responds to the same action
         waitForOtherStores(component, storeId);
         flushQueue(component);
-      }
-      function flushQueue(component) {
-        var componentDependencies = dependencies(component);
-        var componentQueue = queue(component);
-        var stateUpdate = {};
-        Object.keys(componentQueue).forEach(function(field) {
-          var $__0 = componentDependencies[field], deref = $__0.deref, stores = $__0.stores;
-          stateUpdate[field] = deref(component.props, component.state, stores);
-          delete componentQueue[field];
-        });
-        component.setState(stateUpdate);
-      }
-      function waitForOtherStores(component, currentStoreId) {
-        var componentStores = stores(component);
-        componentStores.forEach(function(store) {
-          var dispatcher = store.getDispatcher();
-          if (store.getID() === currentStoreId || !dispatcher.isDispatching()) {
-            return;
-          }
-          dispatcher.waitFor([ store.getDispatchToken() ]);
-        });
       }
       var StoreDependencyMixinHandlers = {
         cleanupHandlers: function(component) {
@@ -414,8 +415,8 @@
       var StoreFacade = _dereq_("../store/StoreFacade.js");
       var invariant = _dereq_("../invariant.js");
       var $__0 = _dereq_("./StoreDependencyMixinFields.js"), dependencies = $__0.dependencies, storeFields = $__0.storeFields, stores = $__0.stores;
-      function defaultDeref(props, state, stores) {
-        return stores[0].get();
+      function defaultDeref(props, state, storeInstances) {
+        return storeInstances[0].get();
       }
       var StoreDependencyMixinInitialize = {
         applyDependencies: function(component, dependencyMap) {
@@ -580,6 +581,7 @@
       "./StoreFacade.js": 14
     } ],
     14: [ function(_dereq_, module, exports) {
+      /* eslint no-console:0 */
       /* @flow */
       var DispatcherInterface = _dereq_("../dispatcher/DispatcherInterface.js");
       var Event = _dereq_("../event/Event.js");
@@ -650,7 +652,7 @@
       StoreFacade.prototype.$StoreFacade_handleDispatch = function(payload) {
         "use strict";
         if ("development" !== "production") {
-          invariant(DispatcherInterface.isPayload(payload), "StoreFacade: expected dispatched payload to be an object with a property" + ' "actionType" containing a string and an optional property "data" containing' + ' any value but got "%s" instead. Learn more about the dispatcher interface:' + " https://github.com/HubSpot/general-store#dispatcher-interface");
+          invariant(DispatcherInterface.isPayload(payload), "StoreFacade: expected dispatched payload to be an object with a" + ' property "actionType" containing a string and an optional property' + ' "data" containing any value but got "%s" instead. Learn more about' + " the dispatcher interface:" + " https://github.com/HubSpot/general-store#dispatcher-interface");
         }
         if (!this.$StoreFacade_responses.hasOwnProperty(payload.actionType)) {
           return;
