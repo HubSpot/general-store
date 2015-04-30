@@ -9,6 +9,7 @@ function runTest(GeneralStore) {
 
   var dispatcher;
   var mockUser;
+  var UserCountStore;
   var UserStore;
 
   function merge(state, updates) {
@@ -55,7 +56,13 @@ function runTest(GeneralStore) {
     return GeneralStore.define()
       .defineGet(() => userCount)
       .defineResponseTo(ADD_USER, () => userCount++)
-      .defineResponseTo(REMOVE_USER, () => userCount--)
+      .defineResponseTo(
+        REMOVE_USER,
+        () => {
+          dispatcher.waitFor([UserStore.getDispatchToken()]);
+          userCount--;
+        }
+      )
       .register(dispatcher);
   }
 
@@ -82,6 +89,7 @@ function runTest(GeneralStore) {
       name: 'Test Person'
     };
 
+    UserCountStore = defineUserCountStore();
     UserStore = defineUserStore();
   });
 
@@ -228,11 +236,13 @@ function runTest(GeneralStore) {
   });
 
   it('triggers ONE update for stores that respond to a common action', () => {
-    var UserCountStore = defineUserCountStore();
     var mockComponent = defineMockComponent();
     var mockMixin = GeneralStore.StoreDependencyMixin({
       users: UserStore,
-      userCount: UserCountStore
+      userCount: {
+        stores: [UserCountStore, UserStore],
+        deref: () => Object.keys(UserStore.get()).length
+      }
     });
     mockComponent.setState(
       mockMixin.getInitialState.call(mockComponent)
@@ -253,7 +263,6 @@ function runTest(GeneralStore) {
   });
 
   it('triggers ONE update across mixins responding to a common action', () => {
-    var UserCountStore = defineUserCountStore();
     var mockComponent = defineMockComponent();
     var mockMixin = GeneralStore.StoreDependencyMixin({
       users: UserStore,
@@ -282,7 +291,6 @@ function runTest(GeneralStore) {
     });
     expect(mockComponent.setState.mock.calls.length).toBe(3);
   });
-
 }
 
 /**
