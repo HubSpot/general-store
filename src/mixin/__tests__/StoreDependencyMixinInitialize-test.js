@@ -19,9 +19,13 @@ describe('StoreDependencyMixinInitialize', () => {
 
     mockComponent = {};
     mockStore = new StoreFacade();
+    mockStore.getActionTypes =
+      jest.genMockFn().mockReturnValue(['FAKE_ACTION']);
     mockStore.getID = jest.genMockFn().mockReturnValue(123);
     otherMockStore = new StoreFacade();
     otherMockStore.getID = jest.genMockFn().mockReturnValue(321);
+    otherMockStore.getActionTypes =
+      jest.genMockFn().mockReturnValue(['FAKE_ACTION', 'OTHER_ACTION']);
     mockDependencyMap = {
       test: mockStore,
       otherTest: {
@@ -40,21 +44,18 @@ describe('StoreDependencyMixinInitialize', () => {
     expect(componentDeps.otherTest).toBe(mockDependencyMap.otherTest);
   });
 
-  it('extracts store->field dependencies', () => {
-    var {storeFields} = StoreDependencyMixinFields;
-    var componentStoreFields = storeFields(mockComponent);
-    expect(componentStoreFields).toEqual({
-      123: ['test', 'otherTest'],
-      321: ['otherTest']
+  it('extracts store->action dependencies', () => {
+    var {actions} = StoreDependencyMixinFields;
+    var componentActions = actions(mockComponent);
+    expect(componentActions).toEqual({
+      FAKE_ACTION: {
+        otherTest: true,
+        test: true
+      },
+      OTHER_ACTION: {
+        otherTest: true
+      }
     });
-  });
-
-  it('extracts stores from the dependencyMap', () => {
-    var {stores} = StoreDependencyMixinFields;
-    expect(stores(mockComponent)).toEqual([
-      mockStore,
-      otherMockStore
-    ]);
   });
 
   it('throws for duplicate fields', () => {

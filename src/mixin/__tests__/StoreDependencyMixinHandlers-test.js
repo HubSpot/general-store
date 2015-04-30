@@ -2,15 +2,12 @@ jest.dontMock('../StoreDependencyMixinHandlers.js');
 
 describe('StoreDependencyMixinHandlers', () => {
   var Dispatcher;
-  var EventHandler;
   var StoreDependencyMixinFields;
   var StoreDependencyMixinHandlers;
   var StoreFacade;
 
-  var actions;
+  var dependencies;
   var getDispatcherInfo;
-  var handlers;
-  var stores;
 
   var mockActions;
   var mockComponent;
@@ -20,16 +17,13 @@ describe('StoreDependencyMixinHandlers', () => {
 
   beforeEach(() => {
     Dispatcher = require('flux').Dispatcher;
-    EventHandler = require('../../event/EventHandler.js');
     StoreDependencyMixinFields = require('../StoreDependencyMixinFields.js');
     StoreDependencyMixinHandlers =
       require('../StoreDependencyMixinHandlers.js');
     StoreFacade = require('../../store/StoreFacade.js');
 
-    handlers = StoreDependencyMixinFields.handlers;
+    dependencies = StoreDependencyMixinFields.dependencies;
     getDispatcherInfo = StoreDependencyMixinFields.getDispatcherInfo;
-    actions = StoreDependencyMixinFields.actions;
-    stores = StoreDependencyMixinFields.stores;
 
     mockActions = ['FAKE_ACTION'];
     mockComponent = {};
@@ -41,12 +35,14 @@ describe('StoreDependencyMixinHandlers', () => {
     mockDispatcher.register =
       jest.genMockFn().mockReturnValue(mockDispatchToken);
 
-    stores(mockComponent).push(mockStore);
+    dependencies(mockComponent).tester = {
+      stores: [mockStore],
+      deref: () => 'mock value'
+    };
     StoreDependencyMixinHandlers.setupHandlers(mockComponent);
   });
 
   it('properly sets up handlers', () => {
-    expect(Object.keys(actions(mockComponent))).toEqual(mockActions);
     expect(getDispatcherInfo(mockComponent).dispatcher).toBe(mockDispatcher);
     expect(getDispatcherInfo(mockComponent).token).toBe(mockDispatchToken);
   });

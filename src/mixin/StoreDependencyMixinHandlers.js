@@ -17,7 +17,8 @@ function handleDispatch(
   component: Object,
   {actionType}: {actionType: string}
 ) {
-  if (!actions(component).hasOwnProperty(actionType)) {
+  var componentActions = actions(component);
+  if (!componentActions.hasOwnProperty(actionType)) {
     return;
   }
   var dispatcher = getDispatcherInfo(component).dispatcher;
@@ -32,7 +33,7 @@ function handleDispatch(
       component,
       component.props,
       component.state,
-      null
+      Object.keys(componentActions[actionType])
     )
   );
 }
@@ -47,18 +48,15 @@ var StoreDependencyMixinHandlers = {
   },
 
   setupHandlers(component: Object): void {
-    var componentActions = actions(component);
-    var componentStores = stores(component);
+    var componentDependencies = dependencies(component);
     var dispatcherInfo = getDispatcherInfo(component);
-    componentStores.forEach(store => {
-      store.getActionTypes().forEach(actionType => {
-        componentActions[actionType] = true;
-      });
-    });
-    if (!dispatcherInfo.dispatcher && componentStores.length) {
-      dispatcherInfo.dispatcher = componentStores[0].getDispatcher();
+    var firstField = Object.keys(componentDependencies)[0];
+    if (!dispatcherInfo.dispatcher && firstField) {
+      var dispatcher =
+        componentDependencies[firstField].stores[0].getDispatcher();
+      dispatcherInfo.dispatcher = dispatcher;
       dispatcherInfo.token =
-        componentStores[0].getDispatcher().register(
+        dispatcher.register(
           handleDispatch.bind(null, component)
         );
     }

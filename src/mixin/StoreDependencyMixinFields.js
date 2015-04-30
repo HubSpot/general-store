@@ -25,7 +25,7 @@ function getKey<T>(
 }
 
 var StoreDependencyMixinFields = {
-  actions(component: Object): {[key: string]: bool} {
+  actions(component: Object): {[key: string]: {[key: string]: bool}} {
     return getKey(ACTIONS_KEY, {}, component);
   },
 
