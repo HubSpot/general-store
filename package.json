@@ -29,8 +29,8 @@
   "homepage": "https://github.com/HubSpot/general-store",
   "dependencies": {},
   "devDependencies": {
-    "babel-eslint": "^3.0.1",
     "babel": "^5.1.10",
+    "babel-eslint": "^3.0.1",
     "babelify": "^6.0.2",
     "browserify": "^8.1.1",
     "browserify-derequire": "^0.9.1",
@@ -40,7 +40,6 @@
     "flow-bin": "^0.2.0",
     "flux": "^2.0.1",
     "jest-cli": "^0.4.0",
-    "react-tools": "^0.12.2",
     "recast": "^0.9.17",
     "through2": "^0.6.3",
     "uglify-js": "^2.4.16",
