@@ -5,16 +5,17 @@ describe('StoreDependencyMixinInitialize', () => {
   var StoreDependencyMixinFields;
   var StoreFacade;
 
+  var applyDependencies;
   var mockComponent;
   var mockDependencyMap;
   var mockStore;
   var otherMockStore;
 
   beforeEach(() => {
+    applyDependencies =
+      require('../StoreDependencyMixinInitialize.js').applyDependencies;
     StoreDependencyMixinFields = require('../StoreDependencyMixinFields.js');
     StoreFacade = require('../../store/StoreFacade.js');
-
-    var {applyDependencies} = require('../StoreDependencyMixinInitialize.js');
 
     mockComponent = {};
     mockStore = new StoreFacade();
@@ -60,11 +61,11 @@ describe('StoreDependencyMixinInitialize', () => {
     var otherMockComponent = {};
     var otherMockDependencyMap = {
       test: mockStore,
-      test: otherMockStore
+      otherTest: otherMockStore
     };
     expect(
       () => applyDependencies(otherMockComponent, otherMockDependencyMap)
-    ).toThrow()
+    ).toThrow();
   });
 
 });

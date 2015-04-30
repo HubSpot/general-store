@@ -42,6 +42,6 @@ var StoreDependencyMixinFields = {
   storeFields(component: Object): {[key:number]: Array<string>} {
     return getKey(STORE_FIELDS_KEY, {}, component);
   }
-}
+};
 
 module.exports = StoreDependencyMixinFields;

@@ -13,7 +13,7 @@ describe('StoreDependencyMixinFields', () => {
   });
 
   it('returns the dependencies Object from dependencies()', () => {
-    var {dependencies} = StoreDependencyMixinFields
+    var {dependencies} = StoreDependencyMixinFields;
     var mockDependencies = dependencies(mockComponent);
     var mockValue = 'random';
     expect(typeof mockDependencies).toBe('object');
@@ -33,7 +33,7 @@ describe('StoreDependencyMixinFields', () => {
   });
 
   it('returns the queue Object from queue()', () => {
-    var {queue} = StoreDependencyMixinFields
+    var {queue} = StoreDependencyMixinFields;
     var mockQueue = queue(mockComponent);
     expect(typeof mockQueue).toBe('object');
     mockQueue.test = true;
@@ -53,7 +53,7 @@ describe('StoreDependencyMixinFields', () => {
   });
 
   it('returns the storeFields Object from stores()', () => {
-    var {storeFields} = StoreDependencyMixinFields
+    var {storeFields} = StoreDependencyMixinFields;
     var mockFields = ['test', 'other'];
     var mockStoreID = 12345;
     var mockStoreFields = storeFields(mockComponent);

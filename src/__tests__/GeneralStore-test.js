@@ -17,4 +17,4 @@ describe('GeneralStore', () => {
     expect(Object.keys(GeneralStore)).toEqual(exportList);
   });
 
-})
+});

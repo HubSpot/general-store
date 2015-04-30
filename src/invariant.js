@@ -1,3 +1,5 @@
+/* eslint max-len:0 */
+
 /**
  * BSD License
  *
@@ -69,7 +71,7 @@ var invariant = function(
       var argIndex = 0;
       error = new Error(
         'Invariant Violation: ' +
-        format.replace(/%s/g, function() { return args[argIndex++]; })
+        format.replace(/%s/g, () => args[argIndex++])
       );
     } else {
       error = new Error(

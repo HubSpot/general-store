@@ -252,7 +252,7 @@ function runTest(GeneralStore) {
     expect(mockComponent.setState.mock.calls.length).toBe(2);
   });
 
-  it('triggers ONE update for stores across mixins that respond to a common action', () => {
+  it('triggers ONE update across mixins responding to a common action', () => {
     var UserCountStore = defineUserCountStore();
     var mockComponent = defineMockComponent();
     var mockMixin = GeneralStore.StoreDependencyMixin({
@@ -306,4 +306,3 @@ describe('GeneralStore prod build integration test', () => {
     require('../../build/general-store.min.js')
   );
 });
-

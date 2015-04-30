@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 /* @flow */
 
 var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
@@ -98,9 +99,10 @@ class StoreFacade {
     if (process.env.NODE_ENV !== 'production') {
       invariant(
         DispatcherInterface.isPayload(payload),
-        'StoreFacade: expected dispatched payload to be an object with a property' +
-        ' "actionType" containing a string and an optional property "data" containing' +
-        ' any value but got "%s" instead. Learn more about the dispatcher interface:' +
+        'StoreFacade: expected dispatched payload to be an object with a' +
+        ' property "actionType" containing a string and an optional property' +
+        ' "data" containing any value but got "%s" instead. Learn more about' +
+        ' the dispatcher interface:' +
         ' https://github.com/HubSpot/general-store#dispatcher-interface'
       );
     }

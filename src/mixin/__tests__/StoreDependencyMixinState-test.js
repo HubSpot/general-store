@@ -8,7 +8,10 @@ describe('StoreDependencyMixinState', () => {
   var getDependencyState;
 
   var mockComponent;
+  var mockProps;
+  var mockState;
   var mockStore;
+  var mockValue;
 
   beforeEach(() => {
     StoreFacade = require('../../store/StoreFacade.js');

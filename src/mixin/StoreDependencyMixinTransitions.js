@@ -4,7 +4,7 @@
 
 var compare = (window.Immutable && typeof window.Immutable.is === 'function') ?
   window.Immutable.is :
-  function(a, b) {return a === b;};
+  (a, b) => a === b;
 
 function compareKey(key, objA, objB) {
   return compare(objA[key], objB[key]);
@@ -54,8 +54,8 @@ var StoreDependencyMixinTransitions = {
   ): bool {
     return !shallowEqual(
       (key, objA, objB) => {
-        return ( // if the value is a store, ignore it
-          stores.hasOwnProperty(key) ||
+        return (
+          stores.hasOwnProperty(key) || // if the value is a store, ignore it
           compare(objA[key], objB[key])
         );
       },

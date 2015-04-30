@@ -14,9 +14,9 @@ var {
 function defaultDeref(
   props,
   state,
-  stores: Array<StoreFacade>
+  storeInstances: Array<StoreFacade>
 ): any {
-  return stores[0].get();
+  return storeInstances[0].get();
 }
 
 var StoreDependencyMixinInitialize = {

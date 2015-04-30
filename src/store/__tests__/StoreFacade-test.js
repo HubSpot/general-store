@@ -3,6 +3,7 @@ jest.dontMock('../StoreFacade.js');
 describe('StoreFacade', () => {
 
   var StoreFacade;
+  var storeFacade;
 
   var mockAction;
   var mockDispatcher;
@@ -35,7 +36,7 @@ describe('StoreFacade', () => {
   });
 
   it('registers with the dispatcher', () => {
-    expect(mockDispatcher.register.mock.calls.length).toBe(1)
+    expect(mockDispatcher.register.mock.calls.length).toBe(1);
   });
 
   it('runs responses when the associated action is dispatched', () => {
@@ -111,4 +112,3 @@ describe('StoreFacade', () => {
   });
 
 });
-

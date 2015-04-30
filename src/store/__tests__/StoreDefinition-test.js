@@ -1,7 +1,5 @@
 jest.dontMock('../StoreDefinition.js');
 
-var mocks = require('mock-modules');
-
 describe('StoreDefinition', () => {
 
   var DispatcherInstance;
@@ -15,11 +13,11 @@ describe('StoreDefinition', () => {
     StoreDefinition = require('../StoreDefinition.js');
 
     mockDispatcher = {
-      register: function() {return 12345;},
+      register: () => 12345,
       unregister: function() {}
     };
     DispatcherInstance.get.mockReturnValue(mockDispatcher);
-    storeDefinition = new StoreDefinition()
+    storeDefinition = new StoreDefinition();
   });
 
   it('ensures that a function is passed to defineGet', () => {
@@ -35,38 +33,45 @@ describe('StoreDefinition', () => {
   it('validates the actionType(s) passed to defineResponseTo', () => {
     var mockResponse = function() {};
     // invalid args
-    expect(() => storeDefinition.defineResponseTo(null, mockResponse)).toThrow()
-    expect(() => storeDefinition.defineResponseTo(mockResponse)).toThrow()
-    expect(() => storeDefinition.defineResponseTo('testAction')).toThrow()
-    expect(() => storeDefinition.defineResponseTo('testAction', [])).toThrow()
+    expect(
+      () => storeDefinition.defineResponseTo(null, mockResponse)
+    ).toThrow();
+    expect(() => storeDefinition.defineResponseTo(mockResponse)).toThrow();
+    expect(() => storeDefinition.defineResponseTo('testAction')).toThrow();
+    expect(() => storeDefinition.defineResponseTo('testAction', [])).toThrow();
 
     // invalid array of actions
     expect(() => {
       storeDefinition.defineResponseTo(['someAction', 5], mockResponse);
-    }).toThrow()
+    }).toThrow();
 
     // valid args
     expect(() => {
       storeDefinition.defineResponseTo('testAction', mockResponse);
-    }).not.toThrow()
+    }).not.toThrow();
 
     // valid array of actions
     expect(() => {
-      storeDefinition.defineResponseTo(['testAction1', 'testAction2'], mockResponse);
-    }).not.toThrow()
+      storeDefinition.defineResponseTo(
+        ['testAction1', 'testAction2'],
+        mockResponse
+      );
+    }).not.toThrow();
 
     // duplicates should throw
     expect(() => {
-      storeDefinition.defineResponseTo('testAction', mockResponse)
-    }).toThrow()
+      storeDefinition.defineResponseTo('testAction', mockResponse);
+    }).toThrow();
   });
 
   it('throws if define* are called after register', () => {
     storeDefinition
       .defineGet(function() {})
       .register(mockDispatcher);
-    expect(() => storeDefinition.defineResponseTo('test', function() {})).toThrow()
-    expect(() => storeDefinition.defineGet(function() {})).toThrow()
+    expect(
+      () => storeDefinition.defineResponseTo('test', function() {})
+    ).toThrow();
+    expect(() => storeDefinition.defineGet(function() {})).toThrow();
   });
 
   it('throws if register is called without a valid dispatcher', () => {
@@ -81,7 +86,7 @@ describe('StoreDefinition', () => {
 
   it('passes along the getter to the StoreFacade on register', () => {
     var StoreFacade = require('../StoreFacade.js');
-    var mockGet = function() {return 'get!'};
+    var mockGet = () => 'get!';
     storeDefinition
       .defineGet(mockGet)
       .register(mockDispatcher);

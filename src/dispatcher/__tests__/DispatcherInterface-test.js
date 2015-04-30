@@ -21,7 +21,7 @@ describe('DispatcherInterface', () => {
       register: function() {},
       unregister: function() {}
     })).toBe(true);
-  })
+  });
 
   it('correctly validates a payload', () => {
     expect(DispatcherInterface.isPayload(null)).toBe(false);

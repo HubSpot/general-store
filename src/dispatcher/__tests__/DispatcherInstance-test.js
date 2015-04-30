@@ -4,6 +4,8 @@ describe('DispatcherInstance', () => {
 
   var DispatcherInstance;
 
+  var mockDispatcher;
+
   beforeEach(() => {
     DispatcherInstance = require('../DispatcherInstance.js');
 
@@ -13,7 +15,7 @@ describe('DispatcherInstance', () => {
       },
       unregister: function() {
       }
-    }
+    };
   });
 
   it('throws if you set an invalid dispatcher', () => {

@@ -16,7 +16,8 @@ describe('StoreDependencyMixinTransitions', () => {
   }
 
   beforeEach(() => {
-    StoreDependencyMixinTransitions = require('../StoreDependencyMixinTransitions.js');
+    StoreDependencyMixinTransitions =
+      require('../StoreDependencyMixinTransitions.js');
   });
 
   it('shallow compares props', () => {
