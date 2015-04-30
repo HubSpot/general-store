@@ -3,12 +3,15 @@
  */
 
 var {
+  actions,
   dependencies,
+  getDispatcherInfo,
   handlers,
   queue,
   storeFields,
   stores
 } = require('./StoreDependencyMixinFields.js');
+var { getDependencyState } = require('./StoreDependencyMixinState.js');
 
 function flushQueue(
   component: Object
@@ -28,65 +31,55 @@ function flushQueue(
   component.setState(stateUpdate);
 }
 
-function waitForOtherStores(
+function handleDispatch(
   component: Object,
-  currentStoreId: number
-): void {
-  var componentStores = stores(component);
-  componentStores.forEach(store => {
-    var dispatcher: Dispatcher = store.getDispatcher();
-    if (store.getID() === currentStoreId || !dispatcher.isDispatching()) {
-      return;
-    }
-    dispatcher.waitFor([store.getDispatchToken()]);
-  });
-}
-
-function handleStoreChange(
-  component: Object,
-  storeId: number
-): void {
-  var componentQueue = queue(component);
-  var queueWasEmpty = Object.keys(componentQueue).length === 0;
-  storeFields(component)[storeId].forEach(field => {
-    if (componentQueue.hasOwnProperty(field)) {
-      return;
-    }
-    componentQueue[field] = true;
-  });
-  // if there we already fields in the queue, this isn't the first store to
-  // respond to the action so bail out
-  if (!queueWasEmpty) {
+  {actionType}: {actionType: string}
+) {
+  if (!actions(component).hasOwnProperty(actionType)) {
     return;
   }
-  // waitFor all other stores this component depends on to ensure we dont
-  // run an extra setState if another store responds to the same action
-  waitForOtherStores(component, storeId);
-  flushQueue(component);
+  var dispatcher = getDispatcherInfo(component).dispatcher;
+  if (!dispatcher) {
+    return;
+  }
+  dispatcher.waitFor(
+    stores(component).map(store => store.getDispatchToken())
+  );
+  component.setState(
+    getDependencyState(
+      component,
+      component.props,
+      component.state,
+      null
+    )
+  );
 }
 
 var StoreDependencyMixinHandlers = {
   cleanupHandlers(component: Object): void {
-    var componentHandlers = handlers(component);
-    while (componentHandlers.length) {
-      componentHandlers.pop().remove();
+    var {dispatcher, token} = getDispatcherInfo(component);
+    if (!dispatcher) {
+      return;
     }
+    dispatcher.unregister(token);
   },
 
   setupHandlers(component: Object): void {
-    var componentHandlers = handlers(component);
+    var componentActions = actions(component);
     var componentStores = stores(component);
+    var dispatcherInfo = getDispatcherInfo(component);
     componentStores.forEach(store => {
-      componentHandlers.push(
-        store.addOnChange(
-          handleStoreChange.bind(
-            null,
-            component,
-            store.getID()
-          )
-        )
-      );
+      store.getActionTypes().forEach(actionType => {
+        componentActions[actionType] = true;
+      });
     });
+    if (!dispatcherInfo.dispatcher && componentStores.length) {
+      dispatcherInfo.dispatcher = componentStores[0].getDispatcher();
+      dispatcherInfo.token =
+        componentStores[0].getDispatcher().register(
+          handleDispatch.bind(null, component)
+        );
+    }
   }
 };
 

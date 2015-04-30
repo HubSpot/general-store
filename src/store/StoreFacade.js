@@ -67,6 +67,10 @@ class StoreFacade {
     return this._getter.apply(null, args);
   }
 
+  getActionTypes(): Array<string> {
+    return Object.keys(this._responses);
+  }
+
   /**
    * Exposes the store's dispatcher instance.
    *

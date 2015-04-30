@@ -5,6 +5,8 @@
 var EventHandler = require('../event/EventHandler.js');
 var StoreFacade = require('../store/StoreFacade.js');
 
+var ACTIONS_KEY = '__StoreDependencyMixin-actions';
+var DISPATCHER_KEY = '__StoreDependencyMixin-dispatcher';
 var DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
 var HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
 var QUEUE_KEY = '__StoreDependencyMixin-queue';
@@ -23,6 +25,16 @@ function getKey<T>(
 }
 
 var StoreDependencyMixinFields = {
+  actions(component: Object): {[key: string]: bool} {
+    return getKey(ACTIONS_KEY, {}, component);
+  },
+
+  getDispatcherInfo(
+    component: Object
+  ): {dispatcher: ?Dispatcher; token: ?string} {
+    return getKey(DISPATCHER_KEY, {dispatcher: null, token: null}, component);
+  },
+
   dependencies(component: Object): Object {
     return getKey(DEPENDENCIES_KEY, {}, component);
   },
