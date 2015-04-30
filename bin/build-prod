@@ -4,7 +4,7 @@ browserify \
   --standalone GeneralStore \
   -p bundle-collapser/plugin \
   -p browserify-derequire \
-  -t [ reactify --es6 --strip-types ] \
+  -t babelify \
   -t ./bin/truncate-invariant.js \
   -t envify \
   -t uglifyify \
