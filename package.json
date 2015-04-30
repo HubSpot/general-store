@@ -10,7 +10,7 @@
     "build-prod": "./bin/build-prod",
     "deploy": "./bin/deploy",
     "watch": "./bin/watch",
-    "test": "flow check && jest"
+    "test": "flow check && eslint ./src && jest"
   },
   "repository": {
     "type": "git",
@@ -27,16 +27,17 @@
     "url": "https://github.com/HubSpot/general-store/issues"
   },
   "homepage": "https://github.com/HubSpot/general-store",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "babel-eslint": "^3.0.1",
     "browserify": "^8.1.1",
     "browserify-derequire": "^0.9.1",
     "bundle-collapser": "^1.1.1",
     "envify": "^3.2.0",
+    "eslint": "^0.19.0",
     "flow-bin": "^0.2.0",
     "flux": "^2.0.1",
-    "jest-cli": "^0.2.1",
+    "jest-cli": "^0.4.0",
     "react-tools": "^0.12.2",
     "reactify": "^0.17.1",
     "recast": "^0.9.17",

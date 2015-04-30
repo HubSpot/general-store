@@ -1,0 +1,58 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true,
+  },
+  "globals": {
+    "jest": true,
+    "beforeEach": true,
+    "describe": true,
+    "expect": true,
+    "it": true,
+  },
+  "settings": {
+    "ecmascript": 6
+  },
+  "rules": {
+    "brace-style": 2,
+    "comma-dangle": "always-multiline",
+    "indent": [2, 2, {"indentSwitchCase": true}],
+    "max-len": [2, 80],
+    "new-cap": [2, {
+      "capIsNewExceptions": [
+        "Deferred",
+        "List",
+        "Map",
+        "OrderedMap",
+        "Set",
+        "OrderedSet",
+        "Stack",
+        "Range",
+        "Repeat",
+        "Record",
+        "Seq",
+        "StoreDependencyMixin"
+      ]
+    }],
+    "no-redeclare": 2,
+    "no-unused-expressions": 2,
+    "quotes": [2, "single"],
+    "space-after-keywords": 2,
+    "space-before-blocks": 2,
+    "space-in-brackets": [2, "never"],
+    "space-in-parens": [2, "never"],
+    "space-infix-ops": 2,
+    "spaced-line-comment": [2, "always"],
+
+    "consistent-return": 1,
+    "eol-last": 1,
+    "no-console": 1,
+
+    "block-scoped-var": 0,
+    "no-underscore-dangle": [0],
+    "no-unused-vars": [0, {"args": "all"}],
+    "no-var": 0,
+    "strict": 0
+  }
+}

@@ -8,6 +8,10 @@ function succeedorexit {
   return $status
 }
 
+echo "Running eslint...";
+succeedorexit eslint ./src;
+echo "DONE."
+
 echo "Running typechecks...";
 succeedorexit flow check;
 echo "DONE."
