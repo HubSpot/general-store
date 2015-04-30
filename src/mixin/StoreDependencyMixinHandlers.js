@@ -13,24 +13,6 @@ var {
 } = require('./StoreDependencyMixinFields.js');
 var { getDependencyState } = require('./StoreDependencyMixinState.js');
 
-function flushQueue(
-  component: Object
-): void {
-  var componentDependencies = dependencies(component);
-  var componentQueue = queue(component);
-  var stateUpdate = {};
-  Object.keys(componentQueue).forEach(field => {
-    var fieldDef = componentDependencies[field];
-    stateUpdate[field] = fieldDef.deref(
-      component.props,
-      component.state,
-      fieldDef.stores
-    );
-    delete componentQueue[field];
-  });
-  component.setState(stateUpdate);
-}
-
 function handleDispatch(
   component: Object,
   {actionType}: {actionType: string}
