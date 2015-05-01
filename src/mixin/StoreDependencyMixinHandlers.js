@@ -6,9 +6,6 @@ var {
   actions,
   dependencies,
   getDispatcherInfo,
-  handlers,
-  queue,
-  storeFields,
   stores
 } = require('./StoreDependencyMixinFields.js');
 var { getDependencyState } = require('./StoreDependencyMixinState.js');

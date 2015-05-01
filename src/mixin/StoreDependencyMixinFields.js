@@ -2,9 +2,6 @@
  * @flow
  */
 
-var EventHandler = require('../event/EventHandler.js');
-var StoreFacade = require('../store/StoreFacade.js');
-
 var ACTIONS_KEY = '__StoreDependencyMixin-actions';
 var DISPATCHER_KEY = '__StoreDependencyMixin-dispatcher';
 var DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
