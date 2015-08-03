@@ -5,7 +5,8 @@
 try {
   var compare = require('immutable').is;
 } catch (e) {
-  if (typeof window === 'object' && window.Immutable && typeof window.Immutable.is === 'function') {
+  if (typeof window === 'object' && window.Immutable &&
+      typeof window.Immutable.is === 'function') {
     var compare = window.Immutable.is;
   } else {
     var compare = (a, b) => a === b;
