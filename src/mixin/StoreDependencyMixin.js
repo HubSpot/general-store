@@ -2,8 +2,6 @@
  * @flow
  */
 
-var StoreFacade = require('../store/StoreFacade.js');
-
 var {dependencies, stores} = require('./StoreDependencyMixinFields.js');
 var {cleanupHandlers, setupHandlers} =
   require('./StoreDependencyMixinHandlers.js');
@@ -15,7 +13,6 @@ var {hasPropsChanged, hasStateChanged} =
 function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
-  var fieldNames = Object.keys(dependencyMap);
   var isFirstMixin = false;
 
   return {

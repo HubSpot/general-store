@@ -6,9 +6,8 @@ var StoreFacade = require('../store/StoreFacade.js');
 
 var invariant = require('../invariant.js');
 var {
-  dependencies,
-  storeFields,
-  stores
+  actions,
+  dependencies
 } = require('./StoreDependencyMixinFields.js');
 
 function defaultDeref(
@@ -24,19 +23,18 @@ var StoreDependencyMixinInitialize = {
     component: Object,
     dependencyMap: Object
   ): void {
+    var componentActions = actions(component);
     var componentDependencies = dependencies(component);
-    var componentStoreFields = storeFields(component);
-    var componentStores = stores(component);
     Object.keys(dependencyMap).forEach(field => {
+      invariant(
+        !componentDependencies.hasOwnProperty(field),
+        'StoreDependencyMixin: field "%s" is already defined',
+        field
+      );
       var dependency = dependencyMap[field];
       var dependencyStores;
       if (dependency instanceof StoreFacade) {
         dependencyStores = [dependency];
-        invariant(
-          !componentDependencies.hasOwnProperty(field),
-          'StoreDependencyMixin: field "%s" is already defined',
-          field
-        );
         componentDependencies[field] = {
           deref: defaultDeref,
           stores: dependencyStores
@@ -45,15 +43,15 @@ var StoreDependencyMixinInitialize = {
         dependencyStores = dependency.stores;
         componentDependencies[field] = dependency;
       }
-      // update the store-to-field map
       dependencyStores.forEach(store => {
-        var storeId = store.getID();
-        if (!componentStoreFields.hasOwnProperty(storeId)) {
-          componentStoreFields[storeId] = [];
-          // if we haven't seen this store bind a change handler
-          componentStores.push(store);
-        }
-        componentStoreFields[storeId].push(field);
+        store.getActionTypes().forEach(actionType => {
+          if (!componentActions.hasOwnProperty(actionType)) {
+            componentActions[actionType] = {};
+          }
+          if (!componentActions[actionType].hasOwnProperty(field)) {
+            componentActions[actionType][field] = true;
+          }
+        });
       });
     });
   }
