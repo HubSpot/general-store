@@ -5,6 +5,7 @@
     "node": true,
   },
   "globals": {
+    "Dispatcher": true,
     "jest": true,
     "beforeEach": true,
     "describe": true,
