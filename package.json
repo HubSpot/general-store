@@ -9,6 +9,7 @@
     "build-dev": "./bin/build-dev",
     "build-prod": "./bin/build-prod",
     "deploy": "./bin/deploy",
+    "lint": "eslint ./src",
     "watch": "./bin/watch",
     "test": "flow check && eslint ./src && jest"
   },
