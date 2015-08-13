@@ -2,6 +2,7 @@
 NODE_ENV=development \
 browserify \
   --standalone GeneralStore \
+  --external immutable \
   -p browserify-derequire \
   -t babelify \
   -t envify \
