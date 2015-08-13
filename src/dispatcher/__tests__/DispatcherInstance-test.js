@@ -14,7 +14,7 @@ describe('DispatcherInstance', () => {
         return 12345;
       },
       unregister: function() {
-      }
+      },
     };
   });
 

@@ -14,7 +14,7 @@ describe('StoreDefinition', () => {
 
     mockDispatcher = {
       register: () => 12345,
-      unregister: function() {}
+      unregister: function() {},
     };
     DispatcherInstance.get.mockReturnValue(mockDispatcher);
     storeDefinition = new StoreDefinition();

@@ -2,13 +2,13 @@
  * @flow
  */
 
-var {
+import {
   dependencies,
   handlers,
   queue,
   storeFields,
   stores
-} = require('./StoreDependencyMixinFields.js');
+} from './StoreDependencyMixinFields.js';
 
 function flushQueue(
   component: Object
@@ -65,29 +65,25 @@ function handleStoreChange(
   flushQueue(component);
 }
 
-var StoreDependencyMixinHandlers = {
-  cleanupHandlers(component: Object): void {
-    var componentHandlers = handlers(component);
-    while (componentHandlers.length) {
-      componentHandlers.pop().remove();
-    }
-  },
-
-  setupHandlers(component: Object): void {
-    var componentHandlers = handlers(component);
-    var componentStores = stores(component);
-    componentStores.forEach(store => {
-      componentHandlers.push(
-        store.addOnChange(
-          handleStoreChange.bind(
-            null,
-            component,
-            store.getID()
-          )
-        )
-      );
-    });
+export function cleanupHandlers(component: Object): void {
+  var componentHandlers = handlers(component);
+  while (componentHandlers.length) {
+    componentHandlers.pop().remove();
   }
-};
+}
 
-module.exports = StoreDependencyMixinHandlers;
+export function setupHandlers(component: Object): void {
+  var componentHandlers = handlers(component);
+  var componentStores = stores(component);
+  componentStores.forEach(store => {
+    componentHandlers.push(
+      store.addOnChange(
+        handleStoreChange.bind(
+          null,
+          component,
+          store.getID()
+        )
+      )
+    );
+  });
+}

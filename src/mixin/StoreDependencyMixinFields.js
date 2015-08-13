@@ -2,8 +2,8 @@
  * @flow
  */
 
-var EventHandler = require('../event/EventHandler.js');
-var StoreFacade = require('../store/StoreFacade.js');
+import EventHandler from '../event/EventHandler.js';
+import StoreFacade from '../store/StoreFacade.js';
 
 var DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
 var HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
@@ -22,26 +22,22 @@ function getKey<T>(
   return component[key];
 }
 
-var StoreDependencyMixinFields = {
-  dependencies(component: Object): Object {
-    return getKey(DEPENDENCIES_KEY, {}, component);
-  },
+export function dependencies(component: Object): Object {
+  return getKey(DEPENDENCIES_KEY, {}, component);
+}
 
-  handlers(component: Object): Array<EventHandler> {
-    return getKey(HANDLERS_KEY, [], component);
-  },
+export function handlers(component: Object): Array<EventHandler> {
+  return getKey(HANDLERS_KEY, [], component);
+}
 
-  queue(component: Object): {[key:string]: bool} {
-    return getKey(QUEUE_KEY, {}, component);
-  },
+export function queue(component: Object): {[key:string]: bool} {
+  return getKey(QUEUE_KEY, {}, component);
+}
 
-  stores(component: Object): Array<StoreFacade> {
-    return getKey(STORES_KEY, [], component);
-  },
+export function stores(component: Object): Array<StoreFacade> {
+  return getKey(STORES_KEY, [], component);
+}
 
-  storeFields(component: Object): {[key: string]: Array<string>} {
-    return getKey(STORE_FIELDS_KEY, {}, component);
-  }
-};
-
-module.exports = StoreDependencyMixinFields;
+export function storeFields(component: Object): {[key: string]: Array<string>} {
+  return getKey(STORE_FIELDS_KEY, {}, component);
+}

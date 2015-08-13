@@ -1,10 +1,9 @@
 /* @flow */
 
-var DispatcherInstance = require('../dispatcher/DispatcherInstance.js');
-var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
-var StoreFacade = require('./StoreFacade.js');
-
-var invariant = require('../invariant.js');
+import DispatcherInstance from '../dispatcher/DispatcherInstance.js';
+import {isDispatcher} from '../dispatcher/DispatcherInterface.js';
+import invariant from '../invariant.js';
+import StoreFacade from './StoreFacade.js';
 
 function emptyGetter() {
   return null;
@@ -14,7 +13,7 @@ var HINT_LINK =
   'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
-class StoreDefinition {
+export default class StoreDefinition {
 
   _facade: ?StoreFacade;
   _getter: ?Function;
@@ -78,7 +77,7 @@ class StoreDefinition {
       ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
     );
     invariant(
-      DispatcherInterface.isDispatcher(dispatcher),
+      isDispatcher(dispatcher),
       'StoreDefinition.register: Expected dispatcher to be an object' +
       ' with a register method, and an unregister method but got "%s".' +
       ' Learn more about the dispatcher interface:' +
@@ -132,5 +131,3 @@ class StoreDefinition {
   }
 
 }
-
-module.exports = StoreDefinition;

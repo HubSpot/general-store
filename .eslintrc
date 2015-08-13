@@ -17,8 +17,8 @@
   },
   "rules": {
     "brace-style": 2,
-    "comma-dangle": "always-multiline",
-    "indent": [2, 2, {"indentSwitchCase": true}],
+    "comma-dangle": [2, "always-multiline"],
+    "indent": [2, 2, {"SwitchCase": 1}],
     "max-len": [2, 80],
     "new-cap": [2, {
       "capIsNewExceptions": [
@@ -41,10 +41,10 @@
     "quotes": [2, "single"],
     "space-after-keywords": 2,
     "space-before-blocks": 2,
-    "space-in-brackets": [2, "never"],
+    "object-curly-spacing": [2, "never"],
     "space-in-parens": [2, "never"],
     "space-infix-ops": 2,
-    "spaced-line-comment": [2, "always"],
+    "spaced-comment": [2, "always"],
 
     "consistent-return": 1,
     "eol-last": 1,

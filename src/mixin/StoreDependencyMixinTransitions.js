@@ -35,34 +35,30 @@ function shallowEqual(
   return true;
 }
 
-var StoreDependencyMixinTransitions = {
-  hasPropsChanged(
-    oldProps: Object,
-    nextProps: Object
-  ): bool {
-    return !shallowEqual(
-      compareKey,
-      oldProps,
-      nextProps
-    );
-  },
+export function hasPropsChanged(
+  oldProps: Object,
+  nextProps: Object
+): bool {
+  return !shallowEqual(
+    compareKey,
+    oldProps,
+    nextProps
+  );
+}
 
-  hasStateChanged(
-    stores: Object,
-    oldState: Object,
-    nextState: Object
-  ): bool {
-    return !shallowEqual(
-      (key, objA, objB) => {
-        return (
-          stores.hasOwnProperty(key) || // if the value is a store, ignore it
-          compare(objA[key], objB[key])
-        );
-      },
-      oldState,
-      nextState
-    );
-  }
-};
-
-module.exports = StoreDependencyMixinTransitions;
+export function hasStateChanged(
+  stores: Object,
+  oldState: Object,
+  nextState: Object
+): bool {
+  return !shallowEqual(
+    (key, objA, objB) => {
+      return (
+        stores.hasOwnProperty(key) || // if the value is a store, ignore it
+        compare(objA[key], objB[key])
+      );
+    },
+    oldState,
+    nextState
+  );
+}

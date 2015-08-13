@@ -48,7 +48,7 @@
  * will remain to ensure logic does not differ in production.
  */
 
-var invariant = function(
+export default function invariant(
   condition: bool,
   format: string,
   a: any,
@@ -81,6 +81,4 @@ var invariant = function(
     }
     throw error;
   }
-};
-
-module.exports = invariant;
+}

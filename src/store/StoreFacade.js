@@ -1,12 +1,11 @@
 /* eslint no-console:0 */
 /* @flow */
 
-var DispatcherInterface = require('../dispatcher/DispatcherInterface.js');
-var Event = require('../event/Event.js');
-var EventHandler = require('../event/EventHandler.js');
-
-var uniqueID = require('../uniqueid/uniqueID.js');
-var invariant = require('../invariant.js');
+import {isPayload} from '../dispatcher/DispatcherInterface.js';
+import Event from '../event/Event.js';
+import EventHandler from '../event/EventHandler.js';
+import invariant from '../invariant.js';
+import uniqueID from '../uniqueid/uniqueID.js';
 
 var HINT_LINK = 'Learn more about using the Store API:' +
   ' https://github.com/HubSpot/general-store#using-the-store-api';
@@ -15,7 +14,7 @@ function getNull() {
   return null;
 }
 
-class StoreFacade {
+export default class StoreFacade {
 
   _dispatcher: Dispatcher;
   _dispatchToken: string;
@@ -98,7 +97,7 @@ class StoreFacade {
   ): void {
     if (process.env.NODE_ENV !== 'production') {
       invariant(
-        DispatcherInterface.isPayload(payload),
+        isPayload(payload),
         'StoreFacade: expected dispatched payload to be an object with a' +
         ' property "actionType" containing a string and an optional property' +
         ' "data" containing any value but got "%s" instead. Learn more about' +
@@ -148,5 +147,3 @@ class StoreFacade {
   }
 
 }
-
-module.exports = StoreFacade;

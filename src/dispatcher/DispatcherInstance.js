@@ -4,21 +4,19 @@
  * @flow
  **/
 
-var DispatcherInterface = require('./DispatcherInterface.js');
-
-var invariant = require('../invariant.js');
+import {isDispatcher} from './DispatcherInterface.js';
+import invariant from '../invariant.js';
 
 var instance = null;
 
 var DispatcherInstance = {
-
   get(): ?Dispatcher {
     return instance;
   },
 
   set(dispatcher: Dispatcher): void {
     invariant(
-      DispatcherInterface.isDispatcher(dispatcher),
+      isDispatcher(dispatcher),
       'DispatcherInstance.set: Expected dispatcher to be an object' +
       ' with a register method, and an unregister method but got "%s".' +
       ' Learn more about the dispatcher interface:' +
@@ -26,8 +24,7 @@ var DispatcherInstance = {
       dispatcher
     );
     instance = dispatcher;
-  }
-
+  },
 };
 
-module.exports = DispatcherInstance;
+export default DispatcherInstance;

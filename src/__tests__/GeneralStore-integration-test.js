@@ -25,14 +25,14 @@ function runTest(GeneralStore) {
   function addUser(user) {
     dispatcher.dispatch({
       actionType: ADD_USER,
-      data: user
+      data: user,
     });
   }
 
   function removeUser(user) {
     dispatcher.dispatch({
       actionType: REMOVE_USER,
-      data: user
+      data: user,
     });
   }
 
@@ -45,7 +45,7 @@ function runTest(GeneralStore) {
           mockComponent.state,
           updates
         );
-      })
+      }),
     };
     return mockComponent;
   }
@@ -79,7 +79,7 @@ function runTest(GeneralStore) {
     dispatcher = new Flux.Dispatcher();
     mockUser = {
       id: '123',
-      name: 'Test Person'
+      name: 'Test Person',
     };
 
     UserStore = defineUserStore();
@@ -89,7 +89,7 @@ function runTest(GeneralStore) {
     var userId = 123;
     var user = {
       id: userId,
-      name: 'Test Person'
+      name: 'Test Person',
     };
     addUser(user);
     expect(Object.keys(UserStore.get()).length).toBe(1);
@@ -100,7 +100,7 @@ function runTest(GeneralStore) {
     expect(() => {
       dispatcher.dispatch({
         actionType: 'MOCK_ACTION',
-        data: {}
+        data: {},
       });
     }).not.toThrow();
   });
@@ -109,7 +109,7 @@ function runTest(GeneralStore) {
     var userId = 123;
     var user = {
       id: userId,
-      name: 'Test Person'
+      name: 'Test Person',
     };
     addUser(user);
     removeUser(user);
@@ -123,7 +123,7 @@ function runTest(GeneralStore) {
     var userId = 123;
     var user = {
       id: userId,
-      name: 'Test Person'
+      name: 'Test Person',
     };
     UserStore.addOnChange(mockChangeHandler);
     UserStore.addOnChange(otherMockChangeHandler);
@@ -138,7 +138,7 @@ function runTest(GeneralStore) {
     var userId = 123;
     var user = {
       id: userId,
-      name: 'Test Person'
+      name: 'Test Person',
     };
     UserStore.addOnChange(mockChangeHandler);
     var removedMockHandler = UserStore.addOnChange(removedMockChangeHandler);
@@ -150,32 +150,7 @@ function runTest(GeneralStore) {
 
   it('set the expected state on store change', () => {
     var mockMixin = GeneralStore.StoreDependencyMixin({
-      users: UserStore
-    });
-    var mockComponent = defineMockComponent();
-    mockComponent.setState(
-      mockMixin.getInitialState.call(mockComponent)
-    );
-    mockMixin.componentWillMount.call(mockComponent);
-    expect(mockComponent.state).toEqual({
-      users: {}
-    });
-    addUser(mockUser);
-    expect(mockComponent.setState.mock.calls.length).toBe(2);
-    expect(mockComponent.state).toEqual({
-      users: {
-        '123': mockUser
-      }
-    });
-  });
-
-  it('triggers ONE update for fields with a common Store', () => {
-    var mockMixin = GeneralStore.StoreDependencyMixin({
       users: UserStore,
-      userIds: {
-        stores: [UserStore],
-        deref: () => Object.keys(UserStore.get())
-      }
     });
     var mockComponent = defineMockComponent();
     mockComponent.setState(
@@ -184,26 +159,51 @@ function runTest(GeneralStore) {
     mockMixin.componentWillMount.call(mockComponent);
     expect(mockComponent.state).toEqual({
       users: {},
-      userIds: []
     });
     addUser(mockUser);
     expect(mockComponent.setState.mock.calls.length).toBe(2);
     expect(mockComponent.state).toEqual({
       users: {
-        '123': mockUser
+        '123': mockUser,
+      },
+    });
+  });
+
+  it('triggers ONE update for fields with a common Store', () => {
+    var mockMixin = GeneralStore.StoreDependencyMixin({
+      users: UserStore,
+      userIds: {
+        stores: [UserStore],
+        deref: () => Object.keys(UserStore.get()),
+      },
+    });
+    var mockComponent = defineMockComponent();
+    mockComponent.setState(
+      mockMixin.getInitialState.call(mockComponent)
+    );
+    mockMixin.componentWillMount.call(mockComponent);
+    expect(mockComponent.state).toEqual({
+      users: {},
+      userIds: [],
+    });
+    addUser(mockUser);
+    expect(mockComponent.setState.mock.calls.length).toBe(2);
+    expect(mockComponent.state).toEqual({
+      users: {
+        '123': mockUser,
       },
       userIds: [
-        mockUser.id
-      ]
+        mockUser.id,
+      ],
     });
   });
 
   it('triggers ONE update for multiple mixins with a common store', () => {
     var mockMixin = GeneralStore.StoreDependencyMixin({
-      users: UserStore
+      users: UserStore,
     });
     var otherMockMixin = GeneralStore.StoreDependencyMixin({
-      otherUsers: UserStore
+      otherUsers: UserStore,
     });
     var mockComponent = defineMockComponent();
     mockComponent.setState(
@@ -219,10 +219,10 @@ function runTest(GeneralStore) {
     expect(mockComponent.setState.mock.calls.length).toBe(3);
     expect(mockComponent.state).toEqual({
       users: {
-        '123': mockUser
+        '123': mockUser,
       },
       otherUsers: {
-        '123': mockUser
+        '123': mockUser,
       },
     });
   });
@@ -232,7 +232,7 @@ function runTest(GeneralStore) {
     var mockComponent = defineMockComponent();
     var mockMixin = GeneralStore.StoreDependencyMixin({
       users: UserStore,
-      userCount: UserCountStore
+      userCount: UserCountStore,
     });
     mockComponent.setState(
       mockMixin.getInitialState.call(mockComponent)
@@ -240,14 +240,14 @@ function runTest(GeneralStore) {
     mockMixin.componentWillMount.call(mockComponent);
     expect(mockComponent.state).toEqual({
       users: {},
-      userCount: 0
+      userCount: 0,
     });
     addUser(mockUser);
     expect(mockComponent.state).toEqual({
       users: {
-        '123': mockUser
+        '123': mockUser,
       },
-      userCount: 1
+      userCount: 1,
     });
     expect(mockComponent.setState.mock.calls.length).toBe(2);
   });
@@ -259,7 +259,7 @@ function runTest(GeneralStore) {
       users: UserStore,
     });
     var otherMockMixin = GeneralStore.StoreDependencyMixin({
-      userCount: UserCountStore
+      userCount: UserCountStore,
     });
     mockComponent.setState(
       mockMixin.getInitialState.call(mockComponent)
@@ -271,14 +271,14 @@ function runTest(GeneralStore) {
     otherMockMixin.componentWillMount.call(mockComponent);
     expect(mockComponent.state).toEqual({
       users: {},
-      userCount: 0
+      userCount: 0,
     });
     addUser(mockUser);
     expect(mockComponent.state).toEqual({
       users: {
-        '123': mockUser
+        '123': mockUser,
       },
-      userCount: 1
+      userCount: 1,
     });
     expect(mockComponent.setState.mock.calls.length).toBe(3);
   });

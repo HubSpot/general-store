@@ -26,8 +26,8 @@ describe('StoreDependencyMixinInitialize', () => {
       test: mockStore,
       otherTest: {
         stores: [mockStore, otherMockStore],
-        deref: () => 'otherTest'
-      }
+        deref: () => 'otherTest',
+      },
     };
     applyDependencies(mockComponent, mockDependencyMap);
   });
@@ -45,7 +45,7 @@ describe('StoreDependencyMixinInitialize', () => {
     var componentStoreFields = storeFields(mockComponent);
     expect(componentStoreFields).toEqual({
       123: ['test', 'otherTest'],
-      321: ['otherTest']
+      321: ['otherTest'],
     });
   });
 
@@ -53,7 +53,7 @@ describe('StoreDependencyMixinInitialize', () => {
     var {stores} = StoreDependencyMixinFields;
     expect(stores(mockComponent)).toEqual([
       mockStore,
-      otherMockStore
+      otherMockStore,
     ]);
   });
 
@@ -61,7 +61,7 @@ describe('StoreDependencyMixinInitialize', () => {
     var otherMockComponent = {};
     var otherMockDependencyMap = {
       test: mockStore,
-      otherTest: otherMockStore
+      otherTest: otherMockStore,
     };
     expect(
       () => applyDependencies(otherMockComponent, otherMockDependencyMap)

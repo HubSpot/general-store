@@ -13,7 +13,7 @@ describe('StoreDependencyMixin', () => {
     mockComponent = {
       props: {},
       state: {},
-      setState: jest.genMockFn()
+      setState: jest.genMockFn(),
     };
     mockMixin = StoreDependencyMixin({});
     mockMixin.getInitialState.call(mockComponent);

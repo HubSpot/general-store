@@ -2,17 +2,23 @@
  * @flow
  */
 
-var StoreFacade = require('../store/StoreFacade.js');
+import StoreFacade from '../store/StoreFacade.js';
+import {
+  dependencies,
+  stores,
+} from './StoreDependencyMixinFields.js';
+import {
+  cleanupHandlers,
+  setupHandlers,
+} from './StoreDependencyMixinHandlers.js';
+import {applyDependencies} from './StoreDependencyMixinInitialize.js';
+import {getDependencyState} from './StoreDependencyMixinState.js';
+import {
+  hasPropsChanged,
+  hasStateChanged,
+} from './StoreDependencyMixinTransitions.js';
 
-var {dependencies, stores} = require('./StoreDependencyMixinFields.js');
-var {cleanupHandlers, setupHandlers} =
-  require('./StoreDependencyMixinHandlers.js');
-var {applyDependencies} = require('./StoreDependencyMixinInitialize.js');
-var {getDependencyState} = require('./StoreDependencyMixinState.js');
-var {hasPropsChanged, hasStateChanged} =
-  require('./StoreDependencyMixinTransitions.js');
-
-function StoreDependencyMixin(
+export default function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
   var fieldNames = Object.keys(dependencyMap);
@@ -63,9 +69,7 @@ function StoreDependencyMixin(
         this.state,
         Object.keys(dependencyMap)
       );
-    }
+    },
   };
 
 }
-
-module.exports = StoreDependencyMixin;

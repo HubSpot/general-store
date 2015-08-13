@@ -24,7 +24,7 @@ describe('StoreDependencyMixinTransitions', () => {
     var {hasPropsChanged} = StoreDependencyMixinTransitions;
     var old = {
       test: 'tester',
-      obj: {}
+      obj: {},
     };
     expect(
       hasPropsChanged(old, {test: 'testing', obj: old.obj})
@@ -44,32 +44,32 @@ describe('StoreDependencyMixinTransitions', () => {
   it('shallow compares state but ignores store fields', () => {
     var {hasStateChanged} = StoreDependencyMixinTransitions;
     var stores = {
-      testStore: true
+      testStore: true,
     };
     var oldState = {
       testStore: 'random',
       test: 'tester',
-      obj: {}
+      obj: {},
     };
     expect(
       hasStateChanged(stores, oldState, {
         testStore: 'aipwhegpaiwhr',
         test: 'testing',
-        obj: oldState.obj
+        obj: oldState.obj,
       })
     ).toBe(true);
     expect(
       hasStateChanged(stores, oldState, {
         testStore: 'random',
         test: 'tester',
-        obj: {}
+        obj: {},
       })
     ).toBe(true);
     expect(
       hasStateChanged(stores, oldState, {
         testStore: 'oaihwregoaw',
         test: 'tester',
-        obj: oldState.obj
+        obj: oldState.obj,
       })
     ).toBe(false);
     oldState.obj.field = 'blah';
@@ -77,7 +77,7 @@ describe('StoreDependencyMixinTransitions', () => {
       hasStateChanged(stores, oldState, {
         testStore: 'oaihwregoaw',
         test: 'tester',
-        obj: oldState.obj
+        obj: oldState.obj,
       })
     ).toBe(false);
   });
@@ -86,15 +86,15 @@ describe('StoreDependencyMixinTransitions', () => {
     expect(
       merge({
         one: 1,
-        two: 'two'
+        two: 'two',
       }, {
         two: 2,
-        three: 3
+        three: 3,
       })
     ).toEqual({
       one: 1,
       two: 2,
-      three: 3
+      three: 3,
     });
   });
 

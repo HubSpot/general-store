@@ -5,8 +5,6 @@
 var PREFIX = 'uid_';
 
 var nextUid = 0;
-function uid(): string {
+export default function uid(): string {
   return PREFIX + nextUid++;
 }
-
-module.exports = uid;

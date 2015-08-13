@@ -6,7 +6,7 @@ type EventManagerInterface = {
   removeHandler: (key: string) => any;
 };
 
-class EventHandler {
+export default class EventHandler {
 
   _key: string;
   _instance: ?EventManagerInterface;
@@ -28,5 +28,3 @@ class EventHandler {
   }
 
 }
-
-module.exports = EventHandler;

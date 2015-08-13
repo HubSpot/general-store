@@ -2,24 +2,18 @@
  * @flow
  */
 
-var DispatcherInterface = {
+export function isDispatcher(dispatcher: Dispatcher): bool {
+  return (
+    typeof dispatcher === 'object' &&
+    typeof dispatcher.register === 'function' &&
+    typeof dispatcher.unregister === 'function'
+  );
+}
 
-  isDispatcher(dispatcher: Dispatcher): bool {
-    return (
-      typeof dispatcher === 'object' &&
-      typeof dispatcher.register === 'function' &&
-      typeof dispatcher.unregister === 'function'
-    );
-  },
-
-  isPayload(payload: Dispatcher): bool {
-    return (
-      payload !== null &&
-      typeof payload === 'object' &&
-      typeof payload.actionType === 'string'
-    );
-  }
-
-};
-
-module.exports = DispatcherInterface;
+export function isPayload(payload: Dispatcher): bool {
+  return (
+    payload !== null &&
+    typeof payload === 'object' &&
+    typeof payload.actionType === 'string'
+  );
+}

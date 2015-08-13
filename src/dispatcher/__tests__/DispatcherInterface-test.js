@@ -11,15 +11,15 @@ describe('DispatcherInterface', () => {
   it('correctly validates a dispatcher', () => {
     expect(DispatcherInterface.isDispatcher({})).toBe(false);
     expect(DispatcherInterface.isDispatcher({
-      register: function() {}
+      register: function() {},
     })).toBe(false);
     expect(DispatcherInterface.isDispatcher({
-      unregister: function() {}
+      unregister: function() {},
     })).toBe(false);
 
     expect(DispatcherInterface.isDispatcher({
       register: function() {},
-      unregister: function() {}
+      unregister: function() {},
     })).toBe(true);
   });
 
@@ -28,14 +28,14 @@ describe('DispatcherInterface', () => {
     expect(DispatcherInterface.isPayload({})).toBe(false);
     expect(DispatcherInterface.isPayload({
       actionType: 1124,
-      data: {}
+      data: {},
     })).toBe(false);
     expect(DispatcherInterface.isPayload({
-      actionType: 'ACTION'
+      actionType: 'ACTION',
     })).toBe(true);
     expect(DispatcherInterface.isPayload({
       actionType: 'ACTION',
-      data: null
+      data: null,
     })).toBe(true);
   });
 

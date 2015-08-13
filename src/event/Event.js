@@ -2,11 +2,10 @@
  * @flow
  */
 
-var EventHandler = require('./EventHandler.js');
+import EventHandler from './EventHandler.js';
+import uniqueID from '../uniqueid/uniqueID.js';
 
-var uniqueID = require('../uniqueid/uniqueID.js');
-
-class Event {
+export default class Event {
 
   _handlers: {[key: string]: Function};
 
@@ -79,5 +78,3 @@ class Event {
   }
 
 }
-
-module.exports = Event;

@@ -1,17 +1,12 @@
 /* @flow */
 
-var StoreDefinition = require('./store/StoreDefinition.js');
+import StoreDefinition from './store/StoreDefinition.js';
+import _DispatcherInstance from './dispatcher/DispatcherInstance.js';
+import _StoreDependencyMixin from './mixin/StoreDependencyMixin.js';
 
-var GeneralStore = {
+export function define(): StoreDefinition {
+  return new StoreDefinition();
+}
+export var DispatcherInstance = _DispatcherInstance;
+export var StoreDependencyMixin = _StoreDependencyMixin;
 
-  define(): StoreDefinition {
-    return new StoreDefinition();
-  },
-
-  DispatcherInstance: require('./dispatcher/DispatcherInstance.js'),
-
-  StoreDependencyMixin: require('./mixin/StoreDependencyMixin.js')
-
-};
-
-module.exports = GeneralStore;
