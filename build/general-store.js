@@ -1,6 +1,4 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.GeneralStore=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-/* @flow */
-
 'use strict';
 
 var StoreDefinition = _dereq_('./store/StoreDefinition.js');
@@ -23,7 +21,7 @@ module.exports = GeneralStore;
 /**
  * I'm not sure if it's possible to express the runtime enforcement
  * of a dispatcher instance, so I'll use weak mode for now.
- * @flow
+ * 
  **/
 
 'use strict';
@@ -50,10 +48,6 @@ var DispatcherInstance = {
 module.exports = DispatcherInstance;
 
 },{"../invariant.js":6,"./DispatcherInterface.js":3}],3:[function(_dereq_,module,exports){
-/**
- * @flow
- */
-
 'use strict';
 
 var DispatcherInterface = {
@@ -73,13 +67,9 @@ module.exports = DispatcherInterface;
 },{}],4:[function(_dereq_,module,exports){
 'use strict';
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-/**
- * @flow
- */
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var EventHandler = _dereq_('./EventHandler.js');
 
@@ -89,39 +79,35 @@ var Event = (function () {
   function Event() {
     _classCallCheck(this, Event);
 
-    this._handlers = undefined;
-
     this._handlers = {};
   }
 
+  /**
+   * Add a subscription to this event
+   *
+   * @param  callback  run when the event is triggered.
+   * @return this
+   */
+
   _createClass(Event, [{
     key: 'addHandler',
-
-    /**
-     * Add a subscription to this event
-     *
-     * @param  callback  run when the event is triggered.
-     * @return this
-     */
     value: function addHandler(callback) {
       var key = uniqueID();
       this._handlers[key] = callback;
       return new EventHandler(this, key);
     }
-  }, {
-    key: 'remove',
 
     /**
      * Destroys this event. Removes all handlers.
      *
      * @return this
      */
+  }, {
+    key: 'remove',
     value: function remove() {
       this._handlers = {};
       return this;
     }
-  }, {
-    key: 'removeHandler',
 
     /**
      * Removes a subscription by key.
@@ -129,12 +115,12 @@ var Event = (function () {
      * @param  key   id of the subscription to remove
      * @return this
      */
+  }, {
+    key: 'removeHandler',
     value: function removeHandler(key) {
       delete this._handlers[key];
       return this;
     }
-  }, {
-    key: '_runHandler',
 
     /**
      * @protected
@@ -142,54 +128,55 @@ var Event = (function () {
      *
      * @param  key  id of the handler to run
      */
+  }, {
+    key: '_runHandler',
     value: function _runHandler(key) {
       if (this._handlers.hasOwnProperty(key)) {
         this._handlers[key].call();
       }
     }
-  }, {
-    key: 'runHandlers',
 
     /**
      * Run all subscribed handlers.
      *
      * @return this
      */
+  }, {
+    key: 'runHandlers',
     value: function runHandlers() {
       Object.keys(this._handlers).forEach(this._runHandler.bind(this));
       return this;
+    }
+
+    /**
+     * Convenience method for running multiple events.
+     *
+     * @param  events  a list of events to run.
+     */
+  }], [{
+    key: 'runMultiple',
+    value: function runMultiple(events) {
+      events.forEach(function (evt) {
+        return evt.runHandlers();
+      });
     }
   }]);
 
   return Event;
 })();
 
-/**
- * Convenience method for running multiple events.
- *
- * @param  events  a list of events to run.
- */
-Event.runMultiple = function (events) {
-  events.forEach(function (evt) {
-    return evt.runHandlers();
-  });
-};
-
 module.exports = Event;
 
 },{"../uniqueid/uniqueID.js":15,"./EventHandler.js":5}],5:[function(_dereq_,module,exports){
 "use strict";
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var EventHandler = (function () {
   function EventHandler(instance, key) {
     _classCallCheck(this, EventHandler);
-
-    this._key = undefined;
-    this._instance = undefined;
 
     this._key = key;
     this._instance = instance;
@@ -210,9 +197,6 @@ var EventHandler = (function () {
 })();
 
 module.exports = EventHandler;
-/**
- * @flow
- */
 
 },{}],6:[function(_dereq_,module,exports){
 /* eslint max-len:0 */
@@ -249,7 +233,7 @@ module.exports = EventHandler;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @flow
+ * 
  */
 
 'use strict';
@@ -290,10 +274,6 @@ var invariant = function invariant(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 },{}],7:[function(_dereq_,module,exports){
-/**
- * @flow
- */
-
 'use strict';
 
 var StoreFacade = _dereq_('../store/StoreFacade.js');
@@ -365,10 +345,6 @@ function StoreDependencyMixin(dependencyMap) {
 module.exports = StoreDependencyMixin;
 
 },{"../store/StoreFacade.js":14,"./StoreDependencyMixinFields.js":8,"./StoreDependencyMixinHandlers.js":9,"./StoreDependencyMixinInitialize.js":10,"./StoreDependencyMixinState.js":11,"./StoreDependencyMixinTransitions.js":12}],8:[function(_dereq_,module,exports){
-/**
- * @flow
- */
-
 'use strict';
 
 var EventHandler = _dereq_('../event/EventHandler.js');
@@ -412,10 +388,6 @@ var StoreDependencyMixinFields = {
 module.exports = StoreDependencyMixinFields;
 
 },{"../event/EventHandler.js":5,"../store/StoreFacade.js":14}],9:[function(_dereq_,module,exports){
-/**
- * @flow
- */
-
 'use strict';
 
 var _require = _dereq_('./StoreDependencyMixinFields.js');
@@ -489,10 +461,6 @@ var StoreDependencyMixinHandlers = {
 module.exports = StoreDependencyMixinHandlers;
 
 },{"./StoreDependencyMixinFields.js":8}],10:[function(_dereq_,module,exports){
-/**
- * @flow
- */
-
 'use strict';
 
 var StoreFacade = _dereq_('../store/StoreFacade.js');
@@ -545,10 +513,6 @@ var StoreDependencyMixinInitialize = {
 module.exports = StoreDependencyMixinInitialize;
 
 },{"../invariant.js":6,"../store/StoreFacade.js":14,"./StoreDependencyMixinFields.js":8}],11:[function(_dereq_,module,exports){
-/**
- * @flow
- */
-
 'use strict';
 
 var _require = _dereq_('./StoreDependencyMixinFields.js');
@@ -574,10 +538,6 @@ var StoreDependencyMixinState = {
 module.exports = StoreDependencyMixinState;
 
 },{"./StoreDependencyMixinFields.js":8}],12:[function(_dereq_,module,exports){
-/**
- * @flow
- */
-
 'use strict';
 
 var compare = window.Immutable && typeof window.Immutable.is === 'function' ? window.Immutable.is : function (a, b) {
@@ -626,11 +586,9 @@ module.exports = StoreDependencyMixinTransitions;
 },{}],13:[function(_dereq_,module,exports){
 'use strict';
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-/* @flow */
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var DispatcherInstance = _dereq_('../dispatcher/DispatcherInstance.js');
 var DispatcherInterface = _dereq_('../dispatcher/DispatcherInterface.js');
@@ -647,10 +605,6 @@ var HINT_LINK = 'Learn more about defining stores:' + ' https://github.com/HubSp
 var StoreDefinition = (function () {
   function StoreDefinition() {
     _classCallCheck(this, StoreDefinition);
-
-    this._facade = undefined;
-    this._getter = undefined;
-    this._responses = undefined;
 
     this._facade = null;
     this._getter = null;
@@ -685,7 +639,7 @@ var StoreDefinition = (function () {
     key: 'register',
     value: function register(dispatcher) {
       dispatcher = dispatcher || DispatcherInstance.get();
-      invariant(typeof dispatcher === 'object', 'StoreDefinition.register: you haven\'t provide a dispatcher instance.' + ' You can pass an instance to' + ' GeneralStore.define().register(dispatcher) or use' + ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' + ' instance.' + ' https://github.com/HubSpot/general-store#default-dispatcher-instance');
+      invariant(dispatcher !== null && typeof dispatcher === 'object', 'StoreDefinition.register: you haven\'t provide a dispatcher instance.' + ' You can pass an instance to' + ' GeneralStore.define().register(dispatcher) or use' + ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' + ' instance.' + ' https://github.com/HubSpot/general-store#default-dispatcher-instance');
       invariant(DispatcherInterface.isDispatcher(dispatcher), 'StoreDefinition.register: Expected dispatcher to be an object' + ' with a register method, and an unregister method but got "%s".' + ' Learn more about the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface', dispatcher);
       invariant(typeof this._getter === 'function', 'StoreDefinition.register: a store cannot be registered without a' + ' getter. Use GeneralStore.define().defineGet(getter) to define a' + ' getter. %s', HINT_LINK);
       var facade = this._facade || new StoreFacade(this._getter || emptyGetter, this._responses, dispatcher);
@@ -710,14 +664,12 @@ var StoreDefinition = (function () {
 module.exports = StoreDefinition;
 
 },{"../dispatcher/DispatcherInstance.js":2,"../dispatcher/DispatcherInterface.js":3,"../invariant.js":6,"./StoreFacade.js":14}],14:[function(_dereq_,module,exports){
+/* eslint no-console:0 */
 'use strict';
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-/* eslint no-console:0 */
-/* @flow */
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var DispatcherInterface = _dereq_('../dispatcher/DispatcherInterface.js');
 var Event = _dereq_('../event/Event.js');
@@ -736,13 +688,6 @@ var StoreFacade = (function () {
   function StoreFacade(getter, responses, dispatcher) {
     _classCallCheck(this, StoreFacade);
 
-    this._dispatcher = undefined;
-    this._dispatchToken = undefined;
-    this._getter = undefined;
-    this._event = undefined;
-    this._responses = undefined;
-    this._uid = undefined;
-
     this._dispatcher = dispatcher;
     this._getter = getter;
     this._responses = responses;
@@ -752,21 +697,19 @@ var StoreFacade = (function () {
     this._dispatchToken = this._dispatcher.register(this._handleDispatch.bind(this));
   }
 
+  /**
+   * Subscribe to changes on this store.
+   *
+   * @param  callback  will run every time the store responds to a dispatcher
+   * @return this
+   */
+
   _createClass(StoreFacade, [{
     key: 'addOnChange',
-
-    /**
-     * Subscribe to changes on this store.
-     *
-     * @param  callback  will run every time the store responds to a dispatcher
-     * @return this
-     */
     value: function addOnChange(callback) {
       invariant(typeof callback === 'function', 'StoreFacade.addOnChange: expected callback to be a function' + ' but got "%s" instead. %s', callback, HINT_LINK);
       return this._event.addHandler(callback);
     }
-  }, {
-    key: 'get',
 
     /**
      * Returns the store's referenced value
@@ -774,6 +717,8 @@ var StoreFacade = (function () {
      * @param  ...  accepts any number of params
      * @return any
      */
+  }, {
+    key: 'get',
     value: function get() {
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
@@ -781,25 +726,25 @@ var StoreFacade = (function () {
 
       return this._getter.apply(null, args);
     }
-  }, {
-    key: 'getDispatcher',
 
     /**
      * Exposes the store's dispatcher instance.
      *
      * @return Dispatcher
      */
+  }, {
+    key: 'getDispatcher',
     value: function getDispatcher() {
       return this._dispatcher;
     }
-  }, {
-    key: 'getDispatchToken',
 
     /**
      * Exposes the token assigned to the store by the dispatcher
      *
      * @return number
      */
+  }, {
+    key: 'getDispatchToken',
     value: function getDispatchToken() {
       return this._dispatchToken;
     }
@@ -808,13 +753,13 @@ var StoreFacade = (function () {
     value: function getID() {
       return this._uid;
     }
-  }, {
-    key: '_handleDispatch',
 
     /**
      * @protected
      * Responds to incoming messages from the Dispatcher
      */
+  }, {
+    key: '_handleDispatch',
     value: function _handleDispatch(payload) {
       if ("development" !== 'production') {
         invariant(DispatcherInterface.isPayload(payload), 'StoreFacade: expected dispatched payload to be an object with a' + ' property "actionType" containing a string and an optional property' + ' "data" containing any value but got "%s" instead. Learn more about' + ' the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface');
@@ -825,27 +770,27 @@ var StoreFacade = (function () {
       this._responses[payload.actionType](payload.data, payload.actionType, payload);
       this.triggerChange();
     }
-  }, {
-    key: 'remove',
 
     /**
      * Destroys this instance of the store.
      * Dispatch callback is unregistered. Subscriptions are removed.
      */
+  }, {
+    key: 'remove',
     value: function remove() {
       this._dispatcher.unregister(this.getDispatchToken());
       this._event.remove();
       this._getter = getNull;
       this._responses = {};
     }
-  }, {
-    key: 'triggerChange',
 
     /**
      * Runs all of the store's subscription callbacks
      *
      * @return this
      */
+  }, {
+    key: 'triggerChange',
     value: function triggerChange() {
       if ("development" !== 'production') {
         if (!this._dispatcher.isDispatching()) {
@@ -863,15 +808,13 @@ var StoreFacade = (function () {
 module.exports = StoreFacade;
 
 },{"../dispatcher/DispatcherInterface.js":3,"../event/Event.js":4,"../event/EventHandler.js":5,"../invariant.js":6,"../uniqueid/uniqueID.js":15}],15:[function(_dereq_,module,exports){
-/**
- * @flow
- */
+'use strict';
 
-"use strict";
+var PREFIX = 'uid_';
 
 var nextUid = 0;
 function uid() {
-  return nextUid++;
+  return PREFIX + nextUid++;
 }
 
 module.exports = uid;
