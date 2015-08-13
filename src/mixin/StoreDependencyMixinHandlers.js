@@ -30,7 +30,7 @@ function flushQueue(
 
 function waitForOtherStores(
   component: Object,
-  currentStoreId: number
+  currentStoreId: string
 ): void {
   var componentStores = stores(component);
   componentStores.forEach(store => {
@@ -44,7 +44,7 @@ function waitForOtherStores(
 
 function handleStoreChange(
   component: Object,
-  storeId: number
+  storeId: string
 ): void {
   var componentQueue = queue(component);
   var queueWasEmpty = Object.keys(componentQueue).length === 0;

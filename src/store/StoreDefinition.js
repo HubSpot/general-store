@@ -69,7 +69,7 @@ class StoreDefinition {
   register(dispatcher: ?Dispatcher): StoreFacade {
     dispatcher = dispatcher || DispatcherInstance.get();
     invariant(
-      typeof dispatcher === 'object',
+      dispatcher !== null && typeof dispatcher === 'object',
       'StoreDefinition.register: you haven\'t provide a dispatcher instance.' +
       ' You can pass an instance to' +
       ' GeneralStore.define().register(dispatcher) or use' +

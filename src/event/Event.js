@@ -8,7 +8,7 @@ var uniqueID = require('../uniqueid/uniqueID.js');
 
 class Event {
 
-  _handlers: {[key:number]: Function};
+  _handlers: {[key: string]: Function};
 
   constructor() {
     this._handlers = {};
@@ -42,7 +42,7 @@ class Event {
    * @param  key   id of the subscription to remove
    * @return this
    */
-  removeHandler(key: number): Event {
+  removeHandler(key: string): Event {
     delete this._handlers[key];
     return this;
   }
@@ -53,7 +53,7 @@ class Event {
    *
    * @param  key  id of the handler to run
    */
-  _runHandler(key: number): void {
+  _runHandler(key: string): void {
     if (this._handlers.hasOwnProperty(key)) {
       this._handlers[key].call();
     }
@@ -69,15 +69,15 @@ class Event {
     return this;
   }
 
-}
+  /**
+   * Convenience method for running multiple events.
+   *
+   * @param  events  a list of events to run.
+   */
+  static runMultiple(events: Array<Event>): void {
+    events.forEach(evt => evt.runHandlers());
+  }
 
-/**
- * Convenience method for running multiple events.
- *
- * @param  events  a list of events to run.
- */
-Event.runMultiple = function (events: Array<Event>): void {
-  events.forEach(evt => evt.runHandlers());
-};
+}
 
 module.exports = Event;
