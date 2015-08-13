@@ -1,21 +1,33 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.GeneralStore=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
 
-var StoreDefinition = _dereq_('./store/StoreDefinition.js');
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.define = define;
 
-var GeneralStore = {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  define: function define() {
-    return new StoreDefinition();
-  },
+var _storeStoreDefinitionJs = _dereq_('./store/StoreDefinition.js');
 
-  DispatcherInstance: _dereq_('./dispatcher/DispatcherInstance.js'),
+var _storeStoreDefinitionJs2 = _interopRequireDefault(_storeStoreDefinitionJs);
 
-  StoreDependencyMixin: _dereq_('./mixin/StoreDependencyMixin.js')
+var _dispatcherDispatcherInstanceJs = _dereq_('./dispatcher/DispatcherInstance.js');
 
-};
+var _dispatcherDispatcherInstanceJs2 = _interopRequireDefault(_dispatcherDispatcherInstanceJs);
 
-module.exports = GeneralStore;
+var _mixinStoreDependencyMixinJs = _dereq_('./mixin/StoreDependencyMixin.js');
+
+var _mixinStoreDependencyMixinJs2 = _interopRequireDefault(_mixinStoreDependencyMixinJs);
+
+function define() {
+  return new _storeStoreDefinitionJs2['default']();
+}
+
+var DispatcherInstance = _dispatcherDispatcherInstanceJs2['default'];
+exports.DispatcherInstance = DispatcherInstance;
+var StoreDependencyMixin = _mixinStoreDependencyMixinJs2['default'];
+exports.StoreDependencyMixin = StoreDependencyMixin;
 
 },{"./dispatcher/DispatcherInstance.js":2,"./mixin/StoreDependencyMixin.js":7,"./store/StoreDefinition.js":13}],2:[function(_dereq_,module,exports){
 /**
@@ -26,54 +38,71 @@ module.exports = GeneralStore;
 
 'use strict';
 
-var DispatcherInterface = _dereq_('./DispatcherInterface.js');
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-var invariant = _dereq_('../invariant.js');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _DispatcherInterfaceJs = _dereq_('./DispatcherInterface.js');
+
+var _invariantJs = _dereq_('../invariant.js');
+
+var _invariantJs2 = _interopRequireDefault(_invariantJs);
 
 var instance = null;
 
 var DispatcherInstance = {
-
   get: function get() {
     return instance;
   },
 
   set: function set(dispatcher) {
-    invariant(DispatcherInterface.isDispatcher(dispatcher), 'DispatcherInstance.set: Expected dispatcher to be an object' + ' with a register method, and an unregister method but got "%s".' + ' Learn more about the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface', dispatcher);
+    (0, _invariantJs2['default'])((0, _DispatcherInterfaceJs.isDispatcher)(dispatcher), 'DispatcherInstance.set: Expected dispatcher to be an object' + ' with a register method, and an unregister method but got "%s".' + ' Learn more about the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface', dispatcher);
     instance = dispatcher;
   }
-
 };
 
-module.exports = DispatcherInstance;
+exports['default'] = DispatcherInstance;
+module.exports = exports['default'];
 
 },{"../invariant.js":6,"./DispatcherInterface.js":3}],3:[function(_dereq_,module,exports){
 'use strict';
 
-var DispatcherInterface = {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.isDispatcher = isDispatcher;
+exports.isPayload = isPayload;
 
-  isDispatcher: function isDispatcher(dispatcher) {
-    return typeof dispatcher === 'object' && typeof dispatcher.register === 'function' && typeof dispatcher.unregister === 'function';
-  },
+function isDispatcher(dispatcher) {
+  return typeof dispatcher === 'object' && typeof dispatcher.register === 'function' && typeof dispatcher.unregister === 'function';
+}
 
-  isPayload: function isPayload(payload) {
-    return payload !== null && typeof payload === 'object' && typeof payload.actionType === 'string';
-  }
-
-};
-
-module.exports = DispatcherInterface;
+function isPayload(payload) {
+  return payload !== null && typeof payload === 'object' && typeof payload.actionType === 'string';
+}
 
 },{}],4:[function(_dereq_,module,exports){
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var EventHandler = _dereq_('./EventHandler.js');
+var _EventHandlerJs = _dereq_('./EventHandler.js');
 
-var uniqueID = _dereq_('../uniqueid/uniqueID.js');
+var _EventHandlerJs2 = _interopRequireDefault(_EventHandlerJs);
+
+var _uniqueidUniqueIDJs = _dereq_('../uniqueid/uniqueID.js');
+
+var _uniqueidUniqueIDJs2 = _interopRequireDefault(_uniqueidUniqueIDJs);
 
 var Event = (function () {
   function Event() {
@@ -92,9 +121,9 @@ var Event = (function () {
   _createClass(Event, [{
     key: 'addHandler',
     value: function addHandler(callback) {
-      var key = uniqueID();
+      var key = (0, _uniqueidUniqueIDJs2['default'])();
       this._handlers[key] = callback;
-      return new EventHandler(this, key);
+      return new _EventHandlerJs2['default'](this, key);
     }
 
     /**
@@ -165,10 +194,15 @@ var Event = (function () {
   return Event;
 })();
 
-module.exports = Event;
+exports['default'] = Event;
+module.exports = exports['default'];
 
 },{"../uniqueid/uniqueID.js":15,"./EventHandler.js":5}],5:[function(_dereq_,module,exports){
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -196,7 +230,8 @@ var EventHandler = (function () {
   return EventHandler;
 })();
 
-module.exports = EventHandler;
+exports["default"] = EventHandler;
+module.exports = exports["default"];
 
 },{}],6:[function(_dereq_,module,exports){
 /* eslint max-len:0 */
@@ -249,7 +284,12 @@ module.exports = EventHandler;
  * will remain to ensure logic does not differ in production.
  */
 
-var invariant = function invariant(condition, format, a, b, c, d, e, f) {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = invariant;
+
+function invariant(condition, format, a, b, c, d, e, f) {
   if ("development" !== 'production') {
     if (format === undefined) {
       throw new Error('invariant requires an error message argument');
@@ -269,37 +309,33 @@ var invariant = function invariant(condition, format, a, b, c, d, e, f) {
     }
     throw error;
   }
-};
+}
 
-module.exports = invariant;
+module.exports = exports['default'];
 
 },{}],7:[function(_dereq_,module,exports){
 'use strict';
 
-var StoreFacade = _dereq_('../store/StoreFacade.js');
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = StoreDependencyMixin;
 
-var _require = _dereq_('./StoreDependencyMixinFields.js');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var dependencies = _require.dependencies;
-var stores = _require.stores;
+var _storeStoreFacadeJs = _dereq_('../store/StoreFacade.js');
 
-var _require2 = _dereq_('./StoreDependencyMixinHandlers.js');
+var _storeStoreFacadeJs2 = _interopRequireDefault(_storeStoreFacadeJs);
 
-var cleanupHandlers = _require2.cleanupHandlers;
-var setupHandlers = _require2.setupHandlers;
+var _StoreDependencyMixinFieldsJs = _dereq_('./StoreDependencyMixinFields.js');
 
-var _require3 = _dereq_('./StoreDependencyMixinInitialize.js');
+var _StoreDependencyMixinHandlersJs = _dereq_('./StoreDependencyMixinHandlers.js');
 
-var applyDependencies = _require3.applyDependencies;
+var _StoreDependencyMixinInitializeJs = _dereq_('./StoreDependencyMixinInitialize.js');
 
-var _require4 = _dereq_('./StoreDependencyMixinState.js');
+var _StoreDependencyMixinStateJs = _dereq_('./StoreDependencyMixinState.js');
 
-var getDependencyState = _require4.getDependencyState;
-
-var _require5 = _dereq_('./StoreDependencyMixinTransitions.js');
-
-var hasPropsChanged = _require5.hasPropsChanged;
-var hasStateChanged = _require5.hasStateChanged;
+var _StoreDependencyMixinTransitionsJs = _dereq_('./StoreDependencyMixinTransitions.js');
 
 function StoreDependencyMixin(dependencyMap) {
   var fieldNames = Object.keys(dependencyMap);
@@ -310,45 +346,61 @@ function StoreDependencyMixin(dependencyMap) {
       if (!isFirstMixin) {
         return;
       }
-      setupHandlers(this);
+      (0, _StoreDependencyMixinHandlersJs.setupHandlers)(this);
     },
 
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-      if (!isFirstMixin || !hasPropsChanged(this.props, nextProps)) {
+      if (!isFirstMixin || !(0, _StoreDependencyMixinTransitionsJs.hasPropsChanged)(this.props, nextProps)) {
         return;
       }
-      this.setState(getDependencyState(this, nextProps, this.state, null));
+      this.setState((0, _StoreDependencyMixinStateJs.getDependencyState)(this, nextProps, this.state, null));
     },
 
     componentWillUnmount: function componentWillUnmount() {
       if (!isFirstMixin) {
         return;
       }
-      cleanupHandlers(this);
+      (0, _StoreDependencyMixinHandlersJs.cleanupHandlers)(this);
     },
 
     componentDidUpdate: function componentDidUpdate(oldProps, oldState) {
-      if (!isFirstMixin || !hasStateChanged(dependencies(this), oldState, this.state)) {
+      if (!isFirstMixin || !(0, _StoreDependencyMixinTransitionsJs.hasStateChanged)((0, _StoreDependencyMixinFieldsJs.dependencies)(this), oldState, this.state)) {
         return;
       }
-      this.setState(getDependencyState(this, this.props, this.state, null));
+      this.setState((0, _StoreDependencyMixinStateJs.getDependencyState)(this, this.props, this.state, null));
     },
 
     getInitialState: function getInitialState() {
-      isFirstMixin = !stores(this).length;
-      applyDependencies(this, dependencyMap);
-      return getDependencyState(this, this.props, this.state, Object.keys(dependencyMap));
+      isFirstMixin = !(0, _StoreDependencyMixinFieldsJs.stores)(this).length;
+      (0, _StoreDependencyMixinInitializeJs.applyDependencies)(this, dependencyMap);
+      return (0, _StoreDependencyMixinStateJs.getDependencyState)(this, this.props, this.state, Object.keys(dependencyMap));
     }
   };
 }
 
-module.exports = StoreDependencyMixin;
+module.exports = exports['default'];
 
 },{"../store/StoreFacade.js":14,"./StoreDependencyMixinFields.js":8,"./StoreDependencyMixinHandlers.js":9,"./StoreDependencyMixinInitialize.js":10,"./StoreDependencyMixinState.js":11,"./StoreDependencyMixinTransitions.js":12}],8:[function(_dereq_,module,exports){
 'use strict';
 
-var EventHandler = _dereq_('../event/EventHandler.js');
-var StoreFacade = _dereq_('../store/StoreFacade.js');
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.dependencies = dependencies;
+exports.handlers = handlers;
+exports.queue = queue;
+exports.stores = stores;
+exports.storeFields = storeFields;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _eventEventHandlerJs = _dereq_('../event/EventHandler.js');
+
+var _eventEventHandlerJs2 = _interopRequireDefault(_eventEventHandlerJs);
+
+var _storeStoreFacadeJs = _dereq_('../store/StoreFacade.js');
+
+var _storeStoreFacadeJs2 = _interopRequireDefault(_storeStoreFacadeJs);
 
 var DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
 var HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
@@ -363,44 +415,40 @@ function getKey(key, identity, component) {
   return component[key];
 }
 
-var StoreDependencyMixinFields = {
-  dependencies: function dependencies(component) {
-    return getKey(DEPENDENCIES_KEY, {}, component);
-  },
+function dependencies(component) {
+  return getKey(DEPENDENCIES_KEY, {}, component);
+}
 
-  handlers: function handlers(component) {
-    return getKey(HANDLERS_KEY, [], component);
-  },
+function handlers(component) {
+  return getKey(HANDLERS_KEY, [], component);
+}
 
-  queue: function queue(component) {
-    return getKey(QUEUE_KEY, {}, component);
-  },
+function queue(component) {
+  return getKey(QUEUE_KEY, {}, component);
+}
 
-  stores: function stores(component) {
-    return getKey(STORES_KEY, [], component);
-  },
+function stores(component) {
+  return getKey(STORES_KEY, [], component);
+}
 
-  storeFields: function storeFields(component) {
-    return getKey(STORE_FIELDS_KEY, {}, component);
-  }
-};
-
-module.exports = StoreDependencyMixinFields;
+function storeFields(component) {
+  return getKey(STORE_FIELDS_KEY, {}, component);
+}
 
 },{"../event/EventHandler.js":5,"../store/StoreFacade.js":14}],9:[function(_dereq_,module,exports){
 'use strict';
 
-var _require = _dereq_('./StoreDependencyMixinFields.js');
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.cleanupHandlers = cleanupHandlers;
+exports.setupHandlers = setupHandlers;
 
-var dependencies = _require.dependencies;
-var handlers = _require.handlers;
-var queue = _require.queue;
-var storeFields = _require.storeFields;
-var stores = _require.stores;
+var _StoreDependencyMixinFieldsJs = _dereq_('./StoreDependencyMixinFields.js');
 
 function flushQueue(component) {
-  var componentDependencies = dependencies(component);
-  var componentQueue = queue(component);
+  var componentDependencies = (0, _StoreDependencyMixinFieldsJs.dependencies)(component);
+  var componentQueue = (0, _StoreDependencyMixinFieldsJs.queue)(component);
   var stateUpdate = {};
   Object.keys(componentQueue).forEach(function (field) {
     var fieldDef = componentDependencies[field];
@@ -411,7 +459,7 @@ function flushQueue(component) {
 }
 
 function waitForOtherStores(component, currentStoreId) {
-  var componentStores = stores(component);
+  var componentStores = (0, _StoreDependencyMixinFieldsJs.stores)(component);
   componentStores.forEach(function (store) {
     var dispatcher = store.getDispatcher();
     if (store.getID() === currentStoreId || !dispatcher.isDispatching()) {
@@ -422,9 +470,9 @@ function waitForOtherStores(component, currentStoreId) {
 }
 
 function handleStoreChange(component, storeId) {
-  var componentQueue = queue(component);
+  var componentQueue = (0, _StoreDependencyMixinFieldsJs.queue)(component);
   var queueWasEmpty = Object.keys(componentQueue).length === 0;
-  storeFields(component)[storeId].forEach(function (field) {
+  (0, _StoreDependencyMixinFieldsJs.storeFields)(component)[storeId].forEach(function (field) {
     if (componentQueue.hasOwnProperty(field)) {
       return;
     }
@@ -441,104 +489,108 @@ function handleStoreChange(component, storeId) {
   flushQueue(component);
 }
 
-var StoreDependencyMixinHandlers = {
-  cleanupHandlers: function cleanupHandlers(component) {
-    var componentHandlers = handlers(component);
-    while (componentHandlers.length) {
-      componentHandlers.pop().remove();
-    }
-  },
-
-  setupHandlers: function setupHandlers(component) {
-    var componentHandlers = handlers(component);
-    var componentStores = stores(component);
-    componentStores.forEach(function (store) {
-      componentHandlers.push(store.addOnChange(handleStoreChange.bind(null, component, store.getID())));
-    });
+function cleanupHandlers(component) {
+  var componentHandlers = (0, _StoreDependencyMixinFieldsJs.handlers)(component);
+  while (componentHandlers.length) {
+    componentHandlers.pop().remove();
   }
-};
+}
 
-module.exports = StoreDependencyMixinHandlers;
+function setupHandlers(component) {
+  var componentHandlers = (0, _StoreDependencyMixinFieldsJs.handlers)(component);
+  var componentStores = (0, _StoreDependencyMixinFieldsJs.stores)(component);
+  componentStores.forEach(function (store) {
+    componentHandlers.push(store.addOnChange(handleStoreChange.bind(null, component, store.getID())));
+  });
+}
 
 },{"./StoreDependencyMixinFields.js":8}],10:[function(_dereq_,module,exports){
 'use strict';
 
-var StoreFacade = _dereq_('../store/StoreFacade.js');
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.applyDependencies = applyDependencies;
 
-var invariant = _dereq_('../invariant.js');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _require = _dereq_('./StoreDependencyMixinFields.js');
+var _invariantJs = _dereq_('../invariant.js');
 
-var dependencies = _require.dependencies;
-var storeFields = _require.storeFields;
-var stores = _require.stores;
+var _invariantJs2 = _interopRequireDefault(_invariantJs);
+
+var _StoreDependencyMixinFieldsJs = _dereq_('./StoreDependencyMixinFields.js');
+
+var _storeStoreFacadeJs = _dereq_('../store/StoreFacade.js');
+
+var _storeStoreFacadeJs2 = _interopRequireDefault(_storeStoreFacadeJs);
 
 function defaultDeref(props, state, storeInstances) {
   return storeInstances[0].get();
 }
 
-var StoreDependencyMixinInitialize = {
-  applyDependencies: function applyDependencies(component, dependencyMap) {
-    var componentDependencies = dependencies(component);
-    var componentStoreFields = storeFields(component);
-    var componentStores = stores(component);
-    Object.keys(dependencyMap).forEach(function (field) {
-      var dependency = dependencyMap[field];
-      var dependencyStores;
-      if (dependency instanceof StoreFacade) {
-        dependencyStores = [dependency];
-        invariant(!componentDependencies.hasOwnProperty(field), 'StoreDependencyMixin: field "%s" is already defined', field);
-        componentDependencies[field] = {
-          deref: defaultDeref,
-          stores: dependencyStores
-        };
-      } else {
-        dependencyStores = dependency.stores;
-        componentDependencies[field] = dependency;
+function applyDependencies(component, dependencyMap) {
+  var componentDependencies = (0, _StoreDependencyMixinFieldsJs.dependencies)(component);
+  var componentStoreFields = (0, _StoreDependencyMixinFieldsJs.storeFields)(component);
+  var componentStores = (0, _StoreDependencyMixinFieldsJs.stores)(component);
+  Object.keys(dependencyMap).forEach(function (field) {
+    var dependency = dependencyMap[field];
+    var dependencyStores;
+    if (dependency instanceof _storeStoreFacadeJs2['default']) {
+      dependencyStores = [dependency];
+      (0, _invariantJs2['default'])(!componentDependencies.hasOwnProperty(field), 'StoreDependencyMixin: field "%s" is already defined', field);
+      componentDependencies[field] = {
+        deref: defaultDeref,
+        stores: dependencyStores
+      };
+    } else {
+      dependencyStores = dependency.stores;
+      componentDependencies[field] = dependency;
+    }
+    // update the store-to-field map
+    dependencyStores.forEach(function (store) {
+      var storeId = store.getID();
+      if (!componentStoreFields.hasOwnProperty(storeId)) {
+        componentStoreFields[storeId] = [];
+        // if we haven't seen this store bind a change handler
+        componentStores.push(store);
       }
-      // update the store-to-field map
-      dependencyStores.forEach(function (store) {
-        var storeId = store.getID();
-        if (!componentStoreFields.hasOwnProperty(storeId)) {
-          componentStoreFields[storeId] = [];
-          // if we haven't seen this store bind a change handler
-          componentStores.push(store);
-        }
-        componentStoreFields[storeId].push(field);
-      });
+      componentStoreFields[storeId].push(field);
     });
-  }
-};
-
-module.exports = StoreDependencyMixinInitialize;
+  });
+}
 
 },{"../invariant.js":6,"../store/StoreFacade.js":14,"./StoreDependencyMixinFields.js":8}],11:[function(_dereq_,module,exports){
 'use strict';
 
-var _require = _dereq_('./StoreDependencyMixinFields.js');
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.getDependencyState = getDependencyState;
 
-var dependencies = _require.dependencies;
+var _StoreDependencyMixinFieldsJs = _dereq_('./StoreDependencyMixinFields.js');
 
-var StoreDependencyMixinState = {
-  getDependencyState: function getDependencyState(component, props, state, fieldNames) {
-    var componentDependencies = dependencies(component);
-    fieldNames = fieldNames || Object.keys(componentDependencies);
-    var dependencyState = {};
-    fieldNames.forEach(function (field) {
-      var _componentDependencies$field = componentDependencies[field];
-      var deref = _componentDependencies$field.deref;
-      var stores = _componentDependencies$field.stores;
+function getDependencyState(component, props, state, fieldNames) {
+  var componentDependencies = (0, _StoreDependencyMixinFieldsJs.dependencies)(component);
+  fieldNames = fieldNames || Object.keys(componentDependencies);
+  var dependencyState = {};
+  fieldNames.forEach(function (field) {
+    var _componentDependencies$field = componentDependencies[field];
+    var deref = _componentDependencies$field.deref;
+    var stores = _componentDependencies$field.stores;
 
-      dependencyState[field] = deref(props, state, stores);
-    });
-    return dependencyState;
-  }
-};
-
-module.exports = StoreDependencyMixinState;
+    dependencyState[field] = deref(props, state, stores);
+  });
+  return dependencyState;
+}
 
 },{"./StoreDependencyMixinFields.js":8}],12:[function(_dereq_,module,exports){
 'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.hasPropsChanged = hasPropsChanged;
+exports.hasStateChanged = hasStateChanged;
 
 var compare = window.Immutable && typeof window.Immutable.is === 'function' ? window.Immutable.is : function (a, b) {
   return a === b;
@@ -568,33 +620,43 @@ function shallowEqual(is, objA, objB) {
   return true;
 }
 
-var StoreDependencyMixinTransitions = {
-  hasPropsChanged: function hasPropsChanged(oldProps, nextProps) {
-    return !shallowEqual(compareKey, oldProps, nextProps);
-  },
+function hasPropsChanged(oldProps, nextProps) {
+  return !shallowEqual(compareKey, oldProps, nextProps);
+}
 
-  hasStateChanged: function hasStateChanged(stores, oldState, nextState) {
-    return !shallowEqual(function (key, objA, objB) {
-      return stores.hasOwnProperty(key) || // if the value is a store, ignore it
-      compare(objA[key], objB[key]);
-    }, oldState, nextState);
-  }
-};
-
-module.exports = StoreDependencyMixinTransitions;
+function hasStateChanged(stores, oldState, nextState) {
+  return !shallowEqual(function (key, objA, objB) {
+    return stores.hasOwnProperty(key) || // if the value is a store, ignore it
+    compare(objA[key], objB[key]);
+  }, oldState, nextState);
+}
 
 },{}],13:[function(_dereq_,module,exports){
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var DispatcherInstance = _dereq_('../dispatcher/DispatcherInstance.js');
-var DispatcherInterface = _dereq_('../dispatcher/DispatcherInterface.js');
-var StoreFacade = _dereq_('./StoreFacade.js');
+var _dispatcherDispatcherInstanceJs = _dereq_('../dispatcher/DispatcherInstance.js');
 
-var invariant = _dereq_('../invariant.js');
+var _dispatcherDispatcherInstanceJs2 = _interopRequireDefault(_dispatcherDispatcherInstanceJs);
+
+var _dispatcherDispatcherInterfaceJs = _dereq_('../dispatcher/DispatcherInterface.js');
+
+var _invariantJs = _dereq_('../invariant.js');
+
+var _invariantJs2 = _interopRequireDefault(_invariantJs);
+
+var _StoreFacadeJs = _dereq_('./StoreFacade.js');
+
+var _StoreFacadeJs2 = _interopRequireDefault(_StoreFacadeJs);
 
 function emptyGetter() {
   return null;
@@ -614,8 +676,8 @@ var StoreDefinition = (function () {
   _createClass(StoreDefinition, [{
     key: 'defineGet',
     value: function defineGet(getter) {
-      invariant(!this.isRegistered(), 'StoreDefinition.defineGet: this store definition cannot be modified' + ' because is has already been registered with a dispatcher. %s', HINT_LINK);
-      invariant(typeof getter === 'function', 'StoreDefinition.defineGet: expected getter to be a function but got' + ' "%s" instead. %s', getter, HINT_LINK);
+      (0, _invariantJs2['default'])(!this.isRegistered(), 'StoreDefinition.defineGet: this store definition cannot be modified' + ' because is has already been registered with a dispatcher. %s', HINT_LINK);
+      (0, _invariantJs2['default'])(typeof getter === 'function', 'StoreDefinition.defineGet: expected getter to be a function but got' + ' "%s" instead. %s', getter, HINT_LINK);
       this._getter = getter;
       return this;
     }
@@ -624,7 +686,7 @@ var StoreDefinition = (function () {
     value: function defineResponseTo(actionTypes, response) {
       var _this = this;
 
-      invariant(!this.isRegistered(), 'StoreDefinition.defineResponseTo: this store definition cannot be' + ' modified because is has already been registered with a dispatcher. %s', HINT_LINK);
+      (0, _invariantJs2['default'])(!this.isRegistered(), 'StoreDefinition.defineResponseTo: this store definition cannot be' + ' modified because is has already been registered with a dispatcher. %s', HINT_LINK);
       [].concat(actionTypes).forEach(function (actionType) {
         return _this._setResponse(actionType, response);
       });
@@ -633,16 +695,16 @@ var StoreDefinition = (function () {
   }, {
     key: 'isRegistered',
     value: function isRegistered() {
-      return this._facade instanceof StoreFacade;
+      return this._facade instanceof _StoreFacadeJs2['default'];
     }
   }, {
     key: 'register',
     value: function register(dispatcher) {
-      dispatcher = dispatcher || DispatcherInstance.get();
-      invariant(dispatcher !== null && typeof dispatcher === 'object', 'StoreDefinition.register: you haven\'t provide a dispatcher instance.' + ' You can pass an instance to' + ' GeneralStore.define().register(dispatcher) or use' + ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' + ' instance.' + ' https://github.com/HubSpot/general-store#default-dispatcher-instance');
-      invariant(DispatcherInterface.isDispatcher(dispatcher), 'StoreDefinition.register: Expected dispatcher to be an object' + ' with a register method, and an unregister method but got "%s".' + ' Learn more about the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface', dispatcher);
-      invariant(typeof this._getter === 'function', 'StoreDefinition.register: a store cannot be registered without a' + ' getter. Use GeneralStore.define().defineGet(getter) to define a' + ' getter. %s', HINT_LINK);
-      var facade = this._facade || new StoreFacade(this._getter || emptyGetter, this._responses, dispatcher);
+      dispatcher = dispatcher || _dispatcherDispatcherInstanceJs2['default'].get();
+      (0, _invariantJs2['default'])(dispatcher !== null && typeof dispatcher === 'object', 'StoreDefinition.register: you haven\'t provide a dispatcher instance.' + ' You can pass an instance to' + ' GeneralStore.define().register(dispatcher) or use' + ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' + ' instance.' + ' https://github.com/HubSpot/general-store#default-dispatcher-instance');
+      (0, _invariantJs2['default'])((0, _dispatcherDispatcherInterfaceJs.isDispatcher)(dispatcher), 'StoreDefinition.register: Expected dispatcher to be an object' + ' with a register method, and an unregister method but got "%s".' + ' Learn more about the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface', dispatcher);
+      (0, _invariantJs2['default'])(typeof this._getter === 'function', 'StoreDefinition.register: a store cannot be registered without a' + ' getter. Use GeneralStore.define().defineGet(getter) to define a' + ' getter. %s', HINT_LINK);
+      var facade = this._facade || new _StoreFacadeJs2['default'](this._getter || emptyGetter, this._responses, dispatcher);
       if (this._facade === null) {
         this._facade = facade;
       }
@@ -651,9 +713,9 @@ var StoreDefinition = (function () {
   }, {
     key: '_setResponse',
     value: function _setResponse(actionType, response) {
-      invariant(typeof actionType === 'string', 'StoreDefinition.defineResponseTo: expected actionType to be a string' + ' but got "%s" instead. %s', actionType, HINT_LINK);
-      invariant(!this._responses.hasOwnProperty(actionType), 'StoreDefinition.defineResponseTo: conflicting resposes for actionType' + ' "%s". Only one response can be defined per actionType per Store. %s', actionType, HINT_LINK);
-      invariant(typeof response === 'function', 'StoreDefinition.defineResponseTo: expected response to be a function' + ' but got "%s" instead. %s', response);
+      (0, _invariantJs2['default'])(typeof actionType === 'string', 'StoreDefinition.defineResponseTo: expected actionType to be a string' + ' but got "%s" instead. %s', actionType, HINT_LINK);
+      (0, _invariantJs2['default'])(!this._responses.hasOwnProperty(actionType), 'StoreDefinition.defineResponseTo: conflicting resposes for actionType' + ' "%s". Only one response can be defined per actionType per Store. %s', actionType, HINT_LINK);
+      (0, _invariantJs2['default'])(typeof response === 'function', 'StoreDefinition.defineResponseTo: expected response to be a function' + ' but got "%s" instead. %s', response);
       this._responses[actionType] = response;
     }
   }]);
@@ -661,22 +723,40 @@ var StoreDefinition = (function () {
   return StoreDefinition;
 })();
 
-module.exports = StoreDefinition;
+exports['default'] = StoreDefinition;
+module.exports = exports['default'];
 
 },{"../dispatcher/DispatcherInstance.js":2,"../dispatcher/DispatcherInterface.js":3,"../invariant.js":6,"./StoreFacade.js":14}],14:[function(_dereq_,module,exports){
 /* eslint no-console:0 */
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var DispatcherInterface = _dereq_('../dispatcher/DispatcherInterface.js');
-var Event = _dereq_('../event/Event.js');
-var EventHandler = _dereq_('../event/EventHandler.js');
+var _dispatcherDispatcherInterfaceJs = _dereq_('../dispatcher/DispatcherInterface.js');
 
-var uniqueID = _dereq_('../uniqueid/uniqueID.js');
-var invariant = _dereq_('../invariant.js');
+var _eventEventJs = _dereq_('../event/Event.js');
+
+var _eventEventJs2 = _interopRequireDefault(_eventEventJs);
+
+var _eventEventHandlerJs = _dereq_('../event/EventHandler.js');
+
+var _eventEventHandlerJs2 = _interopRequireDefault(_eventEventHandlerJs);
+
+var _invariantJs = _dereq_('../invariant.js');
+
+var _invariantJs2 = _interopRequireDefault(_invariantJs);
+
+var _uniqueidUniqueIDJs = _dereq_('../uniqueid/uniqueID.js');
+
+var _uniqueidUniqueIDJs2 = _interopRequireDefault(_uniqueidUniqueIDJs);
 
 var HINT_LINK = 'Learn more about using the Store API:' + ' https://github.com/HubSpot/general-store#using-the-store-api';
 
@@ -691,8 +771,8 @@ var StoreFacade = (function () {
     this._dispatcher = dispatcher;
     this._getter = getter;
     this._responses = responses;
-    this._event = new Event();
-    this._uid = uniqueID();
+    this._event = new _eventEventJs2['default']();
+    this._uid = (0, _uniqueidUniqueIDJs2['default'])();
 
     this._dispatchToken = this._dispatcher.register(this._handleDispatch.bind(this));
   }
@@ -707,7 +787,7 @@ var StoreFacade = (function () {
   _createClass(StoreFacade, [{
     key: 'addOnChange',
     value: function addOnChange(callback) {
-      invariant(typeof callback === 'function', 'StoreFacade.addOnChange: expected callback to be a function' + ' but got "%s" instead. %s', callback, HINT_LINK);
+      (0, _invariantJs2['default'])(typeof callback === 'function', 'StoreFacade.addOnChange: expected callback to be a function' + ' but got "%s" instead. %s', callback, HINT_LINK);
       return this._event.addHandler(callback);
     }
 
@@ -762,7 +842,7 @@ var StoreFacade = (function () {
     key: '_handleDispatch',
     value: function _handleDispatch(payload) {
       if ("development" !== 'production') {
-        invariant(DispatcherInterface.isPayload(payload), 'StoreFacade: expected dispatched payload to be an object with a' + ' property "actionType" containing a string and an optional property' + ' "data" containing any value but got "%s" instead. Learn more about' + ' the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface');
+        (0, _invariantJs2['default'])((0, _dispatcherDispatcherInterfaceJs.isPayload)(payload), 'StoreFacade: expected dispatched payload to be an object with a' + ' property "actionType" containing a string and an optional property' + ' "data" containing any value but got "%s" instead. Learn more about' + ' the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface');
       }
       if (!this._responses.hasOwnProperty(payload.actionType)) {
         return;
@@ -805,19 +885,26 @@ var StoreFacade = (function () {
   return StoreFacade;
 })();
 
-module.exports = StoreFacade;
+exports['default'] = StoreFacade;
+module.exports = exports['default'];
 
 },{"../dispatcher/DispatcherInterface.js":3,"../event/Event.js":4,"../event/EventHandler.js":5,"../invariant.js":6,"../uniqueid/uniqueID.js":15}],15:[function(_dereq_,module,exports){
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = uid;
+
 var PREFIX = 'uid_';
 
 var nextUid = 0;
+
 function uid() {
   return PREFIX + nextUid++;
 }
 
-module.exports = uid;
+module.exports = exports['default'];
 
 },{}]},{},[1])(1)
 });
