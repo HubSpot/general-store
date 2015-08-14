@@ -1,4 +1,100 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.GeneralStore=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+/**
+ *  Copyright (c) 2014-2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+/**
+ * An extension of the "same-value" algorithm as [described for use by ES6 Map
+ * and Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Key_equality)
+ *
+ * NaN is considered the same as NaN, however -0 and 0 are considered the same
+ * value, which is different from the algorithm described by
+ * [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is).
+ *
+ * This is extended further to allow Objects to describe the values they
+ * represent, by way of `valueOf` or `equals` (and `hashCode`).
+ *
+ * Note: because of this extension, the key equality of Immutable.Map and the
+ * value equality of Immutable.Set will differ from ES6 Map and Set.
+ *
+ * ### Defining custom values
+ *
+ * The easiest way to describe the value an object represents is by implementing
+ * `valueOf`. For example, `Date` represents a value by returning a unix
+ * timestamp for `valueOf`:
+ *
+ *     var date1 = new Date(1234567890000); // Fri Feb 13 2009 ...
+ *     var date2 = new Date(1234567890000);
+ *     date1.valueOf(); // 1234567890000
+ *     assert( date1 !== date2 );
+ *     assert( Immutable.is( date1, date2 ) );
+ *
+ * Note: overriding `valueOf` may have other implications if you use this object
+ * where JavaScript expects a primitive, such as implicit string coercion.
+ *
+ * For more complex types, especially collections, implementing `valueOf` may
+ * not be performant. An alternative is to implement `equals` and `hashCode`.
+ *
+ * `equals` takes another object, presumably of similar type, and returns true
+ * if the it is equal. Equality is symmetrical, so the same result should be
+ * returned if this and the argument are flipped.
+ *
+ *     assert( a.equals(b) === b.equals(a) );
+ *
+ * `hashCode` returns a 32bit integer number representing the object which will
+ * be used to determine how to store the value object in a Map or Set. You must
+ * provide both or neither methods, one must not exist without the other.
+ *
+ * Also, an important relationship between these methods must be upheld: if two
+ * values are equal, they *must* return the same hashCode. If the values are not
+ * equal, they might have the same hashCode; this is called a hash collision,
+ * and while undesirable for performance reasons, it is acceptable.
+ *
+ *     if (a.equals(b)) {
+ *       assert( a.hashCode() === b.hashCode() );
+ *     }
+ *
+ * All Immutable collections implement `equals` and `hashCode`.
+ *
+ */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = is;
+
+function is(valueA, valueB) {
+  if (valueA === valueB || valueA !== valueA && valueB !== valueB) {
+    return true;
+  }
+  if (!valueA || !valueB) {
+    return false;
+  }
+  if (typeof valueA.valueOf === 'function' && typeof valueB.valueOf === 'function') {
+    valueA = valueA.valueOf();
+    valueB = valueB.valueOf();
+    if (valueA === valueB || valueA !== valueA && valueB !== valueB) {
+      return true;
+    }
+    if (!valueA || !valueB) {
+      return false;
+    }
+  }
+  if (typeof valueA.equals === 'function' && typeof valueB.equals === 'function' && valueA.equals(valueB)) {
+    return true;
+  }
+  return false;
+}
+
+module.exports = exports['default'];
+
+},{}],2:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -29,7 +125,7 @@ exports.DispatcherInstance = DispatcherInstance;
 var StoreDependencyMixin = _mixinStoreDependencyMixinJs2['default'];
 exports.StoreDependencyMixin = StoreDependencyMixin;
 
-},{"./dispatcher/DispatcherInstance.js":2,"./mixin/StoreDependencyMixin.js":7,"./store/StoreDefinition.js":13}],2:[function(_dereq_,module,exports){
+},{"./dispatcher/DispatcherInstance.js":3,"./mixin/StoreDependencyMixin.js":8,"./store/StoreDefinition.js":14}],3:[function(_dereq_,module,exports){
 /**
  * I'm not sure if it's possible to express the runtime enforcement
  * of a dispatcher instance, so I'll use weak mode for now.
@@ -66,7 +162,7 @@ var DispatcherInstance = {
 exports['default'] = DispatcherInstance;
 module.exports = exports['default'];
 
-},{"../invariant.js":6,"./DispatcherInterface.js":3}],3:[function(_dereq_,module,exports){
+},{"../invariant.js":7,"./DispatcherInterface.js":4}],4:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -83,7 +179,7 @@ function isPayload(payload) {
   return payload !== null && typeof payload === 'object' && typeof payload.actionType === 'string';
 }
 
-},{}],4:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -197,7 +293,7 @@ var Event = (function () {
 exports['default'] = Event;
 module.exports = exports['default'];
 
-},{"../uniqueid/uniqueID.js":15,"./EventHandler.js":5}],5:[function(_dereq_,module,exports){
+},{"../uniqueid/uniqueID.js":16,"./EventHandler.js":6}],6:[function(_dereq_,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -233,7 +329,7 @@ var EventHandler = (function () {
 exports["default"] = EventHandler;
 module.exports = exports["default"];
 
-},{}],6:[function(_dereq_,module,exports){
+},{}],7:[function(_dereq_,module,exports){
 /* eslint max-len:0 */
 
 /**
@@ -313,7 +409,7 @@ function invariant(condition, format, a, b, c, d, e, f) {
 
 module.exports = exports['default'];
 
-},{}],7:[function(_dereq_,module,exports){
+},{}],8:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -380,7 +476,7 @@ function StoreDependencyMixin(dependencyMap) {
 
 module.exports = exports['default'];
 
-},{"../store/StoreFacade.js":14,"./StoreDependencyMixinFields.js":8,"./StoreDependencyMixinHandlers.js":9,"./StoreDependencyMixinInitialize.js":10,"./StoreDependencyMixinState.js":11,"./StoreDependencyMixinTransitions.js":12}],8:[function(_dereq_,module,exports){
+},{"../store/StoreFacade.js":15,"./StoreDependencyMixinFields.js":9,"./StoreDependencyMixinHandlers.js":10,"./StoreDependencyMixinInitialize.js":11,"./StoreDependencyMixinState.js":12,"./StoreDependencyMixinTransitions.js":13}],9:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -435,7 +531,7 @@ function storeFields(component) {
   return getKey(STORE_FIELDS_KEY, {}, component);
 }
 
-},{"../event/EventHandler.js":5,"../store/StoreFacade.js":14}],9:[function(_dereq_,module,exports){
+},{"../event/EventHandler.js":6,"../store/StoreFacade.js":15}],10:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -504,7 +600,7 @@ function setupHandlers(component) {
   });
 }
 
-},{"./StoreDependencyMixinFields.js":8}],10:[function(_dereq_,module,exports){
+},{"./StoreDependencyMixinFields.js":9}],11:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -559,7 +655,7 @@ function applyDependencies(component, dependencyMap) {
   });
 }
 
-},{"../invariant.js":6,"../store/StoreFacade.js":14,"./StoreDependencyMixinFields.js":8}],11:[function(_dereq_,module,exports){
+},{"../invariant.js":7,"../store/StoreFacade.js":15,"./StoreDependencyMixinFields.js":9}],12:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -583,7 +679,7 @@ function getDependencyState(component, props, state, fieldNames) {
   return dependencyState;
 }
 
-},{"./StoreDependencyMixinFields.js":8}],12:[function(_dereq_,module,exports){
+},{"./StoreDependencyMixinFields.js":9}],13:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -592,9 +688,7 @@ Object.defineProperty(exports, '__esModule', {
 exports.hasPropsChanged = hasPropsChanged;
 exports.hasStateChanged = hasStateChanged;
 
-var compare = window.Immutable && typeof window.Immutable.is === 'function' ? window.Immutable.is : function (a, b) {
-  return a === b;
-};
+var compare = _dereq_('immutable-is');
 
 function compareKey(key, objA, objB) {
   return compare(objA[key], objB[key]);
@@ -631,7 +725,7 @@ function hasStateChanged(stores, oldState, nextState) {
   }, oldState, nextState);
 }
 
-},{}],13:[function(_dereq_,module,exports){
+},{"immutable-is":1}],14:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -726,7 +820,7 @@ var StoreDefinition = (function () {
 exports['default'] = StoreDefinition;
 module.exports = exports['default'];
 
-},{"../dispatcher/DispatcherInstance.js":2,"../dispatcher/DispatcherInterface.js":3,"../invariant.js":6,"./StoreFacade.js":14}],14:[function(_dereq_,module,exports){
+},{"../dispatcher/DispatcherInstance.js":3,"../dispatcher/DispatcherInterface.js":4,"../invariant.js":7,"./StoreFacade.js":15}],15:[function(_dereq_,module,exports){
 /* eslint no-console:0 */
 'use strict';
 
@@ -888,7 +982,7 @@ var StoreFacade = (function () {
 exports['default'] = StoreFacade;
 module.exports = exports['default'];
 
-},{"../dispatcher/DispatcherInterface.js":3,"../event/Event.js":4,"../event/EventHandler.js":5,"../invariant.js":6,"../uniqueid/uniqueID.js":15}],15:[function(_dereq_,module,exports){
+},{"../dispatcher/DispatcherInterface.js":4,"../event/Event.js":5,"../event/EventHandler.js":6,"../invariant.js":7,"../uniqueid/uniqueID.js":16}],16:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -906,5 +1000,5 @@ function uid() {
 
 module.exports = exports['default'];
 
-},{}]},{},[1])(1)
+},{}]},{},[2])(2)
 });
