@@ -47,6 +47,9 @@
     "uglifyify": "^3.0.1"
   },
   "jest": {
+    "testPathDirs": [
+      "<rootDir>/src"
+    ],
     "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js",
     "unmockedModulePathPatterns": [
       "<rootDir>/src/invariant.js",
