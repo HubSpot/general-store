@@ -2,9 +2,7 @@
  * @flow
  */
 
-var compare = (window.Immutable && typeof window.Immutable.is === 'function') ?
-  window.Immutable.is :
-  (a, b) => a === b;
+var compare = require('immutable-is');
 
 function compareKey(key, objA, objB) {
   return compare(objA[key], objB[key]);

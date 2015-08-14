@@ -28,7 +28,9 @@
     "url": "https://github.com/HubSpot/general-store/issues"
   },
   "homepage": "https://github.com/HubSpot/general-store",
-  "dependencies": {},
+  "dependencies": {
+    "immutable-is": "^3.7.4"
+  },
   "devDependencies": {
     "babel-core": "^5.8.22",
     "babel-eslint": "^4.0.5",
