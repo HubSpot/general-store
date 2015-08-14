@@ -54,6 +54,7 @@
     ],
     "scriptPreprocessor": "<rootDir>/bin/test-preprocessor.js",
     "unmockedModulePathPatterns": [
+      "immutable-is",
       "<rootDir>/src/invariant.js",
       "<rootDir>/src/dispatcher/DispatcherInterface.js",
       "<rootDir>/src/uniqueid"
