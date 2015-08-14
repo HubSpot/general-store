@@ -1,9 +1,5 @@
 #!/bin/bash
-NODE_ENV=development \
-browserify \
-  --standalone GeneralStore \
-  -p browserify-derequire \
-  -t babelify \
-  -t envify \
-  -o build/general-store.js \
-  src/GeneralStore.js
+webpack \
+  --config webpack.config.development.js \
+  src/GeneralStore.js \
+  build/general-store.js

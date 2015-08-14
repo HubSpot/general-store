@@ -1,12 +1,5 @@
 #!/bin/bash
-NODE_ENV=production \
-browserify \
-  --standalone GeneralStore \
-  -p bundle-collapser/plugin \
-  -p browserify-derequire \
-  -t babelify \
-  -t ./bin/truncate-invariant.js \
-  -t envify \
-  -t uglifyify \
-  src/GeneralStore.js | uglifyjs -c -o build/general-store.min.js
-
+webpack \
+  --config webpack.config.production.js \
+  src/GeneralStore.js \
+  build/general-store.min.js
