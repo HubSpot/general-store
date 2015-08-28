@@ -1,3 +1,7 @@
+## 0.3.1 (August 28th, 2015)
+
+* disable the eslint "indent" rule because its breaking the build
+
 ## 0.3.0 (August 28th, 2015)
 
 * immutable-is: pull in a copy of Immutable.is() instead of trying to sideload immutable itself
