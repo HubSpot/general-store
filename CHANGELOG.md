@@ -1,3 +1,9 @@
+## 0.3.0 (August 28th, 2015)
+
+* immutable-is: pull in a copy of Immutable.is() instead of trying to sideload immutable itself
+* transpile with babel
+* build with webpack
+
 ## 0.2.2 (April 7th, 2015)
 
 * Dont throw from `DispatcherInstance.get()` (still throws from `StoreFacade.register()`)
