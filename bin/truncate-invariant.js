@@ -47,7 +47,7 @@ var visitors = {
       return false;
     }
     this.traverse(nodePath);
-  }
+  },
 };
 
 function truncateInvariant(file) {
