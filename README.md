@@ -15,7 +15,7 @@ Briefly, a store:
 
 That's it. All other features, like Immutability, data fetching, undo, etc. are implementation details.
 
-Read more about the `general-store` rational [on the HubSpot Product Team Blog](http://product.hubspot.com/blog/keeping-flux-flexible-with-general-store).
+Read more about the `general-store` rationale [on the HubSpot Product Team Blog](http://product.hubspot.com/blog/keeping-flux-flexible-with-general-store).
 
 ## Install
 
