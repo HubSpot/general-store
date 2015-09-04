@@ -1,3 +1,7 @@
+## 0.3.2 (September 4th, 2015)
+
+* fix "define" function conflict with ES6 modules and GeneralStore.define
+
 ## 0.3.1 (August 28th, 2015)
 
 * disable the eslint "indent" rule because its breaking the build
