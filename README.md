@@ -1,5 +1,6 @@
 ![HubSpot/general-store](https://cloud.githubusercontent.com/assets/478109/6376307/1d3c77dc-bceb-11e4-9a96-0a909810cc69.png)
 
+[![NPM version](http://img.shields.io/npm/v/general-store.svg)](https://www.npmjs.com/package/general-store)
 [![Build Status](https://travis-ci.org/HubSpot/general-store.svg)](https://travis-ci.org/HubSpot/general-store)
 
 **This is beta software. It's going to change.**
