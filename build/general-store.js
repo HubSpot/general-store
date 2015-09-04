@@ -59,7 +59,6 @@ return /******/ (function(modules) { // webpackBootstrap
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  exports.define = __webpack_require__(16);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -78,11 +77,12 @@ return /******/ (function(modules) { // webpackBootstrap
   function define() {
     return new _storeStoreDefinitionJs2['default']();
   }
-
-  var DispatcherInstance = _dispatcherDispatcherInstanceJs2['default'];
-  exports.DispatcherInstance = DispatcherInstance;
-  var StoreDependencyMixin = _mixinStoreDependencyMixinJs2['default'];
-  exports.StoreDependencyMixin = StoreDependencyMixin;
+  exports['default'] = {
+    define: define,
+    DispatcherInstance: _dispatcherDispatcherInstanceJs2['default'],
+    StoreDependencyMixin: _mixinStoreDependencyMixinJs2['default']
+  };
+  module.exports = exports['default'];
 
 /***/ },
 /* 1 */
@@ -1099,13 +1099,6 @@ return /******/ (function(modules) { // webpackBootstrap
   }
 
   module.exports = exports['default'];
-
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-  module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ }
