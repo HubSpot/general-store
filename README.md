@@ -187,9 +187,9 @@ type Dispatcher = {
   isDispatching: () => bool;
   register: (
     handleAction: (payload: DispatcherPayload) => void
-  ) => number;
-  unregister: (dispatchToken: number) => void;
-  waitFor: (dispatchTokens: Array<number>) => void;
+  ) => string;
+  unregister: (dispatchToken: string) => void;
+  waitFor: (dispatchTokens: Array<string>) => void;
 };
 ```
 
