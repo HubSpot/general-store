@@ -84,24 +84,19 @@ describe('StoreDefinition', () => {
     }).not.toThrow();
   });
 
-  it('passes along the getter to the StoreFacade on register', () => {
-    var StoreFacade = require('../StoreFacade.js');
+  it('passes along the definition to StoreFactory.register', () => {
+    var StoreFactory = require('../StoreFactory.js');
     var mockGet = () => 'get!';
     storeDefinition
       .defineGet(mockGet)
+      .defineResponseTo('TEST', function() {})
       .register(mockDispatcher);
-    expect(StoreFacade.mock.calls[0][0]).toBe(mockGet);
-  });
-
-  it('passes along responses to the StoreFacade on register', () => {
-    var mockActionType = 'test-action';
-    var mockResponse = function() {};
-    var StoreFacade = require('../StoreFacade.js');
-    storeDefinition
-      .defineGet(function() {})
-      .defineResponseTo(mockActionType, mockResponse)
-      .register(mockDispatcher);
-    expect(StoreFacade.mock.calls[0][1][mockActionType]).toBe(mockResponse);
+    expect(storeDefinition.getFactory().register.mock.calls[0][0]).toEqual({
+      getter: mockGet,
+      responses: {'TEST': function() {}},
+      initialData: undefined,
+      dispatcher: mockDispatcher,
+    });
   });
 
   it('registers the same response to multiple actions', () => {
@@ -115,14 +110,6 @@ describe('StoreDefinition', () => {
       .register(mockDispatcher);
     expect(StoreFacade.mock.calls[0][1][mockActionTypeA]).toBe(mockResponse);
     expect(StoreFacade.mock.calls[0][1][mockActionTypeB]).toBe(mockResponse);
-  });
-
-  it('passes along the dispatcher to the StoreFacade on register', () => {
-    var StoreFacade = require('../StoreFacade.js');
-    storeDefinition
-      .defineGet(function() {})
-      .register(mockDispatcher);
-    expect(StoreFacade.mock.calls[0][2]).toBe(mockDispatcher);
   });
 
 });

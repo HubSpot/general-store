@@ -23,13 +23,16 @@ export default class StoreFacade {
   _responses: {[key:string]: (data: any, actionType: string) => any};
   _uid: number;
 
-  constructor(
-    getter: (...args: Array<any>) => any,
-    responses: {[key:string]: (data: any, actionType: string) => any},
-    dispatcher: Object
-  ) {
+  constructor({
+    dispatcher,
+    getter,
+    initialData,
+    responses,
+  }) {
+    console.log('StoreFacade._dispatcher', dispatcher);
     this._dispatcher = dispatcher;
     this._getter = getter;
+    this._state = initialData;
     this._responses = responses;
     this._event = new Event();
     this._uid = uniqueID();
@@ -63,7 +66,7 @@ export default class StoreFacade {
    * @return any
    */
   get(...args: Array<any>): any {
-    return this._getter.apply(null, args);
+    return this._getter(this._state, ...args);
   }
 
   /**
@@ -108,7 +111,8 @@ export default class StoreFacade {
     if (!this._responses.hasOwnProperty(payload.actionType)) {
       return;
     }
-    this._responses[payload.actionType](
+    this._state = this._responses[payload.actionType](
+      this._state,
       payload.data,
       payload.actionType,
       payload

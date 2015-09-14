@@ -1,28 +1,30 @@
 /* @flow */
 
-import DispatcherInstance from '../dispatcher/DispatcherInstance.js';
-import {isDispatcher} from '../dispatcher/DispatcherInterface.js';
 import invariant from '../invariant.js';
 import StoreFacade from './StoreFacade.js';
-
-function emptyGetter() {
-  return null;
-}
+import StoreFactory from './StoreFactory';
 
 var HINT_LINK =
   'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
+function dropFirstArg(func) {
+  return function(head, ...tail) {
+    func(...tail);
+  };
+}
+
 export default class StoreDefinition {
 
   _facade: ?StoreFacade;
-  _getter: ?Function;
-  _responses: {[key: string]: (data: any) => void};
+  _factory: StoreFactory;
 
   constructor() {
     this._facade = null;
+    this._factory = new StoreFactory({
+      getter: (state, ...args) => this._getter(...args),
+    });
     this._getter = null;
-    this._responses = {};
   }
 
   defineGet(
@@ -55,35 +57,25 @@ export default class StoreDefinition {
       ' modified because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
-    [].concat(actionTypes).forEach(actionType => {
-      return this._setResponse(actionType, response);
-    });
+    this._factory.defineResponses(
+      [].concat(actionTypes).reduce((responses, actionType) => {
+        responses[actionType] = dropFirstArg(response);
+        return responses;
+      }, {})
+    );
     return this;
   }
 
+  getFactory(): StoreFactory {
+    return this._factory;
+  }
+
   isRegistered(): bool {
+    console.log(this._facade);
     return this._facade instanceof StoreFacade;
   }
 
   register(dispatcher: ?Dispatcher): StoreFacade {
-    dispatcher = dispatcher || DispatcherInstance.get();
-    invariant(
-      dispatcher !== null && typeof dispatcher === 'object',
-      'StoreDefinition.register: you haven\'t provide a dispatcher instance.' +
-      ' You can pass an instance to' +
-      ' GeneralStore.define().register(dispatcher) or use' +
-      ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' +
-      ' instance.' +
-      ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
-    );
-    invariant(
-      isDispatcher(dispatcher),
-      'StoreDefinition.register: Expected dispatcher to be an object' +
-      ' with a register method, and an unregister method but got "%s".' +
-      ' Learn more about the dispatcher interface:' +
-      ' https://github.com/HubSpot/general-store#dispatcher-interface',
-      dispatcher
-    );
     invariant(
       typeof this._getter === 'function',
       'StoreDefinition.register: a store cannot be registered without a' +
@@ -91,43 +83,9 @@ export default class StoreDefinition {
       ' getter. %s',
       HINT_LINK
     );
-    var facade =
-      this._facade || new StoreFacade(
-        this._getter || emptyGetter,
-        this._responses,
-        dispatcher
-      );
-    if (this._facade === null) {
-      this._facade = facade;
+    if (!this._facade) {
+      this._facade = this._factory.register(dispatcher);
     }
-    return facade;
+    return this._facade;
   }
-
-  _setResponse(
-    actionType: string,
-    response: (data: any) => void
-  ): void {
-    invariant(
-      typeof actionType === 'string',
-      'StoreDefinition.defineResponseTo: expected actionType to be a string' +
-      ' but got "%s" instead. %s',
-      actionType,
-      HINT_LINK
-    );
-    invariant(
-      !this._responses.hasOwnProperty(actionType),
-      'StoreDefinition.defineResponseTo: conflicting resposes for actionType' +
-      ' "%s". Only one response can be defined per actionType per Store. %s',
-      actionType,
-      HINT_LINK
-    );
-    invariant(
-      typeof response === 'function',
-      'StoreDefinition.defineResponseTo: expected response to be a function' +
-      ' but got "%s" instead. %s',
-      response
-    );
-    this._responses[actionType] = response;
-  }
-
 }
