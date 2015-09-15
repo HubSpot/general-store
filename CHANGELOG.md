@@ -1,3 +1,11 @@
+## 0.4.0
+
+* NEW: GeneralStore.defineFactory() allows for more composable/testable stores
+* added StoreFactory
+* StoreDefinition -> StoreSingleton
+* StoreSingleton is based on StoreFactory
+* StoreFacade -> Store
+
 ## 0.3.2 (September 4th, 2015)
 
 * fix "define" function conflict with ES6 modules and GeneralStore.define
