@@ -92,7 +92,6 @@ function runTest(GeneralStore) {
       name: 'Test Person',
     };
     addUser(user);
-    expect(Object.keys(UserStore.get()).length).toBe(1);
     expect(UserStore.get()[userId]).toBe(user);
   });
 

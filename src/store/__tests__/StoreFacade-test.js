@@ -28,11 +28,12 @@ describe('StoreFacade', () => {
     mockResponse = jest.genMockFn();
     mockResponses = {};
     mockResponses[mockAction] = mockResponse;
-    storeFacade = new StoreFacade(
-      mockGet,
-      mockResponses,
-      mockDispatcher
-    );
+    storeFacade = new StoreFacade({
+      getter: mockGet,
+      initialData: null,
+      responses: mockResponses,
+      dispatcher: mockDispatcher,
+    });
   });
 
   it('registers with the dispatcher', () => {
@@ -44,8 +45,9 @@ describe('StoreFacade', () => {
     var mockData = {};
     handler({actionType: mockAction, data: mockData});
     expect(mockResponse.mock.calls.length).toBe(1);
-    expect(mockResponse.mock.calls[0][0]).toBe(mockData);
-    expect(mockResponse.mock.calls[0][1]).toBe(mockAction);
+    expect(mockResponse.mock.calls[0][0]).toBe(null);
+    expect(mockResponse.mock.calls[0][1]).toBe(mockData);
+    expect(mockResponse.mock.calls[0][2]).toBe(mockAction);
   });
 
   it('calls the getter from get', () => {
@@ -56,10 +58,11 @@ describe('StoreFacade', () => {
     var mockArg1 = 'number 1';
     var mockArg2 = 'number 2';
     storeFacade.get(mockArg1, mockArg2);
-    expect(mockGet.mock.calls[0].length).toBe(2);
-    expect(mockGet.mock.calls[0].length).toBe(2);
-    expect(mockGet.mock.calls[0][0]).toBe(mockArg1);
-    expect(mockGet.mock.calls[0][1]).toBe(mockArg2);
+    expect(mockGet.mock.calls[0].length).toBe(3);
+    expect(mockGet.mock.calls[0].length).toBe(3);
+    expect(mockGet.mock.calls[0][0]).toBe(null);
+    expect(mockGet.mock.calls[0][1]).toBe(mockArg1);
+    expect(mockGet.mock.calls[0][2]).toBe(mockArg2);
   });
 
   it('returns the dispatch token from getDispatchToken', () => {

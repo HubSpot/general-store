@@ -29,7 +29,6 @@ export default class StoreFacade {
     initialData,
     responses,
   }) {
-    console.log('StoreFacade._dispatcher', dispatcher);
     this._dispatcher = dispatcher;
     this._getter = getter;
     this._state = initialData;

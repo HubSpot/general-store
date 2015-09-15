@@ -10,7 +10,7 @@ function define(): StoreDefinition {
 }
 
 function defineFactory(): StoreFactory {
-  return new StoreFactory();
+  return new StoreFactory({});
 }
 
 export default {

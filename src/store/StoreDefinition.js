@@ -18,11 +18,16 @@ export default class StoreDefinition {
 
   _facade: ?StoreFacade;
   _factory: StoreFactory;
+  _getter: ?Function;
 
   constructor() {
     this._facade = null;
     this._factory = new StoreFactory({
-      getter: (state, ...args) => this._getter(...args),
+      getter: (state, ...args) => {
+        if (typeof this._getter === 'function') {
+          return this._getter(...args);
+        }
+      },
     });
     this._getter = null;
   }
@@ -57,7 +62,7 @@ export default class StoreDefinition {
       ' modified because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
-    this._factory.defineResponses(
+    this._factory = this._factory.defineResponses(
       [].concat(actionTypes).reduce((responses, actionType) => {
         responses[actionType] = dropFirstArg(response);
         return responses;
@@ -71,7 +76,6 @@ export default class StoreDefinition {
   }
 
   isRegistered(): bool {
-    console.log(this._facade);
     return this._facade instanceof StoreFacade;
   }
 

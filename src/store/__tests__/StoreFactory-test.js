@@ -85,4 +85,51 @@ describe('StoreFactory', () => {
     ).toThrow();
   });
 
+  it('validates the actionType(s) passed to defineResponses', () => {
+    var mockResponse = function() {};
+    // invalid args
+    expect(
+      () => storeFactory.defineResponses({'TESTING': null})
+    ).toThrow();
+    expect(() => storeFactory.defineResponses(mockResponse)).toThrow();
+    expect(() => storeFactory.defineResponses('testAction')).toThrow();
+    expect(() => storeFactory.defineResponses('testAction', [])).toThrow();
+
+    // valid args
+    expect(() => {
+      storeFactory.defineResponses({'testAction': mockResponse});
+    }).not.toThrow();
+
+    // valid array of actions
+    expect(() => {
+      storeFactory.defineResponses({
+        testAction1: mockResponse,
+        testAction2: mockResponse,
+      });
+    }).not.toThrow();
+
+    // duplicates should throw
+    expect(() => {
+      storeFactory.defineResponses({
+        'testAction': mockResponse,
+      }).defineResponses({
+        'testAction': mockResponse,
+      });
+    }).toThrow();
+  });
+
+  it('throws if register is called without a valid dispatcher', () => {
+    var mockDispatcher = {
+      register: () => 12345,
+      unregister: function() {},
+    };
+    storeFactory.defineGet(function() {});
+    expect(() => {
+      storeFactory.register({});
+    }).toThrow();
+    expect(() => {
+      storeFactory.register(mockDispatcher);
+    }).not.toThrow();
+  });
+
 });

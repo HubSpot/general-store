@@ -45,28 +45,26 @@ type Responses = {
 };
 
 type StoreFactoryDefinition = {
-  getter: ?Getter;
+  getter: Getter;
   initialData: any;
-  responses: ?Responses;
+  responses: Responses;
 };
 
 export default class StoreFactory {
 
   _definition: StoreFactoryDefinition;
 
-  constructor(
-    {getter, initialData, responses}: {getter: ?Getter, initialData: any, responses: ?Responses}
-  ) {
+  constructor({getter, initialData, responses}:Object) {
     this._definition = {
-      getter,
-      initialData,
-      responses: responses === null ? 
+      getter: getter,
+      initialData: initialData,
+      responses: responses || {},
     };
   }
 
   defineGet(getter: Getter): StoreFactory {
     invariant(
-      typeof this._definition.getter === 'function',
+      typeof this._definition.getter !== 'function',
       'StoreFactory.defineGet: a getter is already defined.'
     );
     return new StoreFactory({
@@ -87,6 +85,10 @@ export default class StoreFactory {
   }
 
   defineResponses(newResponses: Responses): StoreFactory {
+    invariant(
+      newResponses && typeof newResponses === 'object',
+      'StoreFactory.defineResponses: newResponses must be an object'
+    );
     var {responses} = this._definition;
     Object.keys(newResponses).forEach(
       actionType => enforceResponse(
@@ -127,7 +129,6 @@ export default class StoreFactory {
       ' https://github.com/HubSpot/general-store#dispatcher-interface',
       dispatcher
     );
-    console.log('StoreFactory.register', dispatcher)
     return new StoreFacade({
       ...this._definition,
       dispatcher,

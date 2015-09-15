@@ -83,7 +83,7 @@ return /******/ (function(modules) { // webpackBootstrap
   }
 
   function defineFactory() {
-    return new _storeStoreFactory2['default']();
+    return new _storeStoreFactory2['default']({});
   }
 
   exports['default'] = {
@@ -227,7 +227,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
       _classCallCheck(this, StoreFacade);
 
-      console.log('StoreFacade._dispatcher', dispatcher);
       this._dispatcher = dispatcher;
       this._getter = getter;
       this._state = initialData;
@@ -554,22 +553,21 @@ return /******/ (function(modules) { // webpackBootstrap
     function StoreFactory(_ref) {
       var getter = _ref.getter;
       var initialData = _ref.initialData;
-      var _ref$responses = _ref.responses;
-      var responses = _ref$responses === undefined ? {} : _ref$responses;
+      var responses = _ref.responses;
 
       _classCallCheck(this, StoreFactory);
 
       this._definition = {
         getter: getter,
         initialData: initialData,
-        responses: responses
+        responses: responses || {}
       };
     }
 
     _createClass(StoreFactory, [{
       key: 'defineGet',
       value: function defineGet(getter) {
-        (0, _invariant2['default'])(this._definition.getter === undefined, 'StoreFactory.defineGet: a getter is already defined.');
+        (0, _invariant2['default'])(typeof this._definition.getter !== 'function', 'StoreFactory.defineGet: a getter is already defined.');
         return new StoreFactory(_extends({}, this._definition, {
           getter: getter
         }));
@@ -585,10 +583,11 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'defineResponses',
       value: function defineResponses(newResponses) {
+        (0, _invariant2['default'])(newResponses && typeof newResponses === 'object', 'StoreFactory.defineResponses: newResponses must be an object');
         var responses = this._definition.responses;
 
         Object.keys(newResponses).forEach(function (actionType) {
-          (0, _invariant2['default'])(!responses.hasOwnProperty(actionType), 'StoreFacade: response to `%s` is already defined.', actionType);
+          return enforceResponse(responses, actionType, newResponses[actionType]);
         });
         return new StoreFactory(_extends({}, this._definition, {
           responses: _extends({}, responses, newResponses)
@@ -1084,7 +1083,9 @@ return /******/ (function(modules) { // webpackBootstrap
             args[_key2 - 1] = arguments[_key2];
           }
 
-          return _this._getter.apply(_this, args);
+          if (typeof _this._getter === 'function') {
+            return _this._getter.apply(_this, args);
+          }
         }
       });
       this._getter = null;
@@ -1102,7 +1103,7 @@ return /******/ (function(modules) { // webpackBootstrap
       key: 'defineResponseTo',
       value: function defineResponseTo(actionTypes, response) {
         (0, _invariantJs2['default'])(!this.isRegistered(), 'StoreDefinition.defineResponseTo: this store definition cannot be' + ' modified because is has already been registered with a dispatcher. %s', HINT_LINK);
-        this._factory.defineResponses([].concat(actionTypes).reduce(function (responses, actionType) {
+        this._factory = this._factory.defineResponses([].concat(actionTypes).reduce(function (responses, actionType) {
           responses[actionType] = dropFirstArg(response);
           return responses;
         }, {}));
