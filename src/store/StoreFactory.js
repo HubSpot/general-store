@@ -106,6 +106,18 @@ export default class StoreFactory {
     });
   }
 
+  defineResponseTo(
+    actionTypes: string | Array<string>,
+    response: Response
+  ): StoreFactory {
+    return this.defineResponses(
+      [].concat(actionTypes).reduce((responses, actionType) => {
+        responses[actionType] = response;
+        return responses;
+      }, {})
+    );
+  }
+
   getDefinition(): StoreFactoryDefinition {
     return this._definition;
   }

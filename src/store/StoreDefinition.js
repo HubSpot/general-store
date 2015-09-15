@@ -52,6 +52,11 @@ export default class StoreDefinition {
     return this;
   }
 
+  defineResponses(responses: Object): StoreDefinition {
+    this._factory = this._factory.defineResponses(responses);
+    return this;
+  }
+
   defineResponseTo(
     actionTypes: Array<string> | string,
     response: (data: any) => void
@@ -62,17 +67,8 @@ export default class StoreDefinition {
       ' modified because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
-    this._factory = this._factory.defineResponses(
-      [].concat(actionTypes).reduce((responses, actionType) => {
-        responses[actionType] = dropFirstArg(response);
-        return responses;
-      }, {})
-    );
+    this._factory = this._factory.defineResponseTo(actionTypes, response);
     return this;
-  }
-
-  getFactory(): StoreFactory {
-    return this._factory;
   }
 
   isRegistered(): bool {
