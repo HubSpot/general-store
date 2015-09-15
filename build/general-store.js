@@ -62,33 +62,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var _storeStoreDefinitionJs = __webpack_require__(15);
+  var _storeStoreDefinitionJs = __webpack_require__(14);
 
   var _storeStoreDefinitionJs2 = _interopRequireDefault(_storeStoreDefinitionJs);
-
-  var _storeStoreFactory = __webpack_require__(7);
-
-  var _storeStoreFactory2 = _interopRequireDefault(_storeStoreFactory);
 
   var _dispatcherDispatcherInstanceJs = __webpack_require__(6);
 
   var _dispatcherDispatcherInstanceJs2 = _interopRequireDefault(_dispatcherDispatcherInstanceJs);
 
-  var _mixinStoreDependencyMixinJs = __webpack_require__(10);
+  var _mixinStoreDependencyMixinJs = __webpack_require__(9);
 
   var _mixinStoreDependencyMixinJs2 = _interopRequireDefault(_mixinStoreDependencyMixinJs);
 
   function define() {
     return new _storeStoreDefinitionJs2['default']();
   }
-
-  function defineFactory() {
-    return new _storeStoreFactory2['default']({});
-  }
-
   exports['default'] = {
     define: define,
-    defineFactory: defineFactory,
     DispatcherInstance: _dispatcherDispatcherInstanceJs2['default'],
     StoreDependencyMixin: _mixinStoreDependencyMixinJs2['default']
   };
@@ -181,6 +171,64 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
+  'use strict';
+
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  exports.dependencies = dependencies;
+  exports.handlers = handlers;
+  exports.queue = queue;
+  exports.stores = stores;
+  exports.storeFields = storeFields;
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+  var _eventEventHandlerJs = __webpack_require__(5);
+
+  var _eventEventHandlerJs2 = _interopRequireDefault(_eventEventHandlerJs);
+
+  var _storeStoreFacadeJs = __webpack_require__(3);
+
+  var _storeStoreFacadeJs2 = _interopRequireDefault(_storeStoreFacadeJs);
+
+  var DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
+  var HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
+  var QUEUE_KEY = '__StoreDependencyMixin-queue';
+  var STORES_KEY = '__StoreDependencyMixin-stores';
+  var STORE_FIELDS_KEY = '__StoreDependencyMixin-storeFields';
+
+  function getKey(key, identity, component) {
+    if (!component.hasOwnProperty(key)) {
+      component[key] = identity;
+    }
+    return component[key];
+  }
+
+  function dependencies(component) {
+    return getKey(DEPENDENCIES_KEY, {}, component);
+  }
+
+  function handlers(component) {
+    return getKey(HANDLERS_KEY, [], component);
+  }
+
+  function queue(component) {
+    return getKey(QUEUE_KEY, {}, component);
+  }
+
+  function stores(component) {
+    return getKey(STORES_KEY, [], component);
+  }
+
+  function storeFields(component) {
+    return getKey(STORE_FIELDS_KEY, {}, component);
+  }
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
   /* eslint no-console:0 */
   'use strict';
 
@@ -196,7 +244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   var _dispatcherDispatcherInterfaceJs = __webpack_require__(4);
 
-  var _eventEventJs = __webpack_require__(9);
+  var _eventEventJs = __webpack_require__(8);
 
   var _eventEventJs2 = _interopRequireDefault(_eventEventJs);
 
@@ -208,7 +256,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   var _invariantJs2 = _interopRequireDefault(_invariantJs);
 
-  var _uniqueidUniqueIDJs = __webpack_require__(8);
+  var _uniqueidUniqueIDJs = __webpack_require__(7);
 
   var _uniqueidUniqueIDJs2 = _interopRequireDefault(_uniqueidUniqueIDJs);
 
@@ -219,17 +267,11 @@ return /******/ (function(modules) { // webpackBootstrap
   }
 
   var StoreFacade = (function () {
-    function StoreFacade(_ref) {
-      var dispatcher = _ref.dispatcher;
-      var getter = _ref.getter;
-      var initialData = _ref.initialData;
-      var responses = _ref.responses;
-
+    function StoreFacade(getter, responses, dispatcher) {
       _classCallCheck(this, StoreFacade);
 
       this._dispatcher = dispatcher;
       this._getter = getter;
-      this._state = initialData;
       this._responses = responses;
       this._event = new _eventEventJs2['default']();
       this._uid = (0, _uniqueidUniqueIDJs2['default'])();
@@ -264,7 +306,7 @@ return /******/ (function(modules) { // webpackBootstrap
           args[_key] = arguments[_key];
         }
 
-        return this._getter.apply(this, [this._state].concat(args));
+        return this._getter.apply(null, args);
       }
 
       /**
@@ -307,7 +349,7 @@ return /******/ (function(modules) { // webpackBootstrap
         if (!this._responses.hasOwnProperty(payload.actionType)) {
           return;
         }
-        this._state = this._responses[payload.actionType](this._state, payload.data, payload.actionType, payload);
+        this._responses[payload.actionType](payload.data, payload.actionType, payload);
         this.triggerChange();
       }
 
@@ -347,64 +389,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
   exports['default'] = StoreFacade;
   module.exports = exports['default'];
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  exports.dependencies = dependencies;
-  exports.handlers = handlers;
-  exports.queue = queue;
-  exports.stores = stores;
-  exports.storeFields = storeFields;
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-  var _eventEventHandlerJs = __webpack_require__(5);
-
-  var _eventEventHandlerJs2 = _interopRequireDefault(_eventEventHandlerJs);
-
-  var _storeStoreFacadeJs = __webpack_require__(2);
-
-  var _storeStoreFacadeJs2 = _interopRequireDefault(_storeStoreFacadeJs);
-
-  var DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
-  var HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
-  var QUEUE_KEY = '__StoreDependencyMixin-queue';
-  var STORES_KEY = '__StoreDependencyMixin-stores';
-  var STORE_FIELDS_KEY = '__StoreDependencyMixin-storeFields';
-
-  function getKey(key, identity, component) {
-    if (!component.hasOwnProperty(key)) {
-      component[key] = identity;
-    }
-    return component[key];
-  }
-
-  function dependencies(component) {
-    return getKey(DEPENDENCIES_KEY, {}, component);
-  }
-
-  function handlers(component) {
-    return getKey(HANDLERS_KEY, [], component);
-  }
-
-  function queue(component) {
-    return getKey(QUEUE_KEY, {}, component);
-  }
-
-  function stores(component) {
-    return getKey(STORES_KEY, [], component);
-  }
-
-  function storeFields(component) {
-    return getKey(STORE_FIELDS_KEY, {}, component);
-  }
 
 /***/ },
 /* 4 */
@@ -507,117 +491,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-
-  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-  var _dispatcherDispatcherInstance = __webpack_require__(6);
-
-  var _dispatcherDispatcherInstance2 = _interopRequireDefault(_dispatcherDispatcherInstance);
-
-  var _dispatcherDispatcherInterfaceJs = __webpack_require__(4);
-
-  var _invariant = __webpack_require__(1);
-
-  var _invariant2 = _interopRequireDefault(_invariant);
-
-  var _StoreFacade = __webpack_require__(2);
-
-  var _StoreFacade2 = _interopRequireDefault(_StoreFacade);
-
-  var HINT_LINK = 'Learn more about defining stores:' + ' https://github.com/HubSpot/general-store#create-a-store';
-
-  function emptyGetter() {
-    return null;
-  }
-
-  function enforceResponse(existingResponses, actionType, response) {
-    (0, _invariant2['default'])(typeof actionType === 'string', 'StoreFactory.defineResponses: expected actionType to be a string' + ' but got "%s" instead. %s', actionType, HINT_LINK);
-    (0, _invariant2['default'])(!existingResponses.hasOwnProperty(actionType), 'StoreFactory.defineResponses: conflicting resposes for actionType' + ' "%s". Only one response can be defined per actionType per Store. %s', actionType, HINT_LINK);
-    (0, _invariant2['default'])(typeof response === 'function', 'StoreFactory.defineResponses: expected response to be a function' + ' but got "%s" instead. %s', response);
-  }
-
-  var StoreFactory = (function () {
-    function StoreFactory(_ref) {
-      var getter = _ref.getter;
-      var initialData = _ref.initialData;
-      var responses = _ref.responses;
-
-      _classCallCheck(this, StoreFactory);
-
-      this._definition = {
-        getter: getter,
-        initialData: initialData,
-        responses: responses || {}
-      };
-    }
-
-    _createClass(StoreFactory, [{
-      key: 'defineGet',
-      value: function defineGet(getter) {
-        (0, _invariant2['default'])(typeof this._definition.getter !== 'function', 'StoreFactory.defineGet: a getter is already defined.');
-        return new StoreFactory(_extends({}, this._definition, {
-          getter: getter
-        }));
-      }
-    }, {
-      key: 'defineInitialData',
-      value: function defineInitialData(initialData) {
-        (0, _invariant2['default'])(this._definition.initialData === undefined, 'StoreFactory.defineInitialData: initialData is already defined.');
-        return new StoreFactory(_extends({}, this._definition, {
-          initialData: initialData
-        }));
-      }
-    }, {
-      key: 'defineResponses',
-      value: function defineResponses(newResponses) {
-        (0, _invariant2['default'])(newResponses && typeof newResponses === 'object', 'StoreFactory.defineResponses: newResponses must be an object');
-        var responses = this._definition.responses;
-
-        Object.keys(newResponses).forEach(function (actionType) {
-          return enforceResponse(responses, actionType, newResponses[actionType]);
-        });
-        return new StoreFactory(_extends({}, this._definition, {
-          responses: _extends({}, responses, newResponses)
-        }));
-      }
-    }, {
-      key: 'getDefinition',
-      value: function getDefinition() {
-        return this._definition;
-      }
-    }, {
-      key: 'register',
-      value: function register(dispatcher) {
-        dispatcher = dispatcher || _dispatcherDispatcherInstance2['default'].get();
-        (0, _invariant2['default'])(dispatcher !== null && typeof dispatcher === 'object', 'StoreFactory.register: you haven\'t provide a dispatcher instance.' + ' You can pass an instance to' + ' GeneralStore.define().register(dispatcher) or use' + ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' + ' instance.' + ' https://github.com/HubSpot/general-store#default-dispatcher-instance');
-        (0, _invariant2['default'])((0, _dispatcherDispatcherInterfaceJs.isDispatcher)(dispatcher), 'StoreFactory.register: Expected dispatcher to be an object' + ' with a register method, and an unregister method but got "%s".' + ' Learn more about the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface', dispatcher);
-        return new _StoreFacade2['default'](_extends({}, this._definition, {
-          dispatcher: dispatcher
-        }));
-      }
-    }]);
-
-    return StoreFactory;
-  })();
-
-  exports['default'] = StoreFactory;
-  module.exports = exports['default'];
-
-/***/ },
-/* 8 */
 /***/ function(module, exports) {
 
   'use strict';
@@ -638,7 +511,7 @@ return /******/ (function(modules) { // webpackBootstrap
   module.exports = exports['default'];
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -657,7 +530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
   var _EventHandlerJs2 = _interopRequireDefault(_EventHandlerJs);
 
-  var _uniqueidUniqueIDJs = __webpack_require__(8);
+  var _uniqueidUniqueIDJs = __webpack_require__(7);
 
   var _uniqueidUniqueIDJs2 = _interopRequireDefault(_uniqueidUniqueIDJs);
 
@@ -755,7 +628,7 @@ return /******/ (function(modules) { // webpackBootstrap
   module.exports = exports['default'];
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -767,19 +640,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var _storeStoreFacadeJs = __webpack_require__(2);
+  var _storeStoreFacadeJs = __webpack_require__(3);
 
   var _storeStoreFacadeJs2 = _interopRequireDefault(_storeStoreFacadeJs);
 
-  var _StoreDependencyMixinFieldsJs = __webpack_require__(3);
+  var _StoreDependencyMixinFieldsJs = __webpack_require__(2);
 
-  var _StoreDependencyMixinHandlersJs = __webpack_require__(11);
+  var _StoreDependencyMixinHandlersJs = __webpack_require__(10);
 
-  var _StoreDependencyMixinInitializeJs = __webpack_require__(12);
+  var _StoreDependencyMixinInitializeJs = __webpack_require__(11);
 
-  var _StoreDependencyMixinStateJs = __webpack_require__(13);
+  var _StoreDependencyMixinStateJs = __webpack_require__(12);
 
-  var _StoreDependencyMixinTransitionsJs = __webpack_require__(14);
+  var _StoreDependencyMixinTransitionsJs = __webpack_require__(13);
 
   function StoreDependencyMixin(dependencyMap) {
     var fieldNames = Object.keys(dependencyMap);
@@ -825,7 +698,7 @@ return /******/ (function(modules) { // webpackBootstrap
   module.exports = exports['default'];
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -836,7 +709,7 @@ return /******/ (function(modules) { // webpackBootstrap
   exports.cleanupHandlers = cleanupHandlers;
   exports.setupHandlers = setupHandlers;
 
-  var _StoreDependencyMixinFieldsJs = __webpack_require__(3);
+  var _StoreDependencyMixinFieldsJs = __webpack_require__(2);
 
   function flushQueue(component) {
     var componentDependencies = (0, _StoreDependencyMixinFieldsJs.dependencies)(component);
@@ -897,7 +770,7 @@ return /******/ (function(modules) { // webpackBootstrap
   }
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -913,9 +786,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
   var _invariantJs2 = _interopRequireDefault(_invariantJs);
 
-  var _StoreDependencyMixinFieldsJs = __webpack_require__(3);
+  var _StoreDependencyMixinFieldsJs = __webpack_require__(2);
 
-  var _storeStoreFacadeJs = __webpack_require__(2);
+  var _storeStoreFacadeJs = __webpack_require__(3);
 
   var _storeStoreFacadeJs2 = _interopRequireDefault(_storeStoreFacadeJs);
 
@@ -955,7 +828,7 @@ return /******/ (function(modules) { // webpackBootstrap
   }
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -965,7 +838,7 @@ return /******/ (function(modules) { // webpackBootstrap
   });
   exports.getDependencyState = getDependencyState;
 
-  var _StoreDependencyMixinFieldsJs = __webpack_require__(3);
+  var _StoreDependencyMixinFieldsJs = __webpack_require__(2);
 
   function getDependencyState(component, props, state, fieldNames) {
     var componentDependencies = (0, _StoreDependencyMixinFieldsJs.dependencies)(component);
@@ -982,7 +855,7 @@ return /******/ (function(modules) { // webpackBootstrap
   }
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -993,7 +866,7 @@ return /******/ (function(modules) { // webpackBootstrap
   exports.hasPropsChanged = hasPropsChanged;
   exports.hasStateChanged = hasStateChanged;
 
-  var compare = __webpack_require__(16);
+  var compare = __webpack_require__(15);
 
   function compareKey(key, objA, objB) {
     return compare(objA[key], objB[key]);
@@ -1031,7 +904,7 @@ return /******/ (function(modules) { // webpackBootstrap
   }
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -1046,49 +919,33 @@ return /******/ (function(modules) { // webpackBootstrap
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+  var _dispatcherDispatcherInstanceJs = __webpack_require__(6);
+
+  var _dispatcherDispatcherInstanceJs2 = _interopRequireDefault(_dispatcherDispatcherInstanceJs);
+
+  var _dispatcherDispatcherInterfaceJs = __webpack_require__(4);
+
   var _invariantJs = __webpack_require__(1);
 
   var _invariantJs2 = _interopRequireDefault(_invariantJs);
 
-  var _StoreFacadeJs = __webpack_require__(2);
+  var _StoreFacadeJs = __webpack_require__(3);
 
   var _StoreFacadeJs2 = _interopRequireDefault(_StoreFacadeJs);
 
-  var _StoreFactory = __webpack_require__(7);
-
-  var _StoreFactory2 = _interopRequireDefault(_StoreFactory);
+  function emptyGetter() {
+    return null;
+  }
 
   var HINT_LINK = 'Learn more about defining stores:' + ' https://github.com/HubSpot/general-store#create-a-store';
 
-  function dropFirstArg(func) {
-    return function (head) {
-      for (var _len = arguments.length, tail = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        tail[_key - 1] = arguments[_key];
-      }
-
-      func.apply(undefined, tail);
-    };
-  }
-
   var StoreDefinition = (function () {
     function StoreDefinition() {
-      var _this = this;
-
       _classCallCheck(this, StoreDefinition);
 
       this._facade = null;
-      this._factory = new _StoreFactory2['default']({
-        getter: function getter(state) {
-          for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-            args[_key2 - 1] = arguments[_key2];
-          }
-
-          if (typeof _this._getter === 'function') {
-            return _this._getter.apply(_this, args);
-          }
-        }
-      });
       this._getter = null;
+      this._responses = {};
     }
 
     _createClass(StoreDefinition, [{
@@ -1102,17 +959,13 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'defineResponseTo',
       value: function defineResponseTo(actionTypes, response) {
+        var _this = this;
+
         (0, _invariantJs2['default'])(!this.isRegistered(), 'StoreDefinition.defineResponseTo: this store definition cannot be' + ' modified because is has already been registered with a dispatcher. %s', HINT_LINK);
-        this._factory = this._factory.defineResponses([].concat(actionTypes).reduce(function (responses, actionType) {
-          responses[actionType] = dropFirstArg(response);
-          return responses;
-        }, {}));
+        [].concat(actionTypes).forEach(function (actionType) {
+          return _this._setResponse(actionType, response);
+        });
         return this;
-      }
-    }, {
-      key: 'getFactory',
-      value: function getFactory() {
-        return this._factory;
       }
     }, {
       key: 'isRegistered',
@@ -1122,11 +975,23 @@ return /******/ (function(modules) { // webpackBootstrap
     }, {
       key: 'register',
       value: function register(dispatcher) {
+        dispatcher = dispatcher || _dispatcherDispatcherInstanceJs2['default'].get();
+        (0, _invariantJs2['default'])(dispatcher !== null && typeof dispatcher === 'object', 'StoreDefinition.register: you haven\'t provide a dispatcher instance.' + ' You can pass an instance to' + ' GeneralStore.define().register(dispatcher) or use' + ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' + ' instance.' + ' https://github.com/HubSpot/general-store#default-dispatcher-instance');
+        (0, _invariantJs2['default'])((0, _dispatcherDispatcherInterfaceJs.isDispatcher)(dispatcher), 'StoreDefinition.register: Expected dispatcher to be an object' + ' with a register method, and an unregister method but got "%s".' + ' Learn more about the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface', dispatcher);
         (0, _invariantJs2['default'])(typeof this._getter === 'function', 'StoreDefinition.register: a store cannot be registered without a' + ' getter. Use GeneralStore.define().defineGet(getter) to define a' + ' getter. %s', HINT_LINK);
-        if (!this._facade) {
-          this._facade = this._factory.register(dispatcher);
+        var facade = this._facade || new _StoreFacadeJs2['default'](this._getter || emptyGetter, this._responses, dispatcher);
+        if (this._facade === null) {
+          this._facade = facade;
         }
-        return this._facade;
+        return facade;
+      }
+    }, {
+      key: '_setResponse',
+      value: function _setResponse(actionType, response) {
+        (0, _invariantJs2['default'])(typeof actionType === 'string', 'StoreDefinition.defineResponseTo: expected actionType to be a string' + ' but got "%s" instead. %s', actionType, HINT_LINK);
+        (0, _invariantJs2['default'])(!this._responses.hasOwnProperty(actionType), 'StoreDefinition.defineResponseTo: conflicting resposes for actionType' + ' "%s". Only one response can be defined per actionType per Store. %s', actionType, HINT_LINK);
+        (0, _invariantJs2['default'])(typeof response === 'function', 'StoreDefinition.defineResponseTo: expected response to be a function' + ' but got "%s" instead. %s', response);
+        this._responses[actionType] = response;
       }
     }]);
 
@@ -1137,7 +1002,7 @@ return /******/ (function(modules) { // webpackBootstrap
   module.exports = exports['default'];
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports) {
 
   /**
