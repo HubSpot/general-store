@@ -1,23 +1,23 @@
-jest.dontMock('../StoreDefinition.js');
+jest.dontMock('../StoreSingleton.js');
 
-describe('StoreDefinition', () => {
+describe('StoreSingleton', () => {
 
   var DispatcherInstance;
-  var StoreDefinition;
+  var StoreSingleton;
 
   var mockDispatcher;
   var storeDefinition;
 
   beforeEach(() => {
     DispatcherInstance = require('../../dispatcher/DispatcherInstance.js');
-    StoreDefinition = require('../StoreDefinition.js');
+    StoreSingleton = require('../StoreSingleton.js');
 
     mockDispatcher = {
       register: () => 12345,
       unregister: function() {},
     };
     DispatcherInstance.get.mockReturnValue(mockDispatcher);
-    storeDefinition = new StoreDefinition();
+    storeDefinition = new StoreSingleton();
   });
 
   it('ensures that a function is passed to defineGet', () => {

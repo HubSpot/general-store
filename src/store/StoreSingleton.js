@@ -14,7 +14,7 @@ function dropFirstArg(func) {
   };
 }
 
-export default class StoreDefinition {
+export default class StoreSingleton {
 
   _facade: ?StoreFacade;
   _factory: StoreFactory;
@@ -34,16 +34,16 @@ export default class StoreDefinition {
 
   defineGet(
     getter: () => any
-  ): StoreDefinition {
+  ): StoreSingleton {
     invariant(
       !this.isRegistered(),
-      'StoreDefinition.defineGet: this store definition cannot be modified' +
+      'StoreSingleton.defineGet: this store definition cannot be modified' +
       ' because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
     invariant(
       typeof getter === 'function',
-      'StoreDefinition.defineGet: expected getter to be a function but got' +
+      'StoreSingleton.defineGet: expected getter to be a function but got' +
       ' "%s" instead. %s',
       getter,
       HINT_LINK
@@ -52,7 +52,7 @@ export default class StoreDefinition {
     return this;
   }
 
-  defineResponses(responses: Object): StoreDefinition {
+  defineResponses(responses: Object): StoreSingleton {
     this._factory = this._factory.defineResponses(responses);
     return this;
   }
@@ -60,10 +60,10 @@ export default class StoreDefinition {
   defineResponseTo(
     actionTypes: Array<string> | string,
     response: (data: any) => void
-  ): StoreDefinition {
+  ): StoreSingleton {
     invariant(
       !this.isRegistered(),
-      'StoreDefinition.defineResponseTo: this store definition cannot be' +
+      'StoreSingleton.defineResponseTo: this store definition cannot be' +
       ' modified because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
@@ -78,7 +78,7 @@ export default class StoreDefinition {
   register(dispatcher: ?Dispatcher): StoreFacade {
     invariant(
       typeof this._getter === 'function',
-      'StoreDefinition.register: a store cannot be registered without a' +
+      'StoreSingleton.register: a store cannot be registered without a' +
       ' getter. Use GeneralStore.define().defineGet(getter) to define a' +
       ' getter. %s',
       HINT_LINK
