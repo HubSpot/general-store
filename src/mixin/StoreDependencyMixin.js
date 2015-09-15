@@ -2,7 +2,6 @@
  * @flow
  */
 
-import StoreFacade from '../store/StoreFacade.js';
 import {
   dependencies,
   stores,

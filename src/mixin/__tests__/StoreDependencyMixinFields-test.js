@@ -42,10 +42,10 @@ describe('StoreDependencyMixinFields', () => {
   });
 
   it('returns the stores Array from stores()', () => {
-    var StoreFacade = require('../../store/StoreFacade.js');
+    var Store = require('../../store/Store.js');
     var {stores} = StoreDependencyMixinFields;
     var mockStores = stores(mockComponent);
-    var mockStore = new StoreFacade();
+    var mockStore = new Store();
     expect(Array.isArray(mockStores)).toBe(true);
     mockStores.push(mockStore);
     expect(stores(mockComponent)).toBe(mockStores);

@@ -14,7 +14,7 @@ function getNull() {
   return null;
 }
 
-export default class StoreFacade {
+export default class Store {
 
   _dispatcher: Dispatcher;
   _dispatchToken: string;
@@ -50,7 +50,7 @@ export default class StoreFacade {
   addOnChange(callback: Function): EventHandler {
     invariant(
       typeof callback === 'function',
-      'StoreFacade.addOnChange: expected callback to be a function' +
+      'Store.addOnChange: expected callback to be a function' +
       ' but got "%s" instead. %s',
       callback,
       HINT_LINK
@@ -100,7 +100,7 @@ export default class StoreFacade {
     if (process.env.NODE_ENV !== 'production') {
       invariant(
         isPayload(payload),
-        'StoreFacade: expected dispatched payload to be an object with a' +
+        'Store: expected dispatched payload to be an object with a' +
         ' property "actionType" containing a string and an optional property' +
         ' "data" containing any value but got "%s" instead. Learn more about' +
         ' the dispatcher interface:' +
@@ -135,11 +135,11 @@ export default class StoreFacade {
    *
    * @return this
    */
-  triggerChange(): StoreFacade {
+  triggerChange(): Store {
     if (process.env.NODE_ENV !== 'production') {
       if (!this._dispatcher.isDispatching()) {
         console.warn(
-          'StoreFacade: you called store.triggerChange() outside of a' +
+          'Store: you called store.triggerChange() outside of a' +
             ' dispatch loop. Send an action trough the dispatcher to' +
             ' avoid potentailly confusing behavior.'
         );

@@ -3,7 +3,7 @@
 import DispatcherInstance from '../dispatcher/DispatcherInstance';
 import {isDispatcher} from '../dispatcher/DispatcherInterface.js';
 import invariant from '../invariant';
-import StoreFacade from './StoreFacade';
+import Store from './Store';
 
 var HINT_LINK =
   'Learn more about defining stores:' +
@@ -122,7 +122,7 @@ export default class StoreFactory {
     return this._definition;
   }
 
-  register(dispatcher: ?Dispatcher): StoreFacade {
+  register(dispatcher: ?Dispatcher): Store {
     dispatcher = dispatcher || DispatcherInstance.get();
     invariant(
       dispatcher !== null && typeof dispatcher === 'object',
@@ -141,7 +141,7 @@ export default class StoreFactory {
       ' https://github.com/HubSpot/general-store#dispatcher-interface',
       dispatcher
     );
-    return new StoreFacade({
+    return new Store({
       ...this._definition,
       dispatcher,
     });

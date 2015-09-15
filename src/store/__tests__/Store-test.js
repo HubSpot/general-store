@@ -1,8 +1,8 @@
-jest.dontMock('../StoreFacade.js');
+jest.dontMock('../Store.js');
 
-describe('StoreFacade', () => {
+describe('Store', () => {
 
-  var StoreFacade;
+  var Store;
   var storeFacade;
 
   var mockAction;
@@ -14,7 +14,7 @@ describe('StoreFacade', () => {
   var mockResponses;
 
   beforeEach(() => {
-    StoreFacade = require('../StoreFacade.js');
+    Store = require('../Store.js');
 
     mockAction = 'INCREMENT';
     mockDispatchToken = 'test-token';
@@ -30,7 +30,7 @@ describe('StoreFacade', () => {
     mockResponses = {};
     mockResponses[mockAction] = mockResponse;
     mockInitialData = {count: 0};
-    storeFacade = new StoreFacade({
+    storeFacade = new Store({
       getter: mockGet,
       initialData: mockInitialData,
       responses: mockResponses,

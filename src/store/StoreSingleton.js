@@ -1,7 +1,7 @@
 /* @flow */
 
 import invariant from '../invariant.js';
-import StoreFacade from './StoreFacade.js';
+import Store from './Store.js';
 import StoreFactory from './StoreFactory';
 
 var HINT_LINK =
@@ -16,7 +16,7 @@ function dropFirstArg(func) {
 
 export default class StoreSingleton {
 
-  _facade: ?StoreFacade;
+  _facade: ?Store;
   _factory: StoreFactory;
   _getter: ?Function;
 
@@ -52,11 +52,6 @@ export default class StoreSingleton {
     return this;
   }
 
-  defineResponses(responses: Object): StoreSingleton {
-    this._factory = this._factory.defineResponses(responses);
-    return this;
-  }
-
   defineResponseTo(
     actionTypes: Array<string> | string,
     response: (data: any) => void
@@ -67,15 +62,18 @@ export default class StoreSingleton {
       ' modified because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
-    this._factory = this._factory.defineResponseTo(actionTypes, response);
+    this._factory = this._factory.defineResponseTo(
+      actionTypes,
+      dropFirstArg(response)
+    );
     return this;
   }
 
   isRegistered(): bool {
-    return this._facade instanceof StoreFacade;
+    return this._facade instanceof Store;
   }
 
-  register(dispatcher: ?Dispatcher): StoreFacade {
+  register(dispatcher: ?Dispatcher): Store {
     invariant(
       typeof this._getter === 'function',
       'StoreSingleton.register: a store cannot be registered without a' +
