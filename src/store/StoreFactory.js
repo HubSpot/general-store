@@ -47,24 +47,26 @@ type Responses = {
 type StoreFactoryDefinition = {
   getter: ?Getter;
   initialData: any;
-  responses: Responses;
+  responses: ?Responses;
 };
 
 export default class StoreFactory {
 
   _definition: StoreFactoryDefinition;
 
-  constructor({getter, initialData, responses = {}}) {
+  constructor(
+    {getter, initialData, responses}: {getter: ?Getter, initialData: any, responses: ?Responses}
+  ) {
     this._definition = {
       getter,
       initialData,
-      responses,
+      responses: responses === null ? 
     };
   }
 
-  defineGet(getter: (state: any) => any) {
+  defineGet(getter: Getter): StoreFactory {
     invariant(
-      this._definition.getter === undefined,
+      typeof this._definition.getter === 'function',
       'StoreFactory.defineGet: a getter is already defined.'
     );
     return new StoreFactory({
@@ -85,7 +87,7 @@ export default class StoreFactory {
   }
 
   defineResponses(newResponses: Responses): StoreFactory {
-    const {responses} = this._definition;
+    var {responses} = this._definition;
     Object.keys(newResponses).forEach(
       actionType => enforceResponse(
         responses,
