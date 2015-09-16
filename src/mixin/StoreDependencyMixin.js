@@ -20,7 +20,6 @@ import {
 export default function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
-  var fieldNames = Object.keys(dependencyMap);
   var isFirstMixin = false;
 
   return {

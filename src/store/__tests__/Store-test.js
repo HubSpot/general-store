@@ -118,7 +118,6 @@ describe('Store', () => {
 
   it('properly tracks state updates', () => {
     var handler = mockDispatcher.register.mock.calls[0][0];
-    var mockData = {};
     expect(storeFacade.get()).toBe(0);
     handler({actionType: mockAction});
     expect(storeFacade.get()).toBe(1);
