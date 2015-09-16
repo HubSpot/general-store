@@ -9,10 +9,6 @@ var HINT_LINK =
   'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
-function emptyGetter() {
-  return null;
-}
-
 function enforceResponse(existingResponses, actionType, response) {
   invariant(
     typeof actionType === 'string',
@@ -144,6 +140,7 @@ export default class StoreFactory {
     return new Store({
       ...this._definition,
       dispatcher,
+      factory: this,
     });
   }
 }

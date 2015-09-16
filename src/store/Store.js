@@ -1,6 +1,8 @@
 /* eslint no-console:0 */
 /* @flow */
 
+import type StoreFactory from './StoreFactory';
+
 import {isPayload} from '../dispatcher/DispatcherInterface.js';
 import Event from '../event/Event.js';
 import EventHandler from '../event/EventHandler.js';
@@ -18,6 +20,7 @@ export default class Store {
 
   _dispatcher: Dispatcher;
   _dispatchToken: string;
+  _factory: StoreFactory;
   _getter: (...args: Array<any>) => any;
   _event: Event;
   _responses: {[key:string]: (data: any, actionType: string) => any};
@@ -25,11 +28,13 @@ export default class Store {
 
   constructor({
     dispatcher,
+    factory,
     getter,
     initialData,
     responses,
   }) {
     this._dispatcher = dispatcher;
+    this._factory = factory;
     this._getter = getter;
     this._state = initialData;
     this._responses = responses;
@@ -84,6 +89,10 @@ export default class Store {
    */
   getDispatchToken(): string {
     return this._dispatchToken;
+  }
+
+  getFactory(): StoreFactory {
+    return this._factory;
   }
 
   getID(): number {
