@@ -7,7 +7,7 @@ import {
   handlers,
   queue,
   storeFields,
-  stores
+  stores,
 } from './StoreDependencyMixinFields.js';
 
 function flushQueue(

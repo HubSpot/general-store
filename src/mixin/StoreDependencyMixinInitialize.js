@@ -6,7 +6,7 @@ import invariant from '../invariant.js';
 import {
   dependencies,
   storeFields,
-  stores
+  stores,
 } from './StoreDependencyMixinFields.js';
 import Store from '../store/Store.js';
 
