@@ -9,10 +9,6 @@ var HINT_LINK =
   'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
-function defaultGetter(state) {
-  return state;
-}
-
 function enforceResponse(existingResponses, actionType, response) {
   invariant(
     typeof actionType === 'string',
@@ -46,7 +42,7 @@ type Responses = {
 
 type StoreFactoryDefinition = {
   getter: Getter;
-  initialData: any;
+  initialState: any;
   responses: Responses;
 };
 
@@ -54,10 +50,10 @@ export default class StoreFactory {
 
   _definition: StoreFactoryDefinition;
 
-  constructor({getter, initialData, responses}:Object) {
+  constructor({getter, initialState, responses}:Object) {
     this._definition = {
-      getter: getter || defaultGetter,
-      initialData: initialData,
+      getter: getter,
+      initialState: initialState,
       responses: responses || {},
     };
   }
@@ -73,14 +69,14 @@ export default class StoreFactory {
     });
   }
 
-  defineInitialData(initialData: any): StoreFactory {
+  defineInitialState(initialState: any): StoreFactory {
     invariant(
-      this._definition.initialData === undefined,
-      'StoreFactory.defineInitialData: initialData is already defined.'
+      this._definition.initialState === undefined,
+      'StoreFactory.defineInitialState: initialState is already defined.'
     );
     return new StoreFactory({
       ...this._definition,
-      initialData,
+      initialState,
     });
   }
 

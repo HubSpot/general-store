@@ -24,19 +24,20 @@ export default class Store {
   _getter: (...args: Array<any>) => any;
   _event: Event;
   _responses: {[key:string]: (data: any, actionType: string) => any};
+  _state: any;
   _uid: number;
 
   constructor({
     dispatcher,
     factory,
     getter,
-    initialData,
+    initialState,
     responses,
   }) {
     this._dispatcher = dispatcher;
     this._factory = factory;
     this._getter = getter;
-    this._state = initialData;
+    this._state = initialState;
     this._responses = responses;
     this._event = new Event();
     this._uid = uniqueID();

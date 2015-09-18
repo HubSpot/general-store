@@ -52,7 +52,8 @@ function runTest(GeneralStore) {
 
   function defineCountStore(incAction, decAction) {
     return GeneralStore.defineFactory()
-      .defineInitialData(0)
+      .defineGet(count => count)
+      .defineInitialState(0)
       .defineResponses({
         [incAction]: (count) => count + 1,
         [decAction]: (count) => count > 0 ? count - 1 : count,

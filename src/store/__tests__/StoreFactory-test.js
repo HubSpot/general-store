@@ -14,7 +14,7 @@ describe('StoreFactory', () => {
   it('sets the default definition', () => {
     expect(storeFactory.getDefinition()).toEqual({
       getter: undefined,
-      initialData: undefined,
+      initialState: undefined,
       responses: {},
     });
   });
@@ -27,7 +27,7 @@ describe('StoreFactory', () => {
       storeFactory.defineResponses({})
     ).not.toBe(storeFactory);
     expect(
-      storeFactory.defineInitialData({})
+      storeFactory.defineInitialState({})
     ).not.toBe(storeFactory);
   });
 
@@ -44,16 +44,16 @@ describe('StoreFactory', () => {
     ).toThrow();
   });
 
-  it('sets initialData', () => {
+  it('sets initialState', () => {
     var mockData = {};
-    var newDef = storeFactory.defineInitialData(mockData).getDefinition();
-    expect(newDef.initialData).toBe(mockData);
+    var newDef = storeFactory.defineInitialState(mockData).getDefinition();
+    expect(newDef.initialState).toBe(mockData);
   });
 
-  it('throws when initialData is already set', () => {
-    var factoryWithInitialData = storeFactory.defineInitialData({});
+  it('throws when initialState is already set', () => {
+    var factoryWithInitialState = storeFactory.defineInitialState({});
     expect(
-      () => factoryWithInitialData.defineInitialData({})
+      () => factoryWithInitialState.defineInitialState({})
     ).toThrow();
   });
 

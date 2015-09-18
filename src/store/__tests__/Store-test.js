@@ -9,7 +9,7 @@ describe('Store', () => {
   var mockDispatcher;
   var mockDispatchToken;
   var mockGet;
-  var mockInitialData;
+  var mockInitialState;
   var mockResponse;
   var mockResponses;
 
@@ -29,10 +29,10 @@ describe('Store', () => {
     });
     mockResponses = {};
     mockResponses[mockAction] = mockResponse;
-    mockInitialData = {count: 0};
+    mockInitialState = {count: 0};
     storeFacade = new Store({
       getter: mockGet,
-      initialData: mockInitialData,
+      initialState: mockInitialState,
       responses: mockResponses,
       dispatcher: mockDispatcher,
     });
@@ -47,7 +47,7 @@ describe('Store', () => {
     var mockData = {};
     handler({actionType: mockAction, data: mockData});
     expect(mockResponse.mock.calls.length).toBe(1);
-    expect(mockResponse.mock.calls[0][0]).toBe(mockInitialData);
+    expect(mockResponse.mock.calls[0][0]).toBe(mockInitialState);
     expect(mockResponse.mock.calls[0][1]).toBe(mockData);
     expect(mockResponse.mock.calls[0][2]).toBe(mockAction);
   });
@@ -62,7 +62,7 @@ describe('Store', () => {
     storeFacade.get(mockArg1, mockArg2);
     expect(mockGet.mock.calls[0].length).toBe(3);
     expect(mockGet.mock.calls[0].length).toBe(3);
-    expect(mockGet.mock.calls[0][0]).toBe(mockInitialData);
+    expect(mockGet.mock.calls[0][0]).toBe(mockInitialState);
     expect(mockGet.mock.calls[0][1]).toBe(mockArg1);
     expect(mockGet.mock.calls[0][2]).toBe(mockArg2);
   });
