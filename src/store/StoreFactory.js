@@ -9,6 +9,10 @@ var HINT_LINK =
   'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
+function defaultGetter(state) {
+  return state;
+}
+
 function enforceResponse(existingResponses, actionType, response) {
   invariant(
     typeof actionType === 'string',
@@ -52,7 +56,7 @@ export default class StoreFactory {
 
   constructor({getter, initialData, responses}:Object) {
     this._definition = {
-      getter: getter,
+      getter: getter || defaultGetter,
       initialData: initialData,
       responses: responses || {},
     };

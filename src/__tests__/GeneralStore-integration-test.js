@@ -50,13 +50,17 @@ function runTest(GeneralStore) {
     return mockComponent;
   }
 
+  function defineCountStore(incAction, decAction) {
+    return GeneralStore.defineFactory()
+      .defineInitialData(0)
+      .defineResponses({
+        [incAction]: (count) => count + 1,
+        [decAction]: (count) => count > 0 ? count - 1 : count,
+      });
+  }
+
   function defineUserCountStore() {
-    var userCount = 0;
-    return GeneralStore.define()
-      .defineGet(() => userCount)
-      .defineResponseTo(ADD_USER, () => userCount++)
-      .defineResponseTo(REMOVE_USER, () => userCount--)
-      .register(dispatcher);
+    return defineCountStore(ADD_USER, REMOVE_USER).register(dispatcher);
   }
 
   function defineUserStore() {
@@ -294,6 +298,7 @@ describe('GeneralStore src integration test', () => {
   );
 });
 
+/*
 describe('GeneralStore dev build integration test', () => {
   runTest(
     require('../../build/general-store.js')
@@ -305,3 +310,4 @@ describe('GeneralStore prod build integration test', () => {
     require('../../build/general-store.min.js')
   );
 });
+*/
