@@ -46,7 +46,11 @@ type StoreFactoryDefinition = {
   responses: Responses;
 };
 
-function defaultInitialState() {}
+function defaultGetInitialState() {}
+
+function defaultGetter(state) {
+  return state;
+}
 
 export default class StoreFactory {
 
@@ -54,15 +58,15 @@ export default class StoreFactory {
 
   constructor({getter, getInitialState, responses}:Object) {
     this._definition = {
-      getter: getter,
-      getInitialState: getInitialState || defaultInitialState,
+      getter: getter || defaultGetter,
+      getInitialState: getInitialState || defaultGetInitialState,
       responses: responses || {},
     };
   }
 
   defineGet(getter: Getter): StoreFactory {
     invariant(
-      typeof this._definition.getter !== 'function',
+      typeof this._definition.getter !== defaultGetter,
       'StoreFactory.defineGet: a getter is already defined.'
     );
     return new StoreFactory({
@@ -77,7 +81,7 @@ export default class StoreFactory {
       'StoreFactory.defineGetInitialState: getInitialState must be a function.'
     );
     invariant(
-      this._definition.getInitialState === defaultInitialState,
+      this._definition.getInitialState === defaultGetInitialState,
       'StoreFactory.defineGetInitialState: getInitialState is already defined.'
     );
     return new StoreFactory({
