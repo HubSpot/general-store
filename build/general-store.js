@@ -552,7 +552,13 @@ return /******/ (function(modules) { // webpackBootstrap
     (0, _invariant2['default'])(typeof response === 'function', 'StoreFactory.defineResponses: expected response to be a function' + ' but got "%s" instead. %s', response);
   }
 
-  function defaultInitialState() {}
+  function defaultGetInitialState() {
+    return undefined;
+  }
+
+  function defaultGetter(state) {
+    return state;
+  }
 
   var StoreFactory = (function () {
     function StoreFactory(_ref) {
@@ -563,8 +569,8 @@ return /******/ (function(modules) { // webpackBootstrap
       _classCallCheck(this, StoreFactory);
 
       this._definition = {
-        getter: getter,
-        getInitialState: getInitialState || defaultInitialState,
+        getter: getter || defaultGetter,
+        getInitialState: getInitialState || defaultGetInitialState,
         responses: responses || {}
       };
     }
@@ -572,7 +578,7 @@ return /******/ (function(modules) { // webpackBootstrap
     _createClass(StoreFactory, [{
       key: 'defineGet',
       value: function defineGet(getter) {
-        (0, _invariant2['default'])(typeof this._definition.getter !== 'function', 'StoreFactory.defineGet: a getter is already defined.');
+        (0, _invariant2['default'])(this._definition.getter === defaultGetter, 'StoreFactory.defineGet: a getter is already defined.');
         return new StoreFactory(_extends({}, this._definition, {
           getter: getter
         }));
@@ -581,7 +587,7 @@ return /******/ (function(modules) { // webpackBootstrap
       key: 'defineGetInitialState',
       value: function defineGetInitialState(getInitialState) {
         (0, _invariant2['default'])(typeof getInitialState === 'function', 'StoreFactory.defineGetInitialState: getInitialState must be a function.');
-        (0, _invariant2['default'])(this._definition.getInitialState === defaultInitialState, 'StoreFactory.defineGetInitialState: getInitialState is already defined.');
+        (0, _invariant2['default'])(this._definition.getInitialState === defaultGetInitialState, 'StoreFactory.defineGetInitialState: getInitialState is already defined.');
         return new StoreFactory(_extends({}, this._definition, {
           getInitialState: getInitialState
         }));
