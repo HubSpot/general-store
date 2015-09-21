@@ -2,7 +2,7 @@ jest.dontMock('../DispatcherInterface.js');
 
 describe('DispatcherInterface', () => {
 
-  var DispatcherInterface;
+  let DispatcherInterface;
 
   beforeEach(() => {
     DispatcherInterface = require('../DispatcherInterface.js');

@@ -2,10 +2,10 @@ jest.dontMock('../StoreDependencyMixin.js');
 
 describe('StoreDependencyMixin', () => {
 
-  var StoreDependencyMixin;
+  let StoreDependencyMixin;
 
-  var mockComponent;
-  var mockMixin;
+  let mockComponent;
+  let mockMixin;
 
   beforeEach(() => {
     StoreDependencyMixin = require('../StoreDependencyMixin.js');
@@ -20,26 +20,26 @@ describe('StoreDependencyMixin', () => {
   });
 
   it('applies dependencies in getInitialState', () => {
-    var {applyDependencies} = require('../StoreDependencyMixinInitialize.js');
-    var {getDependencyState} = require('../StoreDependencyMixinState.js');
+    let {applyDependencies} = require('../StoreDependencyMixinInitialize.js');
+    let {getDependencyState} = require('../StoreDependencyMixinState.js');
     expect(applyDependencies.mock.calls.length).toBe(1);
     expect(getDependencyState.mock.calls.length).toBe(1);
   });
 
   it('sets handlers in componentWillMount', () => {
-    var {setupHandlers} = require('../StoreDependencyMixinHandlers.js');
+    let {setupHandlers} = require('../StoreDependencyMixinHandlers.js');
     mockMixin.componentWillMount.call(mockComponent);
     expect(setupHandlers.mock.calls.length).toBe(1);
   });
 
   it('cleans up handlers in componentWillUnmount', () => {
-    var {cleanupHandlers} = require('../StoreDependencyMixinHandlers.js');
+    let {cleanupHandlers} = require('../StoreDependencyMixinHandlers.js');
     mockMixin.componentWillUnmount.call(mockComponent);
     expect(cleanupHandlers.mock.calls.length).toBe(1);
   });
 
   it('sets state if appropriate in componentWillReceiveProps', () => {
-    var {hasPropsChanged} = require('../StoreDependencyMixinTransitions.js');
+    let {hasPropsChanged} = require('../StoreDependencyMixinTransitions.js');
     hasPropsChanged.mockReturnValueOnce(false);
     mockMixin.componentWillReceiveProps.call(mockComponent);
     expect(mockComponent.setState.mock.calls.length).toBe(0);
@@ -49,7 +49,7 @@ describe('StoreDependencyMixin', () => {
   });
 
   it('sets state if appropriate in componentDidUpdate', () => {
-    var {hasStateChanged} = require('../StoreDependencyMixinTransitions.js');
+    let {hasStateChanged} = require('../StoreDependencyMixinTransitions.js');
     hasStateChanged.mockReturnValueOnce(false);
     mockMixin.componentDidUpdate.call(mockComponent);
     expect(mockComponent.setState.mock.calls.length).toBe(0);

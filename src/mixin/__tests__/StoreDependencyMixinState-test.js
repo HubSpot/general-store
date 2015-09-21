@@ -2,16 +2,16 @@ jest.dontMock('../StoreDependencyMixinState.js');
 
 describe('StoreDependencyMixinState', () => {
 
-  var Store;
+  let Store;
 
-  var dependencies;
-  var getDependencyState;
+  let dependencies;
+  let getDependencyState;
 
-  var mockComponent;
-  var mockProps;
-  var mockState;
-  var mockStore;
-  var mockValue;
+  let mockComponent;
+  let mockProps;
+  let mockState;
+  let mockStore;
+  let mockValue;
 
   beforeEach(() => {
     Store = require('../../store/Store.js');

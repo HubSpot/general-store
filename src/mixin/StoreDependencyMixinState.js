@@ -10,11 +10,11 @@ export function getDependencyState(
   state: Object,
   fieldNames: ?Array<string>
 ): Object {
-  var componentDependencies = dependencies(component);
+  const componentDependencies = dependencies(component);
   fieldNames = fieldNames || Object.keys(componentDependencies);
-  var dependencyState = {};
+  let dependencyState = {};
   fieldNames.forEach(field => {
-    var {deref, stores} = componentDependencies[field];
+    let {deref, stores} = componentDependencies[field];
     dependencyState[field] = deref(
       props,
       state,

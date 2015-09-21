@@ -2,14 +2,14 @@ jest.dontMock('../StoreDependencyMixinTransitions.js');
 
 describe('StoreDependencyMixinTransitions', () => {
 
-  var StoreDependencyMixinTransitions;
+  let StoreDependencyMixinTransitions;
 
   function merge(state, updates) {
-    var merged = {};
-    for (var stateKey in state) {
+    let merged = {};
+    for (let stateKey in state) {
       merged[stateKey] = state[stateKey];
     }
-    for (var updatesKey in updates) {
+    for (let updatesKey in updates) {
       merged[updatesKey] = updates[updatesKey];
     }
     return merged;
@@ -21,8 +21,8 @@ describe('StoreDependencyMixinTransitions', () => {
   });
 
   it('shallow compares props', () => {
-    var {hasPropsChanged} = StoreDependencyMixinTransitions;
-    var old = {
+    let {hasPropsChanged} = StoreDependencyMixinTransitions;
+    let old = {
       test: 'tester',
       obj: {},
     };
@@ -42,11 +42,11 @@ describe('StoreDependencyMixinTransitions', () => {
   });
 
   it('shallow compares state but ignores store fields', () => {
-    var {hasStateChanged} = StoreDependencyMixinTransitions;
-    var stores = {
+    let {hasStateChanged} = StoreDependencyMixinTransitions;
+    let stores = {
       testStore: true,
     };
-    var oldState = {
+    let oldState = {
       testStore: 'random',
       test: 'tester',
       obj: {},

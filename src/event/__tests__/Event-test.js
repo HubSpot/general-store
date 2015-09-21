@@ -2,10 +2,10 @@ jest.dontMock('../Event.js');
 
 describe('Event', () => {
 
-  var Event;
-  var EventHandler;
+  let Event;
+  let EventHandler;
 
-  var eventInstance;
+  let eventInstance;
 
   beforeEach(() => {
     Event = require('../Event.js');
@@ -15,8 +15,8 @@ describe('Event', () => {
   });
 
   it('runs all handler callbacks on runHandlers', () => {
-    var mockCallback = jest.genMockFunction();
-    var otherMockCallback = jest.genMockFunction();
+    let mockCallback = jest.genMockFunction();
+    let otherMockCallback = jest.genMockFunction();
     eventInstance.addHandler(mockCallback);
     eventInstance.addHandler(otherMockCallback);
     eventInstance.runHandlers();
@@ -30,7 +30,7 @@ describe('Event', () => {
   });
 
   it('does not run handlers that have been removed', () => {
-    var mockCallback = jest.genMockFunction();
+    let mockCallback = jest.genMockFunction();
     eventInstance.addHandler(mockCallback);
     eventInstance.runHandlers();
     expect(mockCallback.mock.calls.length).toBe(1);
@@ -40,9 +40,9 @@ describe('Event', () => {
   });
 
   it('runs handlers for multiple events using runMutliple', () => {
-    var otherEventInstance = new Event();
-    var mockCallback = jest.genMockFunction();
-    var otherMockCallback = jest.genMockFunction();
+    let otherEventInstance = new Event();
+    let mockCallback = jest.genMockFunction();
+    let otherMockCallback = jest.genMockFunction();
     eventInstance.addHandler(mockCallback);
     otherEventInstance.addHandler(otherMockCallback);
     Event.runMultiple([eventInstance, otherEventInstance]);
@@ -56,7 +56,7 @@ describe('Event', () => {
   });
 
   it('does not run handlers after the event has been removed', () => {
-    var mockCallback = jest.genMockFunction();
+    let mockCallback = jest.genMockFunction();
     eventInstance.addHandler(mockCallback);
     eventInstance.runHandlers();
     expect(mockCallback.mock.calls.length).toBe(1);

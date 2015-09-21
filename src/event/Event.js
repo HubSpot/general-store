@@ -20,7 +20,7 @@ export default class Event {
    * @return this
    */
   addHandler(callback: Function): EventHandler {
-    var key = uniqueID();
+    const key = uniqueID();
     this._handlers[key] = callback;
     return new EventHandler(this, key);
   }

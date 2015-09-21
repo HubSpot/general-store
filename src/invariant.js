@@ -65,10 +65,10 @@ export default function invariant(
   }
 
   if (!condition) {
-    var error;
+    let error;
     if (process.env.NODE_ENV !== 'production') {
-      var args = [a, b, c, d, e, f];
-      var argIndex = 0;
+      let args = [a, b, c, d, e, f];
+      let argIndex = 0;
       error = new Error(
         'Invariant Violation: ' +
         format.replace(/%s/g, () => args[argIndex++])

@@ -7,9 +7,9 @@
 import {isDispatcher} from './DispatcherInterface.js';
 import invariant from '../invariant.js';
 
-var instance = null;
+let instance = null;
 
-var DispatcherInstance = {
+export default {
   get(): ?Dispatcher {
     return instance;
   },
@@ -26,5 +26,3 @@ var DispatcherInstance = {
     instance = dispatcher;
   },
 };
-
-export default DispatcherInstance;

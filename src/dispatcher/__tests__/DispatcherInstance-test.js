@@ -2,9 +2,9 @@ jest.dontMock('../DispatcherInstance.js');
 
 describe('DispatcherInstance', () => {
 
-  var DispatcherInstance;
+  let DispatcherInstance;
 
-  var mockDispatcher;
+  let mockDispatcher;
 
   beforeEach(() => {
     DispatcherInstance = require('../DispatcherInstance.js');

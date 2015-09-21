@@ -2,8 +2,8 @@ jest.dontMock('../EventHandler.js');
 
 describe('EventHandler', () => {
 
-  var Event;
-  var EventHandler;
+  let Event;
+  let EventHandler;
 
   beforeEach(() => {
     Event = require('../Event.js');
@@ -11,9 +11,9 @@ describe('EventHandler', () => {
   });
 
   it('calls removeHandler only once on instance when remove is called', () => {
-    var mockEvent = new Event();
-    var mockKey = 1234;
-    var handler = new EventHandler(mockEvent, mockKey);
+    let mockEvent = new Event();
+    let mockKey = 1234;
+    let handler = new EventHandler(mockEvent, mockKey);
     handler.remove();
     expect(mockEvent.removeHandler.mock.calls.length).toBe(1);
     expect(mockEvent.removeHandler.mock.calls[0][0]).toBe(mockKey);

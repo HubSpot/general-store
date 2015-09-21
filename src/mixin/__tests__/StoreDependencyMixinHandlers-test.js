@@ -2,16 +2,16 @@ jest.dontMock('../StoreDependencyMixinHandlers.js');
 
 describe('StoreDependencyMixinHandlers', () => {
 
-  var EventHandler;
-  var StoreDependencyMixinFields;
-  var StoreDependencyMixinHandlers;
-  var Store;
+  let EventHandler;
+  let StoreDependencyMixinFields;
+  let StoreDependencyMixinHandlers;
+  let Store;
 
-  var handlers;
-  var stores;
+  let handlers;
+  let stores;
 
-  var mockComponent;
-  var mockStore;
+  let mockComponent;
+  let mockStore;
 
   beforeEach(() => {
     EventHandler = require('../../event/EventHandler.js');
@@ -37,7 +37,7 @@ describe('StoreDependencyMixinHandlers', () => {
   });
 
   it('properly cleans up handlers', () => {
-    var {cleanupHandlers} = StoreDependencyMixinHandlers;
+    let {cleanupHandlers} = StoreDependencyMixinHandlers;
     cleanupHandlers(mockComponent);
     expect(handlers(mockComponent).length).toBe(0);
   });

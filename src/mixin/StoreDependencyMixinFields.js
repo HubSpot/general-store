@@ -5,11 +5,11 @@
 import EventHandler from '../event/EventHandler.js';
 import Store from '../store/Store.js';
 
-var DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
-var HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
-var QUEUE_KEY = '__StoreDependencyMixin-queue';
-var STORES_KEY = '__StoreDependencyMixin-stores';
-var STORE_FIELDS_KEY = '__StoreDependencyMixin-storeFields';
+const DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
+const HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
+const QUEUE_KEY = '__StoreDependencyMixin-queue';
+const STORES_KEY = '__StoreDependencyMixin-stores';
+const STORE_FIELDS_KEY = '__StoreDependencyMixin-storeFields';
 
 function getKey<T>(
   key: string,

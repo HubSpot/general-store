@@ -2,17 +2,17 @@ jest.dontMock('../uniqueID.js');
 
 describe('uniqueId', () => {
 
-  var uniqueId;
+  let uniqueId;
 
   beforeEach(() => {
     uniqueId = require('../uniqueID.js');
   });
 
   it('always returns a unique number', () => {
-    var testCount = 100;
-    var next;
-    var uids = [];
-    for (var i = 0; i < testCount; i++) {
+    const testCount = 100;
+    let next;
+    let uids = [];
+    for (let i = 0; i < testCount; i++) {
       next = uniqueId();
       expect(uids.indexOf(next)).toBe(-1);
       uids.push(next);

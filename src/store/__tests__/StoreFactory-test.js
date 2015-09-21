@@ -2,9 +2,9 @@ jest.dontMock('../StoreFactory.js');
 
 describe('StoreFactory', () => {
 
-  var StoreFactory;
+  let StoreFactory;
 
-  var storeFactory;
+  let storeFactory;
 
   beforeEach(() => {
     StoreFactory = require('../StoreFactory.js');
@@ -32,44 +32,44 @@ describe('StoreFactory', () => {
   });
 
   it('sets getter', () => {
-    var mockGetter = function() {};
-    var newDef = storeFactory.defineGet(mockGetter).getDefinition();
+    let mockGetter = function() {};
+    let newDef = storeFactory.defineGet(mockGetter).getDefinition();
     expect(newDef.getter).toBe(mockGetter);
   });
 
   it('throws when a getter is already set', () => {
-    var factoryWithGetter = storeFactory.defineGet(function() {});
+    let factoryWithGetter = storeFactory.defineGet(function() {});
     expect(
       () => factoryWithGetter.defineGet(function() {})
     ).toThrow();
   });
 
   it('sets initialState', () => {
-    var mockData = {};
-    var newDef = storeFactory.defineInitialState(mockData).getDefinition();
+    let mockData = {};
+    let newDef = storeFactory.defineInitialState(mockData).getDefinition();
     expect(newDef.initialState).toBe(mockData);
   });
 
   it('throws when initialState is already set', () => {
-    var factoryWithInitialState = storeFactory.defineInitialState({});
+    let factoryWithInitialState = storeFactory.defineInitialState({});
     expect(
       () => factoryWithInitialState.defineInitialState({})
     ).toThrow();
   });
 
   it('sets responses', () => {
-    var mockResponses = {
+    let mockResponses = {
       TEST: function() {},
       TEST_TWO: function() {},
     };
-    var newDef = storeFactory.defineResponses(mockResponses).getDefinition();
+    let newDef = storeFactory.defineResponses(mockResponses).getDefinition();
     Object.keys(mockResponses).forEach(actionType => {
       expect(newDef.responses[actionType]).toBe(mockResponses[actionType]);
     });
   });
 
   it('throws when a response is already set', () => {
-    var factoryWithResponses = storeFactory.defineResponses({
+    let factoryWithResponses = storeFactory.defineResponses({
       TEST: function() {},
       TEST_TWO: function() {},
     });
@@ -86,7 +86,7 @@ describe('StoreFactory', () => {
   });
 
   it('validates the actionType(s) passed to defineResponses', () => {
-    var mockResponse = function() {};
+    let mockResponse = function() {};
     // invalid args
     expect(
       () => storeFactory.defineResponses({'TESTING': null})
@@ -119,7 +119,7 @@ describe('StoreFactory', () => {
   });
 
   it('throws if register is called without a valid dispatcher', () => {
-    var mockDispatcher = {
+    let mockDispatcher = {
       register: () => 12345,
       unregister: function() {},
     };

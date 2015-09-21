@@ -2,7 +2,7 @@
  * @flow
  */
 
-var compare = require('immutable-is');
+import compare from 'immutable-is';
 
 function compareKey(key, objA, objB) {
   return compare(objA[key], objB[key]);
@@ -16,7 +16,7 @@ function shallowEqual(
   if (objA === objB) {
     return true;
   }
-  var key;
+  let key;
   // Test for A's keys different from B.
   for (key in objA) {
     if (objA.hasOwnProperty(key) &&

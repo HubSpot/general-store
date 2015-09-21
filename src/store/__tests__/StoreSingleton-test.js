@@ -2,11 +2,11 @@ jest.dontMock('../StoreSingleton.js');
 
 describe('StoreSingleton', () => {
 
-  var DispatcherInstance;
-  var StoreSingleton;
+  let DispatcherInstance;
+  let StoreSingleton;
 
-  var mockDispatcher;
-  var storeDefinition;
+  let mockDispatcher;
+  let storeDefinition;
 
   beforeEach(() => {
     DispatcherInstance = require('../../dispatcher/DispatcherInstance.js');

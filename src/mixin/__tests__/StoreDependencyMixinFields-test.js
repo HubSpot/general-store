@@ -2,9 +2,9 @@ jest.dontMock('../StoreDependencyMixinFields.js');
 
 describe('StoreDependencyMixinFields', () => {
 
-  var StoreDependencyMixinFields;
+  let StoreDependencyMixinFields;
 
-  var mockComponent;
+  let mockComponent;
 
   beforeEach(() => {
     StoreDependencyMixinFields = require('../StoreDependencyMixinFields.js');
@@ -13,9 +13,9 @@ describe('StoreDependencyMixinFields', () => {
   });
 
   it('returns the dependencies Object from dependencies()', () => {
-    var {dependencies} = StoreDependencyMixinFields;
-    var mockDependencies = dependencies(mockComponent);
-    var mockValue = 'random';
+    let {dependencies} = StoreDependencyMixinFields;
+    let mockDependencies = dependencies(mockComponent);
+    let mockValue = 'random';
     expect(typeof mockDependencies).toBe('object');
     mockDependencies.test = mockValue;
     expect(dependencies(mockComponent)).toBe(mockDependencies);
@@ -23,9 +23,9 @@ describe('StoreDependencyMixinFields', () => {
   });
 
   it('returns the handlers Array from handlers()', () => {
-    var {handlers} = StoreDependencyMixinFields;
-    var mockHandlers = handlers(mockComponent);
-    var mockHandler = {remove: function() {}};
+    let {handlers} = StoreDependencyMixinFields;
+    let mockHandlers = handlers(mockComponent);
+    let mockHandler = {remove: function() {}};
     expect(Array.isArray(mockHandlers)).toBe(true);
     mockHandlers.push(mockHandler);
     expect(handlers(mockComponent)).toBe(mockHandlers);
@@ -33,8 +33,8 @@ describe('StoreDependencyMixinFields', () => {
   });
 
   it('returns the queue Object from queue()', () => {
-    var {queue} = StoreDependencyMixinFields;
-    var mockQueue = queue(mockComponent);
+    let {queue} = StoreDependencyMixinFields;
+    let mockQueue = queue(mockComponent);
     expect(typeof mockQueue).toBe('object');
     mockQueue.test = true;
     expect(queue(mockComponent)).toBe(mockQueue);
@@ -42,10 +42,10 @@ describe('StoreDependencyMixinFields', () => {
   });
 
   it('returns the stores Array from stores()', () => {
-    var Store = require('../../store/Store.js');
-    var {stores} = StoreDependencyMixinFields;
-    var mockStores = stores(mockComponent);
-    var mockStore = new Store();
+    let Store = require('../../store/Store.js');
+    let {stores} = StoreDependencyMixinFields;
+    let mockStores = stores(mockComponent);
+    let mockStore = new Store();
     expect(Array.isArray(mockStores)).toBe(true);
     mockStores.push(mockStore);
     expect(stores(mockComponent)).toBe(mockStores);
@@ -53,10 +53,10 @@ describe('StoreDependencyMixinFields', () => {
   });
 
   it('returns the storeFields Object from stores()', () => {
-    var {storeFields} = StoreDependencyMixinFields;
-    var mockFields = ['test', 'other'];
-    var mockStoreID = 12345;
-    var mockStoreFields = storeFields(mockComponent);
+    let {storeFields} = StoreDependencyMixinFields;
+    let mockFields = ['test', 'other'];
+    let mockStoreID = 12345;
+    let mockStoreFields = storeFields(mockComponent);
     expect(typeof mockStoreFields).toBe('object');
     mockStoreFields[mockStoreID] = mockFields;
     expect(storeFields(mockComponent)).toBe(mockStoreFields);

@@ -2,14 +2,14 @@ jest.dontMock('../StoreDependencyMixinInitialize.js');
 
 describe('StoreDependencyMixinInitialize', () => {
 
-  var StoreDependencyMixinFields;
-  var Store;
+  let StoreDependencyMixinFields;
+  let Store;
 
-  var applyDependencies;
-  var mockComponent;
-  var mockDependencyMap;
-  var mockStore;
-  var otherMockStore;
+  let applyDependencies;
+  let mockComponent;
+  let mockDependencyMap;
+  let mockStore;
+  let otherMockStore;
 
   beforeEach(() => {
     applyDependencies =
@@ -33,16 +33,16 @@ describe('StoreDependencyMixinInitialize', () => {
   });
 
   it('extracts dependencies', () => {
-    var {dependencies} = StoreDependencyMixinFields;
-    var componentDeps = dependencies(mockComponent);
+    let {dependencies} = StoreDependencyMixinFields;
+    let componentDeps = dependencies(mockComponent);
     expect(componentDeps.test.stores).toEqual([mockStore]);
     expect(typeof componentDeps.test.deref).toEqual('function');
     expect(componentDeps.otherTest).toBe(mockDependencyMap.otherTest);
   });
 
   it('extracts store->field dependencies', () => {
-    var {storeFields} = StoreDependencyMixinFields;
-    var componentStoreFields = storeFields(mockComponent);
+    let {storeFields} = StoreDependencyMixinFields;
+    let componentStoreFields = storeFields(mockComponent);
     expect(componentStoreFields).toEqual({
       123: ['test', 'otherTest'],
       321: ['otherTest'],
@@ -50,7 +50,7 @@ describe('StoreDependencyMixinInitialize', () => {
   });
 
   it('extracts stores from the dependencyMap', () => {
-    var {stores} = StoreDependencyMixinFields;
+    let {stores} = StoreDependencyMixinFields;
     expect(stores(mockComponent)).toEqual([
       mockStore,
       otherMockStore,
@@ -58,8 +58,8 @@ describe('StoreDependencyMixinInitialize', () => {
   });
 
   it('throws for duplicate fields', () => {
-    var otherMockComponent = {};
-    var otherMockDependencyMap = {
+    let otherMockComponent = {};
+    let otherMockDependencyMap = {
       test: mockStore,
       otherTest: otherMockStore,
     };

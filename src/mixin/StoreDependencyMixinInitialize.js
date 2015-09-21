@@ -22,12 +22,12 @@ export function applyDependencies(
   component: Object,
   dependencyMap: Object
 ): void {
-  var componentDependencies = dependencies(component);
-  var componentStoreFields = storeFields(component);
-  var componentStores = stores(component);
+  const componentDependencies = dependencies(component);
+  const componentStoreFields = storeFields(component);
+  const componentStores = stores(component);
   Object.keys(dependencyMap).forEach(field => {
-    var dependency = dependencyMap[field];
-    var dependencyStores;
+    const dependency = dependencyMap[field];
+    let dependencyStores;
     if (dependency instanceof Store) {
       dependencyStores = [dependency];
       invariant(
@@ -45,7 +45,7 @@ export function applyDependencies(
     }
     // update the store-to-field map
     dependencyStores.forEach(store => {
-      var storeId = store.getID();
+      const storeId = store.getID();
       if (!componentStoreFields.hasOwnProperty(storeId)) {
         componentStoreFields[storeId] = [];
         // if we haven't seen this store bind a change handler

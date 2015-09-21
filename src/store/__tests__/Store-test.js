@@ -2,16 +2,16 @@ jest.dontMock('../Store.js');
 
 describe('Store', () => {
 
-  var Store;
-  var storeFacade;
+  let Store;
+  let storeFacade;
 
-  var mockAction;
-  var mockDispatcher;
-  var mockDispatchToken;
-  var mockGet;
-  var mockInitialState;
-  var mockResponse;
-  var mockResponses;
+  let mockAction;
+  let mockDispatcher;
+  let mockDispatchToken;
+  let mockGet;
+  let mockInitialState;
+  let mockResponse;
+  let mockResponses;
 
   beforeEach(() => {
     Store = require('../Store.js');
@@ -43,8 +43,8 @@ describe('Store', () => {
   });
 
   it('runs responses when the associated action is dispatched', () => {
-    var handler = mockDispatcher.register.mock.calls[0][0];
-    var mockData = {};
+    let handler = mockDispatcher.register.mock.calls[0][0];
+    let mockData = {};
     handler({actionType: mockAction, data: mockData});
     expect(mockResponse.mock.calls.length).toBe(1);
     expect(mockResponse.mock.calls[0][0]).toBe(mockInitialState);
@@ -57,8 +57,8 @@ describe('Store', () => {
   });
 
   it('passes args from get to the getter', () => {
-    var mockArg1 = 'number 1';
-    var mockArg2 = 'number 2';
+    let mockArg1 = 'number 1';
+    let mockArg2 = 'number 2';
     storeFacade.get(mockArg1, mockArg2);
     expect(mockGet.mock.calls[0].length).toBe(3);
     expect(mockGet.mock.calls[0].length).toBe(3);
@@ -72,11 +72,11 @@ describe('Store', () => {
   });
 
   it('runs listeners after a definedResponse', () => {
-    var mockListener = jest.genMockFn();
-    var mockEvent = require('../../event/Event.js').mock.instances[0];
+    let mockListener = jest.genMockFn();
+    let mockEvent = require('../../event/Event.js').mock.instances[0];
     storeFacade.addOnChange(mockListener);
 
-    var handler = mockDispatcher.register.mock.calls[0][0];
+    let handler = mockDispatcher.register.mock.calls[0][0];
     handler({actionType: 'random action', data: {}});
     expect(mockEvent.runHandlers.mock.calls.length).toBe(0);
 
@@ -91,7 +91,7 @@ describe('Store', () => {
   });
 
   it('removes its event on remove', () => {
-    var mockEvent = require('../../event/Event.js').mock.instances[0];
+    let mockEvent = require('../../event/Event.js').mock.instances[0];
     storeFacade.remove();
     expect(mockEvent.remove.mock.calls.length).toBe(1);
   });
@@ -102,22 +102,22 @@ describe('Store', () => {
   });
 
   it('does NOT run responses after it has been removed', () => {
-    var handler = mockDispatcher.register.mock.calls[0][0];
-    var mockData = {};
+    let handler = mockDispatcher.register.mock.calls[0][0];
+    let mockData = {};
     storeFacade.remove();
     handler({actionType: mockAction, data: mockData});
     expect(mockResponse.mock.calls.length).toBe(0);
   });
 
   it('throws on an invalid dispatch', () => {
-    var handler = mockDispatcher.register.mock.calls[0][0];
+    let handler = mockDispatcher.register.mock.calls[0][0];
     expect(() => handler(null)).toThrow();
     expect(() => handler({})).toThrow();
     expect(() => handler({actionType: 'test!'})).not.toThrow();
   });
 
   it('properly tracks state updates', () => {
-    var handler = mockDispatcher.register.mock.calls[0][0];
+    let handler = mockDispatcher.register.mock.calls[0][0];
     expect(storeFacade.get()).toBe(0);
     handler({actionType: mockAction});
     expect(storeFacade.get()).toBe(1);

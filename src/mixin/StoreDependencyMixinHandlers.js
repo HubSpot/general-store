@@ -13,11 +13,11 @@ import {
 function flushQueue(
   component: Object
 ): void {
-  var componentDependencies = dependencies(component);
-  var componentQueue = queue(component);
-  var stateUpdate = {};
+  const componentDependencies = dependencies(component);
+  const componentQueue = queue(component);
+  const stateUpdate = {};
   Object.keys(componentQueue).forEach(field => {
-    var fieldDef = componentDependencies[field];
+    const fieldDef = componentDependencies[field];
     stateUpdate[field] = fieldDef.deref(
       component.props,
       component.state,
@@ -32,9 +32,9 @@ function waitForOtherStores(
   component: Object,
   currentStoreId: string
 ): void {
-  var componentStores = stores(component);
+  const componentStores = stores(component);
   componentStores.forEach(store => {
-    var dispatcher: Dispatcher = store.getDispatcher();
+    const dispatcher: Dispatcher = store.getDispatcher();
     if (store.getID() === currentStoreId || !dispatcher.isDispatching()) {
       return;
     }
@@ -46,8 +46,8 @@ function handleStoreChange(
   component: Object,
   storeId: string
 ): void {
-  var componentQueue = queue(component);
-  var queueWasEmpty = Object.keys(componentQueue).length === 0;
+  const componentQueue = queue(component);
+  const queueWasEmpty = Object.keys(componentQueue).length === 0;
   storeFields(component)[storeId].forEach(field => {
     if (componentQueue.hasOwnProperty(field)) {
       return;
@@ -66,15 +66,15 @@ function handleStoreChange(
 }
 
 export function cleanupHandlers(component: Object): void {
-  var componentHandlers = handlers(component);
+  const componentHandlers = handlers(component);
   while (componentHandlers.length) {
     componentHandlers.pop().remove();
   }
 }
 
 export function setupHandlers(component: Object): void {
-  var componentHandlers = handlers(component);
-  var componentStores = stores(component);
+  const componentHandlers = handlers(component);
+  const componentStores = stores(component);
   componentStores.forEach(store => {
     componentHandlers.push(
       store.addOnChange(

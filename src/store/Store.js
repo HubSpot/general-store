@@ -9,7 +9,7 @@ import EventHandler from '../event/EventHandler.js';
 import invariant from '../invariant.js';
 import uniqueID from '../uniqueid/uniqueID.js';
 
-var HINT_LINK = 'Learn more about using the Store API:' +
+const HINT_LINK = 'Learn more about using the Store API:' +
   ' https://github.com/HubSpot/general-store#using-the-store-api';
 
 function getNull() {

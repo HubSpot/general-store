@@ -20,7 +20,7 @@ import {
 export default function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
-  var isFirstMixin = false;
+  let isFirstMixin = false;
 
   return {
     componentWillMount(): void {

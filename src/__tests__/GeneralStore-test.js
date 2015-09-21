@@ -1,14 +1,14 @@
 jest.dontMock('../GeneralStore.js');
 
-describe('GeneralStore', () => {
+const exportList = [
+  'define',
+  'defineFactory',
+  'DispatcherInstance',
+  'StoreDependencyMixin',
+];
 
-  var exportList = [
-    'define',
-    'defineFactory',
-    'DispatcherInstance',
-    'StoreDependencyMixin',
-  ];
-  var GeneralStore;
+describe('GeneralStore', () => {
+  let GeneralStore;
 
   beforeEach(() => {
     GeneralStore = require('../GeneralStore.js');

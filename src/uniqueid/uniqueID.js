@@ -2,9 +2,9 @@
  * @flow
  */
 
-var PREFIX = 'uid_';
+const PREFIX = 'uid_';
 
-var nextUid = 0;
+let nextUid = 0;
 export default function uid(): string {
   return PREFIX + nextUid++;
 }

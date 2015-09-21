@@ -38,6 +38,7 @@
     "no-redeclare": 2,
     "no-unused-expressions": 2,
     "no-unused-vars": [2, {"args": "after-used"}],
+    "no-var": 2,
     "quotes": [2, "single"],
     "space-after-keywords": 2,
     "space-before-blocks": 2,
@@ -52,7 +53,6 @@
 
     "block-scoped-var": 0,
     "no-underscore-dangle": [0],
-    "no-var": 0,
     "strict": 0
   }
 }

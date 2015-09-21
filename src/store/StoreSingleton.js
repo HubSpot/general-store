@@ -1,10 +1,10 @@
 /* @flow */
 
-import invariant from '../invariant.js';
-import Store from './Store.js';
+import invariant from '../invariant';
+import Store from './Store';
 import StoreFactory from './StoreFactory';
 
-var HINT_LINK =
+const HINT_LINK =
   'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 

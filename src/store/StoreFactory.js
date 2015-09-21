@@ -5,7 +5,7 @@ import {isDispatcher} from '../dispatcher/DispatcherInterface.js';
 import invariant from '../invariant';
 import Store from './Store';
 
-var HINT_LINK =
+const HINT_LINK =
   'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
@@ -81,11 +81,11 @@ export default class StoreFactory {
   }
 
   defineResponses(newResponses: Responses): StoreFactory {
+    let {responses} = this._definition;
     invariant(
       newResponses && typeof newResponses === 'object',
       'StoreFactory.defineResponses: newResponses must be an object'
     );
-    var {responses} = this._definition;
     Object.keys(newResponses).forEach(
       actionType => enforceResponse(
         responses,
