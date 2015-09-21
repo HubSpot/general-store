@@ -2,17 +2,15 @@
  * @flow
  */
 
-type EventManagerInterface = {
-  removeHandler: (key: string) => any;
-};
+import type Event from './Event';
 
 export default class EventHandler {
 
   _key: string;
-  _instance: ?EventManagerInterface;
+  _instance: ?Event;
 
   constructor(
-    instance: EventManagerInterface,
+    instance: Event,
     key: string
   ) {
     this._key = key;
