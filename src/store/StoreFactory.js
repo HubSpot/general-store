@@ -42,18 +42,20 @@ type Responses = {
 
 type StoreFactoryDefinition = {
   getter: Getter;
-  initialState: any;
+  getInitialState: () => any;
   responses: Responses;
 };
+
+function defaultInitialState() {}
 
 export default class StoreFactory {
 
   _definition: StoreFactoryDefinition;
 
-  constructor({getter, initialState, responses}:Object) {
+  constructor({getter, getInitialState, responses}:Object) {
     this._definition = {
       getter: getter,
-      initialState: initialState,
+      getInitialState: getInitialState || defaultInitialState,
       responses: responses || {},
     };
   }
@@ -69,14 +71,18 @@ export default class StoreFactory {
     });
   }
 
-  defineInitialState(initialState: any): StoreFactory {
+  defineGetInitialState(getInitialState: () => any): StoreFactory {
     invariant(
-      this._definition.initialState === undefined,
-      'StoreFactory.defineInitialState: initialState is already defined.'
+      typeof getInitialState === 'function',
+      'StoreFactory.defineGetInitialState: getInitialState must be a function.'
+    );
+    invariant(
+      this._definition.getInitialState === defaultInitialState,
+      'StoreFactory.defineGetInitialState: getInitialState is already defined.'
     );
     return new StoreFactory({
       ...this._definition,
-      initialState,
+      getInitialState,
     });
   }
 
@@ -137,10 +143,13 @@ export default class StoreFactory {
       ' https://github.com/HubSpot/general-store#dispatcher-interface',
       dispatcher
     );
+    let {getter, getInitialState, responses} = this._definition;
     return new Store({
-      ...this._definition,
       dispatcher,
       factory: this,
+      getter,
+      initialState: getInitialState(),
+      responses,
     });
   }
 }

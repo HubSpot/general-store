@@ -53,7 +53,7 @@ function runTest(GeneralStore) {
   function defineCountStore(incAction, decAction) {
     return GeneralStore.defineFactory()
       .defineGet(count => count)
-      .defineInitialState(0)
+      .defineGetInitialState(() => 0)
       .defineResponses({
         [incAction]: (count) => count + 1,
         [decAction]: (count) => count > 0 ? count - 1 : count,
@@ -299,7 +299,6 @@ describe('GeneralStore src integration test', () => {
   );
 });
 
-/*
 describe('GeneralStore dev build integration test', () => {
   runTest(
     require('../../build/general-store.js')
@@ -311,4 +310,3 @@ describe('GeneralStore prod build integration test', () => {
     require('../../build/general-store.min.js')
   );
 });
-*/

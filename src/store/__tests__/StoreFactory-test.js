@@ -12,9 +12,10 @@ describe('StoreFactory', () => {
   });
 
   it('sets the default definition', () => {
-    expect(storeFactory.getDefinition()).toEqual({
+    const {getInitialState, ...rest} = storeFactory.getDefinition();
+    expect(typeof getInitialState).toBe('function');
+    expect(rest).toEqual({
       getter: undefined,
-      initialState: undefined,
       responses: {},
     });
   });
@@ -27,7 +28,7 @@ describe('StoreFactory', () => {
       storeFactory.defineResponses({})
     ).not.toBe(storeFactory);
     expect(
-      storeFactory.defineInitialState({})
+      storeFactory.defineGetInitialState(function() {})
     ).not.toBe(storeFactory);
   });
 
@@ -44,16 +45,24 @@ describe('StoreFactory', () => {
     ).toThrow();
   });
 
-  it('sets initialState', () => {
-    let mockData = {};
-    let newDef = storeFactory.defineInitialState(mockData).getDefinition();
-    expect(newDef.initialState).toBe(mockData);
+  it('sets getInitialState', () => {
+    let mockStateGetter = function() {};
+    let newDef = storeFactory
+      .defineGetInitialState(mockStateGetter)
+      .getDefinition();
+    expect(newDef.getInitialState).toBe(mockStateGetter);
+  });
+
+  it('throws when getInitialState is not a function', () => {
+    expect(() => storeFactory.defineGetInitialState({})).toThrow();
   });
 
   it('throws when initialState is already set', () => {
-    let factoryWithInitialState = storeFactory.defineInitialState({});
+    let emptyFn = function() {};
+    let factoryWithGetInitialState = storeFactory
+      .defineGetInitialState(emptyFn);
     expect(
-      () => factoryWithInitialState.defineInitialState({})
+      () => factoryWithGetInitialState.defineGetInitialState(emptyFn)
     ).toThrow();
   });
 
