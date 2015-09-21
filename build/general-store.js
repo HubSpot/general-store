@@ -552,17 +552,19 @@ return /******/ (function(modules) { // webpackBootstrap
     (0, _invariant2['default'])(typeof response === 'function', 'StoreFactory.defineResponses: expected response to be a function' + ' but got "%s" instead. %s', response);
   }
 
+  function defaultInitialState() {}
+
   var StoreFactory = (function () {
     function StoreFactory(_ref) {
       var getter = _ref.getter;
-      var initialState = _ref.initialState;
+      var getInitialState = _ref.getInitialState;
       var responses = _ref.responses;
 
       _classCallCheck(this, StoreFactory);
 
       this._definition = {
         getter: getter,
-        initialState: initialState,
+        getInitialState: getInitialState || defaultInitialState,
         responses: responses || {}
       };
     }
@@ -576,11 +578,12 @@ return /******/ (function(modules) { // webpackBootstrap
         }));
       }
     }, {
-      key: 'defineInitialState',
-      value: function defineInitialState(initialState) {
-        (0, _invariant2['default'])(this._definition.initialState === undefined, 'StoreFactory.defineInitialState: initialState is already defined.');
+      key: 'defineGetInitialState',
+      value: function defineGetInitialState(getInitialState) {
+        (0, _invariant2['default'])(typeof getInitialState === 'function', 'StoreFactory.defineGetInitialState: getInitialState must be a function.');
+        (0, _invariant2['default'])(this._definition.getInitialState === defaultInitialState, 'StoreFactory.defineGetInitialState: getInitialState is already defined.');
         return new StoreFactory(_extends({}, this._definition, {
-          initialState: initialState
+          getInitialState: getInitialState
         }));
       }
     }, {
@@ -615,10 +618,18 @@ return /******/ (function(modules) { // webpackBootstrap
         dispatcher = dispatcher || _dispatcherDispatcherInstance2['default'].get();
         (0, _invariant2['default'])(dispatcher !== null && typeof dispatcher === 'object', 'StoreFactory.register: you haven\'t provide a dispatcher instance.' + ' You can pass an instance to' + ' GeneralStore.define().register(dispatcher) or use' + ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' + ' instance.' + ' https://github.com/HubSpot/general-store#default-dispatcher-instance');
         (0, _invariant2['default'])((0, _dispatcherDispatcherInterfaceJs.isDispatcher)(dispatcher), 'StoreFactory.register: Expected dispatcher to be an object' + ' with a register method, and an unregister method but got "%s".' + ' Learn more about the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface', dispatcher);
-        return new _Store2['default'](_extends({}, this._definition, {
+        var _definition = this._definition;
+        var getter = _definition.getter;
+        var getInitialState = _definition.getInitialState;
+        var responses = _definition.responses;
+
+        return new _Store2['default']({
           dispatcher: dispatcher,
-          factory: this
-        }));
+          factory: this,
+          getter: getter,
+          initialState: getInitialState(),
+          responses: responses
+        });
       }
     }]);
 
