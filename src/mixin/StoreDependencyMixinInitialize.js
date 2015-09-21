@@ -6,14 +6,14 @@ import invariant from '../invariant.js';
 import {
   dependencies,
   storeFields,
-  stores
+  stores,
 } from './StoreDependencyMixinFields.js';
-import StoreFacade from '../store/StoreFacade.js';
+import Store from '../store/Store.js';
 
 function defaultDeref(
   props,
   state,
-  storeInstances: Array<StoreFacade>
+  storeInstances: Array<Store>
 ): any {
   return storeInstances[0].get();
 }
@@ -28,7 +28,7 @@ export function applyDependencies(
   Object.keys(dependencyMap).forEach(field => {
     var dependency = dependencyMap[field];
     var dependencyStores;
-    if (dependency instanceof StoreFacade) {
+    if (dependency instanceof Store) {
       dependencyStores = [dependency];
       invariant(
         !componentDependencies.hasOwnProperty(field),

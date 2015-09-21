@@ -1,38 +1,41 @@
-jest.dontMock('../StoreFacade.js');
+jest.dontMock('../Store.js');
 
-describe('StoreFacade', () => {
+describe('Store', () => {
 
-  var StoreFacade;
+  var Store;
   var storeFacade;
 
   var mockAction;
   var mockDispatcher;
   var mockDispatchToken;
   var mockGet;
-  var mockGetValue;
+  var mockInitialState;
   var mockResponse;
   var mockResponses;
 
   beforeEach(() => {
-    StoreFacade = require('../StoreFacade.js');
+    Store = require('../Store.js');
 
-    mockAction = 'MOCK_ACTION';
+    mockAction = 'INCREMENT';
     mockDispatchToken = 'test-token';
     mockDispatcher = {
       isDispatching: jest.genMockFn().mockReturnValue(true),
       register: jest.genMockFn().mockReturnValue(mockDispatchToken),
       unregister: jest.genMockFn(),
     };
-    mockGetValue = 'mock value';
-    mockGet = jest.genMockFn().mockReturnValue(mockGetValue);
-    mockResponse = jest.genMockFn();
+    mockGet = jest.genMockFn().mockImpl((state) => state.count);
+    mockResponse = jest.genMockFn().mockImpl((state) => {
+      return {count: state.count + 1};
+    });
     mockResponses = {};
     mockResponses[mockAction] = mockResponse;
-    storeFacade = new StoreFacade(
-      mockGet,
-      mockResponses,
-      mockDispatcher
-    );
+    mockInitialState = {count: 0};
+    storeFacade = new Store({
+      getter: mockGet,
+      initialState: mockInitialState,
+      responses: mockResponses,
+      dispatcher: mockDispatcher,
+    });
   });
 
   it('registers with the dispatcher', () => {
@@ -44,22 +47,24 @@ describe('StoreFacade', () => {
     var mockData = {};
     handler({actionType: mockAction, data: mockData});
     expect(mockResponse.mock.calls.length).toBe(1);
-    expect(mockResponse.mock.calls[0][0]).toBe(mockData);
-    expect(mockResponse.mock.calls[0][1]).toBe(mockAction);
+    expect(mockResponse.mock.calls[0][0]).toBe(mockInitialState);
+    expect(mockResponse.mock.calls[0][1]).toBe(mockData);
+    expect(mockResponse.mock.calls[0][2]).toBe(mockAction);
   });
 
   it('calls the getter from get', () => {
-    expect(storeFacade.get()).toBe(mockGetValue);
+    expect(storeFacade.get()).toBe(0);
   });
 
   it('passes args from get to the getter', () => {
     var mockArg1 = 'number 1';
     var mockArg2 = 'number 2';
     storeFacade.get(mockArg1, mockArg2);
-    expect(mockGet.mock.calls[0].length).toBe(2);
-    expect(mockGet.mock.calls[0].length).toBe(2);
-    expect(mockGet.mock.calls[0][0]).toBe(mockArg1);
-    expect(mockGet.mock.calls[0][1]).toBe(mockArg2);
+    expect(mockGet.mock.calls[0].length).toBe(3);
+    expect(mockGet.mock.calls[0].length).toBe(3);
+    expect(mockGet.mock.calls[0][0]).toBe(mockInitialState);
+    expect(mockGet.mock.calls[0][1]).toBe(mockArg1);
+    expect(mockGet.mock.calls[0][2]).toBe(mockArg2);
   });
 
   it('returns the dispatch token from getDispatchToken', () => {
@@ -111,4 +116,12 @@ describe('StoreFacade', () => {
     expect(() => handler({actionType: 'test!'})).not.toThrow();
   });
 
+  it('properly tracks state updates', () => {
+    var handler = mockDispatcher.register.mock.calls[0][0];
+    expect(storeFacade.get()).toBe(0);
+    handler({actionType: mockAction});
+    expect(storeFacade.get()).toBe(1);
+    handler({actionType: mockAction});
+    expect(storeFacade.get()).toBe(2);
+  });
 });

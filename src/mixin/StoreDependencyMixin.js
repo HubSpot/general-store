@@ -2,7 +2,6 @@
  * @flow
  */
 
-import StoreFacade from '../store/StoreFacade.js';
 import {
   dependencies,
   stores,
@@ -21,7 +20,6 @@ import {
 export default function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
-  var fieldNames = Object.keys(dependencyMap);
   var isFirstMixin = false;
 
   return {

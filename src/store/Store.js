@@ -1,6 +1,8 @@
 /* eslint no-console:0 */
 /* @flow */
 
+import type StoreFactory from './StoreFactory';
+
 import {isPayload} from '../dispatcher/DispatcherInterface.js';
 import Event from '../event/Event.js';
 import EventHandler from '../event/EventHandler.js';
@@ -14,22 +16,28 @@ function getNull() {
   return null;
 }
 
-export default class StoreFacade {
+export default class Store {
 
   _dispatcher: Dispatcher;
   _dispatchToken: string;
+  _factory: StoreFactory;
   _getter: (...args: Array<any>) => any;
   _event: Event;
   _responses: {[key:string]: (data: any, actionType: string) => any};
+  _state: any;
   _uid: number;
 
-  constructor(
-    getter: (...args: Array<any>) => any,
-    responses: {[key:string]: (data: any, actionType: string) => any},
-    dispatcher: Object
-  ) {
+  constructor({
+    dispatcher,
+    factory,
+    getter,
+    initialState,
+    responses,
+  }) {
     this._dispatcher = dispatcher;
+    this._factory = factory;
     this._getter = getter;
+    this._state = initialState;
     this._responses = responses;
     this._event = new Event();
     this._uid = uniqueID();
@@ -48,7 +56,7 @@ export default class StoreFacade {
   addOnChange(callback: Function): EventHandler {
     invariant(
       typeof callback === 'function',
-      'StoreFacade.addOnChange: expected callback to be a function' +
+      'Store.addOnChange: expected callback to be a function' +
       ' but got "%s" instead. %s',
       callback,
       HINT_LINK
@@ -63,7 +71,7 @@ export default class StoreFacade {
    * @return any
    */
   get(...args: Array<any>): any {
-    return this._getter.apply(null, args);
+    return this._getter(this._state, ...args);
   }
 
   /**
@@ -84,6 +92,10 @@ export default class StoreFacade {
     return this._dispatchToken;
   }
 
+  getFactory(): StoreFactory {
+    return this._factory;
+  }
+
   getID(): number {
     return this._uid;
   }
@@ -98,7 +110,7 @@ export default class StoreFacade {
     if (process.env.NODE_ENV !== 'production') {
       invariant(
         isPayload(payload),
-        'StoreFacade: expected dispatched payload to be an object with a' +
+        'Store: expected dispatched payload to be an object with a' +
         ' property "actionType" containing a string and an optional property' +
         ' "data" containing any value but got "%s" instead. Learn more about' +
         ' the dispatcher interface:' +
@@ -108,7 +120,8 @@ export default class StoreFacade {
     if (!this._responses.hasOwnProperty(payload.actionType)) {
       return;
     }
-    this._responses[payload.actionType](
+    this._state = this._responses[payload.actionType](
+      this._state,
       payload.data,
       payload.actionType,
       payload
@@ -132,11 +145,11 @@ export default class StoreFacade {
    *
    * @return this
    */
-  triggerChange(): StoreFacade {
+  triggerChange(): Store {
     if (process.env.NODE_ENV !== 'production') {
       if (!this._dispatcher.isDispatching()) {
         console.warn(
-          'StoreFacade: you called store.triggerChange() outside of a' +
+          'Store: you called store.triggerChange() outside of a' +
             ' dispatch loop. Send an action trough the dispatcher to' +
             ' avoid potentailly confusing behavior.'
         );

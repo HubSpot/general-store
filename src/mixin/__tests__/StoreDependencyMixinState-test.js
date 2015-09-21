@@ -2,7 +2,7 @@ jest.dontMock('../StoreDependencyMixinState.js');
 
 describe('StoreDependencyMixinState', () => {
 
-  var StoreFacade;
+  var Store;
 
   var dependencies;
   var getDependencyState;
@@ -14,7 +14,7 @@ describe('StoreDependencyMixinState', () => {
   var mockValue;
 
   beforeEach(() => {
-    StoreFacade = require('../../store/StoreFacade.js');
+    Store = require('../../store/Store.js');
     getDependencyState =
       require('../StoreDependencyMixinState.js').getDependencyState;
 
@@ -27,7 +27,7 @@ describe('StoreDependencyMixinState', () => {
       props: mockProps,
       state: mockState,
     };
-    mockStore = new StoreFacade();
+    mockStore = new Store();
     dependencies(mockComponent).test = {
       stores: [mockStore],
       deref: jest.genMockFn().mockReturnValue(mockValue),

@@ -3,7 +3,7 @@ jest.dontMock('../StoreDependencyMixinInitialize.js');
 describe('StoreDependencyMixinInitialize', () => {
 
   var StoreDependencyMixinFields;
-  var StoreFacade;
+  var Store;
 
   var applyDependencies;
   var mockComponent;
@@ -15,12 +15,12 @@ describe('StoreDependencyMixinInitialize', () => {
     applyDependencies =
       require('../StoreDependencyMixinInitialize.js').applyDependencies;
     StoreDependencyMixinFields = require('../StoreDependencyMixinFields.js');
-    StoreFacade = require('../../store/StoreFacade.js');
+    Store = require('../../store/Store.js');
 
     mockComponent = {};
-    mockStore = new StoreFacade();
+    mockStore = new Store();
     mockStore.getID = jest.genMockFn().mockReturnValue(123);
-    otherMockStore = new StoreFacade();
+    otherMockStore = new Store();
     otherMockStore.getID = jest.genMockFn().mockReturnValue(321);
     mockDependencyMap = {
       test: mockStore,

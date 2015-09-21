@@ -3,7 +3,7 @@
  */
 
 import EventHandler from '../event/EventHandler.js';
-import StoreFacade from '../store/StoreFacade.js';
+import Store from '../store/Store.js';
 
 var DEPENDENCIES_KEY = '__StoreDependencyMixin-dependencies';
 var HANDLERS_KEY = '__StoreDependencyMixin-eventHandlers';
@@ -34,7 +34,7 @@ export function queue(component: Object): {[key:string]: bool} {
   return getKey(QUEUE_KEY, {}, component);
 }
 
-export function stores(component: Object): Array<StoreFacade> {
+export function stores(component: Object): Array<Store> {
   return getKey(STORES_KEY, [], component);
 }
 

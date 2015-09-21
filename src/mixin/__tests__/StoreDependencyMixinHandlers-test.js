@@ -5,7 +5,7 @@ describe('StoreDependencyMixinHandlers', () => {
   var EventHandler;
   var StoreDependencyMixinFields;
   var StoreDependencyMixinHandlers;
-  var StoreFacade;
+  var Store;
 
   var handlers;
   var stores;
@@ -18,13 +18,13 @@ describe('StoreDependencyMixinHandlers', () => {
     StoreDependencyMixinFields = require('../StoreDependencyMixinFields.js');
     StoreDependencyMixinHandlers =
       require('../StoreDependencyMixinHandlers.js');
-    StoreFacade = require('../../store/StoreFacade.js');
+    Store = require('../../store/Store.js');
 
     handlers = StoreDependencyMixinFields.handlers;
     stores = StoreDependencyMixinFields.stores;
 
     mockComponent = {};
-    mockStore = new StoreFacade();
+    mockStore = new Store();
     mockStore.addOnChange = jest.genMockFn().mockImpl(() => new EventHandler());
 
     stores(mockComponent).push(mockStore);
