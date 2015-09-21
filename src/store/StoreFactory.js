@@ -46,9 +46,11 @@ type StoreFactoryDefinition = {
   responses: Responses;
 };
 
-function defaultGetInitialState() {}
+function defaultGetInitialState() {
+  return undefined;
+}
 
-function defaultGetter(state) {
+function defaultGetter(state: any): any {
   return state;
 }
 
@@ -66,7 +68,7 @@ export default class StoreFactory {
 
   defineGet(getter: Getter): StoreFactory {
     invariant(
-      typeof this._definition.getter !== defaultGetter,
+      this._definition.getter === defaultGetter,
       'StoreFactory.defineGet: a getter is already defined.'
     );
     return new StoreFactory({

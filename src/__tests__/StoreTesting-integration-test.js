@@ -8,7 +8,6 @@ describe('Store testing integration test', () => {
   const REMOVE_USER = 'REMOVE_USER';
 
   const UserStoreFactory = GeneralStore.defineFactory()
-    .defineGet(users => users)
     .defineGetInitialState(() => ({}))
     .defineResponses({
       [ADD_USER]: (users, newUser) => {

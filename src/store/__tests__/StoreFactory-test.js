@@ -12,10 +12,10 @@ describe('StoreFactory', () => {
   });
 
   it('sets the default definition', () => {
-    const {getInitialState, ...rest} = storeFactory.getDefinition();
+    const {getInitialState, getter, ...rest} = storeFactory.getDefinition();
     expect(typeof getInitialState).toBe('function');
+    expect(typeof getter).toBe('function');
     expect(rest).toEqual({
-      getter: undefined,
       responses: {},
     });
   });
