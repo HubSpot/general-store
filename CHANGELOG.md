@@ -1,10 +1,11 @@
-## 0.4.0
+## 0.4.0 (September 22nd, 2015)
 
 * NEW: GeneralStore.defineFactory() allows for more composable/testable stores
 * added StoreFactory
 * StoreDefinition -> StoreSingleton
 * StoreSingleton is based on StoreFactory
 * StoreFacade -> Store
+* dependency updates (flow 0.16)
 
 ## 0.3.2 (September 4th, 2015)
 
