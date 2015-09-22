@@ -31,7 +31,7 @@
         <p><img src="https://cloud.githubusercontent.com/assets/478109/6376307/1d3c77dc-bceb-11e4-9a96-0a909810cc69.png" alt="HubSpot/general-store"></p>
 
 <p><a href="https://www.npmjs.com/package/general-store"><img src="http://img.shields.io/npm/v/general-store.svg" alt="NPM version"></a>
-<a href="https://travis-ci.org/HubSpot/general-store"><img src="https://travis-ci.org/HubSpot/general-store.svg" alt="Build Status"></a></p>
+<a href="https://travis-ci.org/HubSpot/general-store"><img src="https://travis-ci.org/HubSpot/general-store.svg?branch=master" alt="Build Status"></a></p>
 
 <p><strong>This is beta software. It's going to change.</strong></p>
 
@@ -65,7 +65,7 @@ bower install general-store
 
 <p>GeneralStore uses functions to encapsulate private data.</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> dispatcher <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Flux.Dispatcher</span>();
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> dispatcher <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Flux.Dispatcher</span>();
 <span class="pl-k">function</span> <span class="pl-en">defineUserStore</span>() {
   <span class="pl-c">// data is stored privately inside the store module's closure</span>
   <span class="pl-k">var</span> users <span class="pl-k">=</span> {
@@ -81,10 +81,10 @@ bower install general-store
       <span class="pl-k">return</span> users;
     })
     <span class="pl-c">// handle actions received from the dispatcher</span>
-    .defineResponseTo(<span class="pl-s"><span class="pl-pds">'</span>ADD_USER<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">user</span>) {
+    .defineResponseTo(<span class="pl-s"><span class="pl-pds">'</span>USER_ADDED<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">user</span>) {
       users[user.<span class="pl-c1">id</span>] <span class="pl-k">=</span> user;
     })
-    .defineResponseTo(<span class="pl-s"><span class="pl-pds">'</span>REMOVE_USER<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">user</span>) {
+    .defineResponseTo(<span class="pl-s"><span class="pl-pds">'</span>USER_REMOVED<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">user</span>) {
       <span class="pl-k">delete</span> users[user.<span class="pl-c1">id</span>];
     })
     <span class="pl-c">// after a store is "registered" its action handlers are bound</span>
@@ -94,7 +94,7 @@ bower install general-store
 
 <p>If you use a singleton pattern for stores, simply use the result of <code>register</code> from a module.</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> Dispatcher <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>flux<span class="pl-pds">'</span></span>).Dispatcher;
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> Dispatcher <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>flux<span class="pl-pds">'</span></span>).Dispatcher;
 <span class="pl-k">var</span> GeneralStore <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>general-store.js<span class="pl-pds">'</span></span>);
 
 <span class="pl-k">var</span> dispatcher <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Dispatcher</span>();
@@ -113,8 +113,8 @@ bower install general-store
 
 <p>Sending a message to your stores via the dispatcher is easy.</p>
 
-<div class="highlight highlight-javascript"><pre>dispatcher.dispatch({
-  actionType<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>ADD_USER<span class="pl-pds">'</span></span>, <span class="pl-c">// required field</span>
+<div class="highlight highlight-source-js"><pre>dispatcher.dispatch({
+  actionType<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>USER_ADDED<span class="pl-pds">'</span></span>, <span class="pl-c">// required field</span>
   data<span class="pl-k">:</span> { <span class="pl-c">// optional field, passed to the store's response</span>
     id<span class="pl-k">:</span> <span class="pl-c1">12314</span>,
     name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Colby Rabideau<span class="pl-pds">'</span></span>
@@ -122,11 +122,58 @@ bower install general-store
 });</pre></div>
 
 <h2>
+<a id="store-factories" class="anchor" href="#store-factories" aria-hidden="true"><span class="octicon octicon-link"></span></a>Store Factories</h2>
+
+<p>The classic singleton store API is great, but can be hard to test.
+<code>defineFactory()</code> provides an composable alternative to <code>define()</code> that makes
+testing easier and allows you to extend store behavior.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> UserStoreFactory <span class="pl-k">=</span> GeneralStore.defineFactory()
+  .defineInitialState(<span class="pl-k">function</span>() {
+    <span class="pl-k">return</span> {};
+  })
+  .defineResponseTo({
+    <span class="pl-en">USER_ADDED</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">state</span>, <span class="pl-smi">user</span>) {
+      state[user.<span class="pl-c1">id</span>] <span class="pl-k">=</span> user;
+      <span class="pl-k">return</span> state;
+    },
+    <span class="pl-en">USER_REMOVED</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">state</span>, <span class="pl-smi">user</span>) {
+      <span class="pl-k">delete</span> state[user.<span class="pl-c1">id</span>];
+      <span class="pl-k">return</span> state;
+    },
+  });</pre></div>
+
+<p>Like singletons, factories have a register method. Unlike singletons, that
+register method can be called many times and will always return a <strong>new
+instance</strong> of the store described by the factory, which is useful in unit tests.</p>
+
+<div class="highlight highlight-source-js"><pre>describe(<span class="pl-s"><span class="pl-pds">'</span>UserStore<span class="pl-pds">'</span></span>, ()<span class="pl-k"> =&gt;</span> {
+  <span class="pl-k">var</span> storeInstance;
+  beforeEach(()<span class="pl-k"> =&gt;</span> {
+    <span class="pl-c">// each test will have a clean store</span>
+    storeInstance <span class="pl-k">=</span> UserStoreFactory.register(dispatcher);
+  });
+
+  it(<span class="pl-s"><span class="pl-pds">'</span>adds users<span class="pl-pds">'</span></span>, ()<span class="pl-k"> =&gt;</span> {
+    <span class="pl-k">var</span> mockUser <span class="pl-k">=</span> {id<span class="pl-k">:</span> <span class="pl-c1">1</span>, name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Joe<span class="pl-pds">'</span></span>};
+    dispatcher.dispatch({actionType<span class="pl-k">:</span> <span class="pl-c1">USER_ADDED</span>, data<span class="pl-k">:</span> mockUser});
+    expect(storeInstance.get()).toEqual({<span class="pl-c1">1</span><span class="pl-k">:</span> mockUser});
+  });
+
+  it(<span class="pl-s"><span class="pl-pds">'</span>removes users<span class="pl-pds">'</span></span>, ()<span class="pl-k"> =&gt;</span> {
+    <span class="pl-k">var</span> mockUser <span class="pl-k">=</span> {id<span class="pl-k">:</span> <span class="pl-c1">1</span>, name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Joe<span class="pl-pds">'</span></span>};
+    dispatcher.dispatch({actionType<span class="pl-k">:</span> <span class="pl-c1">USER_ADDED</span>, data<span class="pl-k">:</span> mockUser});
+    dispatcher.dispatch({actionType<span class="pl-k">:</span> <span class="pl-c1">USER_REMOVED</span>, data<span class="pl-k">:</span> mockUser});
+    expect(storeInstance.get()).toEqual({});
+  });
+});</pre></div>
+
+<h2>
 <a id="using-the-store-api" class="anchor" href="#using-the-store-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using the Store API</h2>
 
 <p>A registered Store provides methods for "getting" its value and subscribing to changes to that value.</p>
 
-<div class="highlight highlight-javascript"><pre>UserStore.get() <span class="pl-c">// returns {}</span>
+<div class="highlight highlight-source-js"><pre>UserStore.get() <span class="pl-c">// returns {}</span>
 <span class="pl-k">var</span> subscription <span class="pl-k">=</span> UserStore.addOnChange(<span class="pl-k">function</span>() {
   <span class="pl-c">// handle changes!</span>
 });
@@ -140,7 +187,7 @@ subscription.remove();</pre></div>
 
 <p>GeneralStore provides a convenient mixin for binding stores to React components:</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> ProfileComponent <span class="pl-k">=</span> React.createClass({
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> ProfileComponent <span class="pl-k">=</span> React.createClass({
   mixins<span class="pl-k">:</span> [
     GeneralStore.StoreDependencyMixin({
       <span class="pl-c">// simple fields can be expressed in the form `key =&gt; store`</span>
@@ -185,12 +232,12 @@ subscription.remove();</pre></div>
 
 <p>The common Flux architecture has a single central dispatcher. As a convenience <code>GeneralStore</code> allows you to set a global dispatcher which will become the default when a store is registered.</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> dispatcher <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Flux.Dispatcher</span>();
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> dispatcher <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Flux.Dispatcher</span>();
 GeneralStore.DispatcherInstance.set(dispatcher);</pre></div>
 
 <p>Now you can register a store without explicitly passing a dispatcher:</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> users <span class="pl-k">=</span> {};
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> users <span class="pl-k">=</span> {};
 
 GeneralStore.define()
   .defineGet(()<span class="pl-k"> =&gt;</span> users)
@@ -201,7 +248,7 @@ GeneralStore.define()
 
 <p>At HubSpot we use the <a href="https://github.com/facebook/flux">Facebook Dispatcher</a>, but any object that conforms to the same interface (i.e. has register and unregister methods) should work just fine.</p>
 
-<div class="highlight highlight-javascript"><pre>type DispatcherPayload <span class="pl-k">=</span> {
+<div class="highlight highlight-source-js"><pre>type DispatcherPayload <span class="pl-k">=</span> {
   actionType<span class="pl-k">:</span> string;
   data<span class="pl-k">:</span> any;
 };
@@ -210,9 +257,9 @@ type Dispatcher <span class="pl-k">=</span> {
   isDispatching<span class="pl-k">:</span> ()<span class="pl-k"> =&gt;</span> bool;
   register<span class="pl-k">:</span> (
     handleAction<span class="pl-k">:</span> (<span class="pl-smi">payload</span>: <span class="pl-smi">DispatcherPayload</span>)<span class="pl-k"> =&gt;</span> <span class="pl-k">void</span>
-  ) <span class="pl-k">=&gt;</span> number;
-  unregister<span class="pl-k">:</span> (<span class="pl-smi">dispatchToken</span>: <span class="pl-smi">number</span>)<span class="pl-k"> =&gt;</span> <span class="pl-k">void</span>;
-  waitFor<span class="pl-k">:</span> (<span class="pl-smi">dispatchTokens</span>: <span class="pl-smi">Array</span>&lt;<span class="pl-smi">number</span>&gt;)<span class="pl-k"> =&gt;</span> <span class="pl-k">void</span>;
+  ) <span class="pl-k">=&gt;</span> string;
+  unregister<span class="pl-k">:</span> (<span class="pl-smi">dispatchToken</span>: <span class="pl-smi">string</span>)<span class="pl-k"> =&gt;</span> <span class="pl-k">void</span>;
+  waitFor<span class="pl-k">:</span> (<span class="pl-smi">dispatchTokens</span>: <span class="pl-smi">Array</span>&lt;<span class="pl-smi">string</span>&gt;)<span class="pl-k"> =&gt;</span> <span class="pl-k">void</span>;
 };</pre></div>
 
 <h2>
