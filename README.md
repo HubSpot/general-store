@@ -49,10 +49,10 @@ function defineUserStore() {
       return users;
     })
     // handle actions received from the dispatcher
-    .defineResponseTo('ADD_USER', function(user) {
+    .defineResponseTo('USER_ADDED', function(user) {
       users[user.id] = user;
     })
-    .defineResponseTo('REMOVE_USER', function(user) {
+    .defineResponseTo('USER_REMOVED', function(user) {
       delete users[user.id];
     })
     // after a store is "registered" its action handlers are bound
@@ -85,11 +85,61 @@ Sending a message to your stores via the dispatcher is easy.
 
 ```javascript
 dispatcher.dispatch({
-  actionType: 'ADD_USER', // required field
+  actionType: 'USER_ADDED', // required field
   data: { // optional field, passed to the store's response
     id: 12314,
     name: 'Colby Rabideau'
   }
+});
+```
+
+## Store Factories
+
+The classic singleton store API is great, but can be hard to test.
+`defineFactory()` provides an composable alternative to `define()` that makes
+testing easier and allows you to extend store behavior.
+
+```javascript
+var UserStoreFactory = GeneralStore.defineFactory()
+  .defineInitialState(function() {
+    return {};
+  })
+  .defineResponseTo({
+    USER_ADDED: function(state, user) {
+      state[user.id] = user;
+      return state;
+    },
+    USER_REMOVED: function(state, user) {
+      delete state[user.id];
+      return state;
+    },
+  });
+```
+
+Like singletons, factories have a register method. Unlike singletons, that
+register method can be called many times and will always return a **new
+instance** of the store described by the factory, which is useful in unit tests.
+
+```javascript
+describe('UserStore', () => {
+  var storeInstance;
+  beforeEach(() => {
+    // each test will have a clean store
+    storeInstance = UserStoreFactory.register(dispatcher);
+  });
+
+  it('adds users', () => {
+    var mockUser = {id: 1, name: 'Joe'};
+    dispatcher.dispatch({actionType: USER_ADDED, data: mockUser});
+    expect(storeInstance.get()).toEqual({1: mockUser});
+  });
+
+  it('removes users', () => {
+    var mockUser = {id: 1, name: 'Joe'};
+    dispatcher.dispatch({actionType: USER_ADDED, data: mockUser});
+    dispatcher.dispatch({actionType: USER_REMOVED, data: mockUser});
+    expect(storeInstance.get()).toEqual({});
+  });
 });
 ```
 
