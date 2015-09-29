@@ -105,11 +105,11 @@ var UserStoreFactory = GeneralStore.defineFactory()
     return {};
   })
   .defineResponses({
-    USER_ADDED: function(state, user) {
+    'USER_ADDED': function(state, user) {
       state[user.id] = user;
       return state;
     },
-    USER_REMOVED: function(state, user) {
+    'USER_REMOVED': function(state, user) {
       delete state[user.id];
       return state;
     },
