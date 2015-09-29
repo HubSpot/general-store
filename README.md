@@ -101,15 +101,15 @@ testing easier and allows you to extend store behavior.
 
 ```javascript
 var UserStoreFactory = GeneralStore.defineFactory()
-  .defineInitialState(function() {
+  .defineGetInitialState(function() {
     return {};
   })
-  .defineResponseTo({
-    USER_ADDED: function(state, user) {
+  .defineResponses({
+    'USER_ADDED': function(state, user) {
       state[user.id] = user;
       return state;
     },
-    USER_REMOVED: function(state, user) {
+    'USER_REMOVED': function(state, user) {
       delete state[user.id];
       return state;
     },
