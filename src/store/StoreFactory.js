@@ -134,7 +134,7 @@ export default class StoreFactory {
     dispatcher = dispatcher || DispatcherInstance.get();
     invariant(
       dispatcher !== null && typeof dispatcher === 'object',
-      'StoreFactory.register: you haven\'t provide a dispatcher instance.' +
+      'StoreFactory.register: you haven\'t provided a dispatcher instance.' +
       ' You can pass an instance to' +
       ' GeneralStore.define().register(dispatcher) or use' +
       ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' +
