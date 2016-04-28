@@ -17,12 +17,26 @@ import {
   hasStateChanged,
 } from './StoreDependencyMixinTransitions.js';
 
+function getPropTypes(dependencyMap: Object): {[key:string]: Function} {
+  return Object.keys(dependencyMap).reduce((types, dependencyName) => {
+    let {propTypes} = dependencyMap[dependencyName];
+    if (propTypes && typeof propTypes === 'object') {
+      Object.keys(propTypes).forEach(propName => {
+        types[propName] = propTypes[propName];
+      });
+    }
+    return types
+  }, {});
+}
+
 export default function StoreDependencyMixin(
   dependencyMap: Object
 ): Object {
   let isFirstMixin = false;
 
-  return {
+  const mixin = {
+    propTypes: {},
+
     componentWillMount(): void {
       if (!isFirstMixin) {
         return;
@@ -70,4 +84,9 @@ export default function StoreDependencyMixin(
     },
   };
 
+  if (process.env.NODE_ENV !== 'production') {
+    mixin.propTypes = getPropTypes(dependencyMap);
+  }
+
+  return mixin;
 }
