@@ -622,7 +622,7 @@ return /******/ (function(modules) { // webpackBootstrap
       key: 'register',
       value: function register(dispatcher) {
         dispatcher = dispatcher || _dispatcherDispatcherInstance2['default'].get();
-        (0, _invariant2['default'])(dispatcher !== null && typeof dispatcher === 'object', 'StoreFactory.register: you haven\'t provide a dispatcher instance.' + ' You can pass an instance to' + ' GeneralStore.define().register(dispatcher) or use' + ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' + ' instance.' + ' https://github.com/HubSpot/general-store#default-dispatcher-instance');
+        (0, _invariant2['default'])(dispatcher !== null && typeof dispatcher === 'object', 'StoreFactory.register: you haven\'t provided a dispatcher instance.' + ' You can pass an instance to' + ' GeneralStore.define().register(dispatcher) or use' + ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' + ' instance.' + ' https://github.com/HubSpot/general-store#default-dispatcher-instance');
         (0, _invariant2['default'])((0, _dispatcherDispatcherInterfaceJs.isDispatcher)(dispatcher), 'StoreFactory.register: Expected dispatcher to be an object' + ' with a register method, and an unregister method but got "%s".' + ' Learn more about the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface', dispatcher);
         var _definition = this._definition;
         var getter = _definition.getter;
@@ -804,10 +804,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
   var _StoreDependencyMixinTransitionsJs = __webpack_require__(14);
 
+  function getPropTypes(dependencyMap) {
+    return Object.keys(dependencyMap).reduce(function (types, dependencyName) {
+      var propTypes = dependencyMap[dependencyName].propTypes;
+
+      if (propTypes && typeof propTypes === 'object') {
+        Object.keys(propTypes).forEach(function (propName) {
+          types[propName] = propTypes[propName];
+        });
+      }
+      return types;
+    }, {});
+  }
+
   function StoreDependencyMixin(dependencyMap) {
     var isFirstMixin = false;
 
-    return {
+    var mixin = {
+      propTypes: {},
+
       componentWillMount: function componentWillMount() {
         if (!isFirstMixin) {
           return;
@@ -842,6 +857,12 @@ return /******/ (function(modules) { // webpackBootstrap
         return (0, _StoreDependencyMixinStateJs.getDependencyState)(this, this.props, this.state, Object.keys(dependencyMap));
       }
     };
+
+    if (true) {
+      mixin.propTypes = getPropTypes(dependencyMap);
+    }
+
+    return mixin;
   }
 
   module.exports = exports['default'];
