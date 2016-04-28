@@ -1,3 +1,7 @@
+## 0.5.0 (April 28th, 2016)
+
+* NEW: compound fields can specify propTypes
+
 ## 0.4.0 (September 22nd, 2015)
 
 * NEW: GeneralStore.defineFactory() allows for more composable/testable stores
