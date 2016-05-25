@@ -14,6 +14,6 @@ export function isPayload(payload: Dispatcher): bool {
   return (
     payload !== null &&
     typeof payload === 'object' &&
-    typeof payload.actionType === 'string'
+    (typeof payload.actionType === 'string' || typeof payload.type === 'string')
   );
 }
