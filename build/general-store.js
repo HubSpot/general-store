@@ -371,10 +371,10 @@ return /******/ (function(modules) { // webpackBootstrap
         if (true) {
           (0, _invariantJs2['default'])((0, _dispatcherDispatcherInterfaceJs.isPayload)(payload), 'Store: expected dispatched payload to be an object with a' + ' property "actionType" containing a string and an optional property' + ' "data" containing any value but got "%s" instead. Learn more about' + ' the dispatcher interface:' + ' https://github.com/HubSpot/general-store#dispatcher-interface');
         }
-        if (!this._responses.hasOwnProperty(payload.actionType)) {
+        if (!this._responses.hasOwnProperty(payload.actionType || payload.type)) {
           return;
         }
-        this._state = this._responses[payload.actionType](this._state, payload.data, payload.actionType, payload);
+        this._state = this._responses[payload.actionType || payload.type](this._state, typeof payload.data !== 'undefined' ? payload.data : payload.payload, payload.actionType || payload.type, payload);
         this.triggerChange();
       }
 
@@ -432,7 +432,7 @@ return /******/ (function(modules) { // webpackBootstrap
   }
 
   function isPayload(payload) {
-    return payload !== null && typeof payload === 'object' && typeof payload.actionType === 'string';
+    return payload !== null && typeof payload === 'object' && (typeof payload.actionType === 'string' || typeof payload.type === 'string');
   }
 
 /***/ },
