@@ -23,7 +23,7 @@ describe('DispatcherInterface', () => {
     })).toBe(true);
   });
 
-  it('correctly validates a payload', () => {
+  it('correctly validates a payload with actionType/data', () => {
     expect(DispatcherInterface.isPayload(null)).toBe(false);
     expect(DispatcherInterface.isPayload({})).toBe(false);
     expect(DispatcherInterface.isPayload({
@@ -36,6 +36,22 @@ describe('DispatcherInterface', () => {
     expect(DispatcherInterface.isPayload({
       actionType: 'ACTION',
       data: null,
+    })).toBe(true);
+  });
+
+  it('correctly validates a payload with type/payload structure', () => {
+    expect(DispatcherInterface.isPayload(null)).toBe(false);
+    expect(DispatcherInterface.isPayload({})).toBe(false);
+    expect(DispatcherInterface.isPayload({
+      type: 1124,
+      payload: {},
+    })).toBe(false);
+    expect(DispatcherInterface.isPayload({
+      type: 'ACTION',
+    })).toBe(true);
+    expect(DispatcherInterface.isPayload({
+      type: 'ACTION',
+      payload: null,
     })).toBe(true);
   });
 

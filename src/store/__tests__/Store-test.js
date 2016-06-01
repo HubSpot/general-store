@@ -52,6 +52,17 @@ describe('Store', () => {
     expect(mockResponse.mock.calls[0][2]).toBe(mockAction);
   });
 
+  it('runs responses when the associated action is dispatched with ' +
+     'type/payload structure', () => {
+    let handler = mockDispatcher.register.mock.calls[0][0];
+    let mockData = {};
+    handler({type: mockAction, payload: mockData});
+    expect(mockResponse.mock.calls.length).toBe(1);
+    expect(mockResponse.mock.calls[0][0]).toBe(mockInitialState);
+    expect(mockResponse.mock.calls[0][1]).toBe(mockData);
+    expect(mockResponse.mock.calls[0][2]).toBe(mockAction);
+  });
+
   it('calls the getter from get', () => {
     expect(storeFacade.get()).toBe(0);
   });

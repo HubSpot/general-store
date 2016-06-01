@@ -105,7 +105,7 @@ export default class Store {
    * Responds to incoming messages from the Dispatcher
    */
   _handleDispatch(
-    payload: {actionType: string; data: any}
+    payload: ({actionType: string; data: any}) | ({type: string, payload: any})
   ): void {
     if (process.env.NODE_ENV !== 'production') {
       invariant(
@@ -117,13 +117,13 @@ export default class Store {
         ' https://github.com/HubSpot/general-store#dispatcher-interface'
       );
     }
-    if (!this._responses.hasOwnProperty(payload.actionType)) {
+    if (!this._responses.hasOwnProperty(payload.actionType || payload.type)) {
       return;
     }
-    this._state = this._responses[payload.actionType](
+    this._state = this._responses[payload.actionType || payload.type](
       this._state,
-      payload.data,
-      payload.actionType,
+      typeof payload.data !== 'undefined' ? payload.data : payload.payload,
+      payload.actionType || payload.type,
       payload
     );
     this.triggerChange();
