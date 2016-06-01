@@ -1,3 +1,6 @@
+## 0.5.1 (June 1st, 2016)
+* NEW: support flux standard actions [#43](https://github.com/HubSpot/general-store/pull/43)
+
 ## 0.5.0 (April 28th, 2016)
 
 * NEW: compound fields can specify propTypes
