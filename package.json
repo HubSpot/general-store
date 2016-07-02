@@ -12,7 +12,7 @@
     "deploy": "./bin/deploy",
     "lint": "eslint ./src",
     "watch": "./bin/watch",
-    "test": "flow check && eslint ./src && jest"
+    "test": "flow check && jest"
   },
   "repository": {
     "type": "git",

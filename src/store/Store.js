@@ -74,6 +74,10 @@ export default class Store {
     return this._getter(this._state, ...args);
   }
 
+  getActionTypes() {
+    return Object.keys(this._responses) || [];
+  }
+
   /**
    * Exposes the store's dispatcher instance.
    *
