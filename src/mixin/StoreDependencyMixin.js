@@ -11,6 +11,8 @@ type ActionIndex = {
   }
 }
 
+const EMPTY_FUNCTION = () => {};
+
 function getPropTypes(dependencyMap: Object): {[key:string]: Function} {
   return Object.keys(dependencyMap).reduce((types, dependencyName) => {
     let {propTypes} = dependencyMap[dependencyName];
@@ -24,10 +26,10 @@ function getPropTypes(dependencyMap: Object): {[key:string]: Function} {
 }
 
 function calculate(dependency, props, state) {
-  let {deref, stores} = dependency;
-  if (stores instanceof Store) {
-    return stores.get();
+  if (dependency instanceof Store) {
+    return dependency.get();
   }
+  let {deref, stores} = dependency;
   if (deref.length === 0) {
     return deref();
   }
@@ -123,6 +125,10 @@ export default function StoreDependencyMixin(
   const mixin = {
     propTypes: {},
 
+    getInitialState(): Object {
+      return {};
+    },
+
     componentWillMount(): void {
       if (dispatcher) {
         mixinToken = dispatcher.register((payload) => {
@@ -149,7 +155,7 @@ export default function StoreDependencyMixin(
       );
     },
 
-    componentDidUpdate: () => {},
+    componentDidUpdate: EMPTY_FUNCTION,
 
     componentWillReceiveProps(nextProps): void {
       this.setState(
@@ -161,10 +167,6 @@ export default function StoreDependencyMixin(
       if (dispatcher && mixinToken) {
         dispatcher.unregister(mixinToken);
       }
-    },
-
-    getInitialState(): Object {
-      return {};
     },
   };
 
