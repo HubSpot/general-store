@@ -1,10 +1,10 @@
 jest.dontMock('../StoreDependencyMixin.js');
 
 describe('StoreDependencyMixin', () => {
-  let StoreDependencyMixin;
+  // let StoreDependencyMixin;
 
   beforeEach(() => {
-    StoreDependencyMixin = require('../StoreDependencyMixin.js');
+    // StoreDependencyMixin = require('../StoreDependencyMixin.js');
   });
 
   describe('propTypes', () => {
