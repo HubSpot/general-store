@@ -25,6 +25,16 @@ describe('StoreDependencyMixin', () => {
 
   describe('componentDidUpdate', () => {
     it('has a componentDidUpdate if a field uses state');
+
+    it('bails out if only store state changed');
+
+    it('only recalculates fields that use state');
+  });
+
+  describe('handleDispatch', () => {
+    it('waits for all stores affected by the actionType');
+
+    it('only updates fields affected by the actionType');
   });
 
   describe('componentWillUnmount', () => {
