@@ -1,3 +1,4 @@
+
 export function oForEach<T>(
   subject: {[key:string]: T},
   operation: (value: T, key: string) => void
@@ -42,5 +43,5 @@ export function oFilterMap<T, R>(
       result[key] = mapper(value, key);
     }
     return result;
-  });
+  }, {});
 }
