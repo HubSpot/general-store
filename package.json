@@ -2,15 +2,15 @@
   "name": "general-store",
   "version": "1.0.0",
   "description": "Simple, flexible store implementation for Flux.",
-  "main": "dist/GeneralStore.js",
+  "main": "lib/GeneralStore.js",
   "scripts": {
-    "build:commonjs": "BABEL_ENV=commonjs babel src --ignore *-test.js --out-dir dist",
-    "build:umd": "NODE_ENV=development webpack --config ./webpack.config.development.js src/GeneralStore.js build/general-store.js",
-    "build:umd:min": "NODE_ENV=production webpack --config ./webpack.config.production.js -p src/GeneralStore.js build/general-store.min.js",
+    "build:commonjs": "BABEL_ENV=commonjs babel src --ignore *-test.js --out-dir lib",
+    "build:umd": "NODE_ENV=development webpack --config ./webpack.config.development.js src/GeneralStore.js dist/general-store.js",
+    "build:umd:min": "NODE_ENV=production webpack --config ./webpack.config.production.js -p src/GeneralStore.js dist/general-store.min.js",
     "build": "npm run build:commonjs && npm run build:umd && npm run build:umd:min",
     "build-and-test": "npm run build && npm test",
     "check": "flow check",
-    "clean": "rm -rf ./build && rm -rf dist",
+    "clean": "rm -rf ./dist && rm -rf lib",
     "lint": "eslint ./src",
     "prepublish": "npm run clean && npm test && npm run build",
     "test": "npm run check && npm run lint && jest"
@@ -26,7 +26,7 @@
   ],
   "files": [
     "dist",
-    "build"
+    "lib"
   ],
   "author": "Colby Rabideau",
   "license": "MIT",
