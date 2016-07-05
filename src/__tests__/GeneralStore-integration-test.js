@@ -1,4 +1,4 @@
-jest.autoMockOff();
+jest.disableAutomock();
 
 function runTest(GeneralStore) {
   let Flux;

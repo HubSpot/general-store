@@ -1,4 +1,4 @@
-jest.dontMock('../GeneralStore.js');
+jest.unmock('../GeneralStore.js');
 
 const exportList = [
   'define',
@@ -15,6 +15,6 @@ describe('GeneralStore', () => {
   });
 
   it('should match the export list', () => {
-    expect(Object.keys(GeneralStore)).toEqual(exportList);
+    expect(Object.keys(GeneralStore.default)).toEqual(exportList);
   });
 });
