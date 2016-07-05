@@ -10,6 +10,7 @@ import {
   dependenciesUseState,
   makeDependencyIndex,
 } from '../dependencies/DependencyMap';
+import { handleDispatch } from './Dispatch';
 import * as DispatcherInstance from '../dispatcher/DispatcherInstance';
 
 type ReactMixin = {
@@ -33,12 +34,6 @@ function onlyStoreStateChanged(dependencies, state, prevState): bool {
   return true;
 }
 
-function waitForStores(dispatcher, tokens) {
-  if (dispatcher) {
-    dispatcher.waitFor(tokens);
-  }
-}
-
 export default function StoreDependencyMixin(
   dependencies: DependencyMap,
   dispatcher: ?Dispatcher = DispatcherInstance.get()
@@ -52,17 +47,18 @@ export default function StoreDependencyMixin(
 
     componentWillMount(): void {
       if (dispatcher) {
-        this.__dispatchToken = dispatcher.register((payload) => {
-          const actionType = payload.actionType || payload.type;
-          if (!dependencyIndex[actionType]) {
-            return;
-          }
-          const entry = dependencyIndex[actionType];
-          waitForStores(dispatcher, Object.keys(entry.dispatchTokens));
-          this.setState(
-            calculateForDispatch(dependencies, entry, this.props, this.state)
-          );
-        });
+        this.__dispatchToken = dispatcher.register(
+          handleDispatch.bind(
+            null,
+            dispatcher,
+            dependencyIndex,
+            (entry) => {
+              this.setState(
+                calculateForDispatch(dependencies, entry, this.props, this.state)
+              );
+            }
+          )
+        );
       }
       this.setState(
         calculateInitial(dependencies, this.props, this.state)
@@ -80,6 +76,7 @@ export default function StoreDependencyMixin(
         dispatcher.unregister(this.__dispatchToken);
       }
     },
+
   };
 
   if (dependenciesUseState(dependencies)) {
