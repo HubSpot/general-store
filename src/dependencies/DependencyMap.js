@@ -69,6 +69,18 @@ export function calculateInitial(
   );
 }
 
+export function calculateForDispatch(
+  dependencies: DependencyMap,
+  dependencyIndexEntry: DependencyIndexEntry,
+  props: Object,
+  state: ?Object
+) {
+  return oMap(
+    dependencyIndexEntry.fields,
+    (_, field) => calculate(dependencies[field], props, state),
+  );
+}
+
 export function calculateForPropsChange(
   dependencies: DependencyMap,
   props: Object

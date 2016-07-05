@@ -6,6 +6,7 @@ jest
 import {
   calculate,
   calculateInitial,
+  calculateForDispatch,
   calculateForPropsChange,
   calculateForStateChange,
   dependenciesUseState,
@@ -139,6 +140,28 @@ describe('DependencyMap', () => {
         count: initialState,
         negativeCount: -initialState,
         timesAHundred: initialState * 100,
+      });
+    });
+  });
+
+  describe('calculateForDispatch', () => {
+    it('only calculates the fields in the index', () => {
+      const mockIndexEntry = {
+        fields: {
+          count: true,
+          absCount: true,
+        },
+      };
+      expect(
+        calculateForDispatch(
+          dependencies,
+          mockIndexEntry,
+          {},
+          {}
+        )
+      ).toEqual({
+        count: initialState,
+        absCount: initialState,
       });
     });
   });

@@ -2,9 +2,10 @@
  * @flow
  */
 import type { DependencyMap } from '../dependencies/DependencyMap';
+import type { Dispatcher } from 'flux';
 import {
-  calculate,
   calculateInitial,
+  calculateForDispatch,
   calculateForPropsChange,
   calculateForStateChange,
   dependencyPropTypes,
@@ -30,7 +31,7 @@ function waitForStores(dispatcher, tokens) {
 
 export default function StoreDependencyMixin(
   dependencies: DependencyMap,
-  overrideDispatcher: ?Object
+  overrideDispatcher: ?Dispatcher
 ): ReactMixin {
   const dependencyIndex = makeDependencyIndex(dependencies);
   const dispatcher = overrideDispatcher || DispatcherInstance.get();
@@ -50,14 +51,7 @@ export default function StoreDependencyMixin(
           const entry = dependencyIndex[actionType];
           waitForStores(dispatcher, entry.dispatchTokens);
           this.setState(
-            entry.fields.reduce((updates, field) => {
-              updates[field] = calculate(
-                dependencies[field],
-                this.props,
-                this.state
-              );
-              return updates;
-            }, {})
+            calculateForDispatch(dependencies, entry, this.props, this.state)
           );
         });
       }
