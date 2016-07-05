@@ -1,5 +1,6 @@
 /* @flow */
-import type { DependencyMap } from './DependencyMap';
+import type { DependencyIndexEntry, DependencyMap } from './DependencyMap';
+import type { Dispatcher } from 'flux';
 import {
   calculateInitial,
   calculateForDispatch,
@@ -7,8 +8,9 @@ import {
   dependencyPropTypes,
   makeDependencyIndex,
 } from '../dependencies/DependencyMap';
+import { handleDispatch } from './Dispatch';
 import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
-import { Component } from 'react';
+import React, { Component } from 'react';
 
 export default function connect(
   dependencies: DependencyMap,
@@ -16,26 +18,51 @@ export default function connect(
 ) {
   const dependencyIndex = makeDependencyIndex(dependencies);
 
-  return function connector(BaseComponent: Component) {
+  /* global ReactClass */
+  return function connector(BaseComponent: ReactClass): ReactClass {
     class ConnectedComponent extends Component {
+      /* eslint react/sort-comp: 0 */
+      dispatchToken: ?string;
+      state: Object;
+
+      constructor() {
+        super();
+        this.state = {};
+      }
+
       componentWillMount() {
         if (dispatcher) {
-          this.__dispatchToken = dispatcher.register((payload) => {
-            const actionType = payload.actionType || payload.type;
-            if (!dependencyIndex[actionType]) {
-              return;
-            }
-            const entry = dependencyIndex[actionType];
-            waitForStores(dispatcher, Object.keys(entry.dispatchTokens));
-            this.setState(
-              calculateForDispatch(dependencies, entry, this.props, this.state)
-            );
-          });
+          this.dispatchToken = dispatcher.register(
+            handleDispatch.bind(
+              null,
+              dispatcher,
+              dependencyIndex,
+              this.handleDispatch.bind(this)
+            )
+          );
         }
         this.setState(
           calculateInitial(dependencies, this.props, this.state)
         );
-      },
+      }
+
+      componentWillReceiveProps(nextProps: Object): void {
+        this.setState(
+          calculateForPropsChange(dependencies, nextProps)
+        );
+      }
+
+      componentWillUnmount(): void {
+        if (dispatcher && this.dispatchToken) {
+          dispatcher.unregister(this.dispatchToken);
+        }
+      }
+
+      handleDispatch(entry: DependencyIndexEntry) {
+        this.setState(
+          calculateForDispatch(dependencies, entry, this.props, this.state)
+        );
+      }
 
       render() {
         return (
@@ -43,10 +70,16 @@ export default function connect(
             {...this.props}
             {...this.state}
           />
-        )
+        );
       }
     }
 
+    ConnectedComponent.displayName = `Connected(${BaseComponent.displayName})`;
+
+    if (process.env.NODE_ENV !== 'production') {
+      ConnectedComponent.propTypes = dependencyPropTypes(dependencies);
+    }
+
     return ConnectedComponent;
-  }
+  };
 }
