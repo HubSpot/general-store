@@ -1,6 +1,7 @@
-jest.unmock('../GeneralStore.js');
+jest.disableAutomock();
 
 const exportList = [
+  'connect',
   'define',
   'defineFactory',
   'DispatcherInstance',
