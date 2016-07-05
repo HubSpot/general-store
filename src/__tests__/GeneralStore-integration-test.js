@@ -243,12 +243,12 @@ describe('GeneralStore src integration test', () => {
 
 describe('GeneralStore dev build integration test', () => {
   runTest(
-    require('../../build/general-store.js')
+    require('../../dist/general-store.js')
   );
 });
 
 describe('GeneralStore prod build integration test', () => {
   runTest(
-    require('../../build/general-store.min.js')
+    require('../../dist/general-store.min.js')
   );
 });
