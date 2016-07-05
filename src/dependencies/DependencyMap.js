@@ -45,7 +45,7 @@ export function calculate(
   dependency: Dependency,
   props: Object,
   state: ?Object
-) {
+): any {
   if (dependency instanceof Store) {
     return dependency.get();
   }
@@ -63,7 +63,7 @@ export function calculateInitial(
   dependencies: DependencyMap,
   props: Object,
   state: ?Object
-) {
+): Object {
   return oMap(
     dependencies,
     (dependency) => calculate(dependency, props, state)
@@ -75,7 +75,7 @@ export function calculateForDispatch(
   dependencyIndexEntry: DependencyIndexEntry,
   props: Object,
   state: ?Object
-) {
+): Object {
   return oMap(
     dependencyIndexEntry.fields,
     (_, field) => calculate(dependencies[field], props, state),
@@ -85,7 +85,7 @@ export function calculateForDispatch(
 export function calculateForPropsChange(
   dependencies: DependencyMap,
   props: Object
-) {
+): Object {
   return oFilterMap(
     dependencies,
     (dep) => dep.deref && dep.deref.length > 0,
@@ -97,7 +97,7 @@ export function calculateForStateChange(
   dependencies: DependencyMap,
   props: Object,
   state: ?Object
-) {
+): Object {
   return oFilterMap(
     dependencies,
     (dep) => dep.deref && dep.deref.length > 1,

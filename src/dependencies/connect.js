@@ -15,7 +15,7 @@ import React, { Component } from 'react';
 export default function connect(
   dependencies: DependencyMap,
   dispatcher: ?Dispatcher = getDispatcherInstance()
-) {
+): Function {
   const dependencyIndex = makeDependencyIndex(dependencies);
 
   /* global ReactClass */
