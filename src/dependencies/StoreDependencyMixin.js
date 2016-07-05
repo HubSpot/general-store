@@ -1,6 +1,4 @@
-/**
- * @flow
- */
+/* @flow */
 import type { DependencyMap } from './DependencyMap';
 import type { Dispatcher } from 'flux';
 import {

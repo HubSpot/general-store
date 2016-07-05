@@ -1,4 +1,4 @@
-
+/* @flow */
 export function oForEach<T>(
   subject: {[key:string]: T},
   operation: (value: T, key: string) => void
@@ -13,7 +13,7 @@ export function oForEach<T>(
 export function oMap<T, R>(
   subject: {[key:string]: T},
   mapper: (value: any, key: string) => R
-): R {
+): {[key:string]: R} {
   const result = {};
   oForEach(subject, (value, key) => {
     result[key] = mapper(value, key);

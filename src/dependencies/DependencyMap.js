@@ -1,3 +1,4 @@
+/* @flow */
 import { oFilterMap, oMap, oMerge, oReduce } from '../utils/ObjectUtils';
 import Store from '../store/Store';
 
