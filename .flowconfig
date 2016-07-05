@@ -5,6 +5,6 @@
 [include]
 
 [libs]
-./lib
+./flowlib
 
 [options]
