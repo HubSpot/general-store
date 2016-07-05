@@ -34,6 +34,9 @@
     "url": "https://github.com/HubSpot/general-store/issues"
   },
   "homepage": "https://github.com/HubSpot/general-store",
+  "peerDependencies": {
+    "react": ">= 0.14"
+  },
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.10.1",
