@@ -240,3 +240,15 @@ describe('GeneralStore src integration test', () => {
     require('../GeneralStore.js')
   );
 });
+
+describe('GeneralStore dev build integration test', () => {
+  runTest(
+    require('../../build/general-store.js')
+  );
+});
+
+describe('GeneralStore prod build integration test', () => {
+  runTest(
+    require('../../build/general-store.min.js')
+  );
+});
