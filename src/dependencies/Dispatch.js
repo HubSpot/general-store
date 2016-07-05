@@ -1,8 +1,8 @@
 /* @flow */
 import type { Dispatcher } from 'flux';
-import type { DependencyIndex } from './DependencyMap';
+import type { DependencyIndex, DependencyIndexEntry } from './DependencyMap';
 
-export function waitForStores(
+function waitForStores(
   dispatcher: Dispatcher,
   tokens: Array<string>
 ) {
@@ -12,10 +12,10 @@ export function waitForStores(
 export function handleDispatch(
   dispatcher: Dispatcher,
   dependencyIndex: DependencyIndex,
-  then: Function,
+  then: (entry: DependencyIndexEntry) => void,
   payload: Object
-) {
-  const actionType = payload.actionType || payload.type;
+): void {
+  const actionType: string = payload.actionType || payload.type;
   if (!dependencyIndex[actionType]) {
     return;
   }
