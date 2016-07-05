@@ -1,17 +1,20 @@
 /* @flow */
-import * as _DispatcherInstance from './dispatcher/DispatcherInstance';
-import _StoreDependencyMixin from './mixin/StoreDependencyMixin';
+import * as DispatcherInstance from './dispatcher/DispatcherInstance';
+import StoreDependencyMixin from './mixin/StoreDependencyMixin';
 import StoreSingleton from './store/StoreSingleton';
 import StoreFactory from './store/StoreFactory';
 
-export function define(): StoreSingleton {
+function defineSingleton(): StoreSingleton {
   return new StoreSingleton();
 }
 
-export function defineFactory(): StoreFactory {
+function defineFactory(): StoreFactory {
   return new StoreFactory({});
 }
 
-export const DispatcherInstance = _DispatcherInstance;
-
-export const StoreDependencyMixin = _StoreDependencyMixin;
+module.exports = {
+  define: defineSingleton,
+  defineFactory,
+  DispatcherInstance,
+  StoreDependencyMixin,
+};
