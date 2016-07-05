@@ -61,7 +61,8 @@
       "immutable-is",
       "invariant",
       "<rootDir>/src/dispatcher/DispatcherInterface.js",
-      "<rootDir>/src/uniqueid"
+      "<rootDir>/src/uniqueid",
+      "<rootDir>/src/utils/ObjectUtils.js"
     ]
   }
 }

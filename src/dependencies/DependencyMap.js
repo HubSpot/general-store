@@ -1,10 +1,14 @@
 import { oFilterMap, oMap, oReduce } from '../utils/ObjectUtils';
-import type Store from '../store/Store';
+import Store from '../store/Store';
 
 export type CompoundDependency = {
   propTypes?: Object,
   stores: Array<Store>;
-  deref: (props: Object, state: ?Object, stores: Array<Store>) => any;
+  deref: (
+    props: Object,
+    state: ?Object,
+    stores: Array<Store>
+  ) => any;
 };
 
 export type Dependency = CompoundDependency | Store;
@@ -44,7 +48,7 @@ export function calculate(
   if (dependency instanceof Store) {
     return dependency.get();
   }
-  const {deref, stores} = dependency;
+  const { deref, stores } = dependency;
   if (deref.length === 0) {
     return deref();
   }
@@ -102,14 +106,16 @@ export function makeDependencyIndex(
     const stores = dep instanceof Store ? [dep] : dep.stores;
     stores.forEach((store) => {
       store.getActionTypes().forEach((actionType) => {
-        const entry = index[actionType] ?
-          index[actionType] :
-          makeIndexEntry();
+        let entry = index[actionType];
+        if (!entry) {
+          entry = index[actionType] = makeIndexEntry();
+        }
         const token = store.getDispatchToken();
         entry.dispatchTokens[token] = true;
         entry.fields[field] = true;
       });
     });
+    return index;
   }, {});
 }
 
