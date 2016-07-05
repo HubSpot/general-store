@@ -8,6 +8,7 @@
     "build:umd": "NODE_ENV=development webpack --config ./webpack.config.development.js src/GeneralStore.js build/GeneralStore.js",
     "build:umd:min": "NODE_ENV=production webpack --config ./webpack.config.production.js -p src/GeneralStore.js build/GeneralStore.min.js",
     "build": "npm run build:commonjs && npm run build:umd && npm run build:umd:min",
+    "build-and-test": "npm run build && npm test",
     "check": "flow check",
     "clean": "rm -rf ./build && rm -rf dist",
     "lint": "eslint ./src",

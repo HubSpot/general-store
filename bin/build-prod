@@ -1,5 +1,0 @@
-#!/bin/bash
-webpack \
-  --config webpack.config.production.js \
-  src/GeneralStore.js \
-  build/general-store.min.js

@@ -1,8 +1,0 @@
-#!/bin/bash
-NODE_ENV=development \
-watchify \
-  --standalone GeneralStore \
-  -t [ reactify --es6 --strip-types ] \
-  -t envify \
-  -o build/general-store.js \
-  src/GeneralStore.js
