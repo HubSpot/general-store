@@ -1,5 +1,12 @@
 /* @flow */
-import { oFilterMap, oMap, oMerge, oReduce } from '../utils/ObjectUtils';
+import invariant from 'invariant';
+import {
+  oFilterMap,
+  oForEach,
+  oMap,
+  oMerge,
+  oReduce,
+} from '../utils/ObjectUtils';
 import Store from '../store/Store';
 
 export type CompoundDependency = {
@@ -30,6 +37,50 @@ export type DependencyMap = {
 export type PropTypes = {
   [key:string]: Function;
 };
+
+export function enforceValidDependencies(
+  dependencies: DependencyMap
+): DependencyMap {
+  invariant(
+    dependencies && typeof dependencies === 'object',
+    'expected `dependencies` to be an `object` but got `%s`',
+    dependencies
+  );
+  oForEach(dependencies, (dependency, field) => {
+    if (dependency instanceof Store) {
+      return;
+    }
+    invariant(
+      dependency && typeof dependency === 'object',
+      'expected `%s` to be an `object` but got `%s`',
+      field,
+      dependency
+    );
+    const { deref, stores } = dependency;
+    invariant(
+      typeof deref === 'function',
+      'expected `%s.deref` to be a function but got `%s`',
+      field,
+      deref
+    );
+    invariant(
+      Array.isArray(stores),
+      'expected `%s.stores` to be an Array but got `%s`',
+      field,
+      dependency.stores
+    );
+    stores.forEach((store, index) => {
+      invariant(
+        store instanceof Store,
+        'expected `%s.stores.%s` to be a `Store` but got `%s`',
+        field,
+        index,
+        store
+      );
+    });
+  });
+  return dependencies;
+}
 
 export function dependencyPropTypes(dependencies: DependencyMap): PropTypes {
   return oReduce(dependencies, (types, dependency) => {
@@ -115,6 +166,7 @@ function makeIndexEntry(): DependencyIndexEntry {
 export function makeDependencyIndex(
   dependencies: DependencyMap
 ): DependencyIndex {
+  enforceValidDependencies(dependencies);
   return oReduce(dependencies, (index, dep, field) => {
     const stores = dep instanceof Store ? [dep] : dep.stores;
     stores.forEach((store) => {

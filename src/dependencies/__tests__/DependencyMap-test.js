@@ -11,6 +11,7 @@ import {
   calculateForStateChange,
   dependenciesUseState,
   dependencyPropTypes,
+  enforceValidDependencies,
   makeDependencyIndex,
 } from '../DependencyMap';
 import { Dispatcher } from 'flux';
@@ -65,6 +66,55 @@ describe('DependencyMap', () => {
       expect(
         dependencyPropTypes(dependencies)
       ).toEqual({});
+    });
+  });
+
+  describe('enforceValidDependencies', () => {
+    it('throws if dependencies is not an object', () => {
+      expect(() => enforceValidDependencies(null)).toThrow();
+      expect(() => enforceValidDependencies({})).not.toThrow();
+    });
+
+    it('throws if a dependency is not an object', () => {
+      expect(() => enforceValidDependencies({
+        test: null,
+      })).toThrow();
+    });
+
+    it('throws if a dependency.deref is not a function', () => {
+      expect(() => enforceValidDependencies({
+        test: {
+          stores: [],
+          deref: null,
+        },
+      })).toThrow();
+    });
+
+    it('throws if a dependency.stores is not an Array', () => {
+      expect(() => enforceValidDependencies({
+        test: {
+          stores: null,
+          deref: () => {},
+        },
+      })).toThrow();
+    });
+
+    it('throws if an item in dependency.stores is not Store', () => {
+      expect(() => enforceValidDependencies({
+        test: {
+          stores: [null],
+          deref: () => {},
+        },
+      })).toThrow();
+    });
+
+    it('doesnt throw if the dependency is valid', () => {
+      expect(() => enforceValidDependencies({
+        test: {
+          stores: [CountStore],
+          deref: () => {},
+        },
+      })).not.toThrow();
     });
   });
 
