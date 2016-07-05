@@ -2,9 +2,9 @@
   "name": "general-store",
   "version": "0.5.1",
   "description": "Simple, flexible store implementation for Flux.",
-  "main": "build/general-store.js",
+  "main": "dist/GeneralStore.js",
   "scripts": {
-    "build:commonjs": "BABEL_ENV=commonjs babel src --ignore *-test.js --out-dir lib",
+    "build:commonjs": "BABEL_ENV=commonjs babel src --ignore *-test.js --out-dir dist",
     "build:umd": "NODE_ENV=development webpack --config ./webpack.config.development.js src/GeneralStore.js build/GeneralStore.js",
     "build:umd:min": "NODE_ENV=production webpack --config ./webpack.config.production.js -p src/GeneralStore.js build/GeneralStore.min.js",
     "build": "npm run build:commonjs && npm run build:umd && npm run build:umd:min",

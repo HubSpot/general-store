@@ -33,4 +33,4 @@ src/bower_components
 
 # build stuff
 build
-lib
+dist
