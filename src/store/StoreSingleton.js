@@ -1,6 +1,6 @@
 /* @flow */
-
-import invariant from '../invariant';
+import type { Dispatcher } from 'flux';
+import invariant from 'invariant';
 import Store from './Store';
 import StoreFactory from './StoreFactory';
 
@@ -9,9 +9,7 @@ const HINT_LINK =
   ' https://github.com/HubSpot/general-store#create-a-store';
 
 function dropFirstArg(func) {
-  return function(head, ...tail) {
-    func(...tail);
-  };
+  return (head, ...tail) => func(...tail);
 }
 
 export default class StoreSingleton {
@@ -24,9 +22,10 @@ export default class StoreSingleton {
     this._facade = null;
     this._factory = new StoreFactory({
       getter: (state, ...args) => {
-        if (typeof this._getter === 'function') {
-          return this._getter(...args);
+        if (typeof this._getter !== 'function') {
+          return undefined;
         }
+        return this._getter(...args);
       },
     });
     this._getter = null;

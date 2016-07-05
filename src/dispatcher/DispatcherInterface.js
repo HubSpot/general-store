@@ -1,6 +1,5 @@
-/**
- * @flow
- */
+/* @flow */
+import type { Dispatcher } from 'flux';
 
 export function isDispatcher(dispatcher: Dispatcher): bool {
   return (

@@ -1,7 +1,4 @@
-/**
- * @flow
- */
-
+/* @flow */
 import EventHandler from './EventHandler.js';
 import uniqueID from '../uniqueid/uniqueID.js';
 

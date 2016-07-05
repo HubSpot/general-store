@@ -30,3 +30,7 @@ node_modules
 # bower
 bower_components
 src/bower_components
+
+# build stuff
+build
+dist

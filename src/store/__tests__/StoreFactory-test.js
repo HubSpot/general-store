@@ -1,13 +1,13 @@
-jest.dontMock('../StoreFactory.js');
+jest.unmock('../StoreFactory.js');
+
+const EMPTY_FUNC = () => {};
 
 describe('StoreFactory', () => {
-
   let StoreFactory;
-
   let storeFactory;
 
   beforeEach(() => {
-    StoreFactory = require('../StoreFactory.js');
+    StoreFactory = require('../StoreFactory.js').default;
     storeFactory = new StoreFactory({});
   });
 
@@ -22,32 +22,32 @@ describe('StoreFactory', () => {
 
   it('returns a new store', () => {
     expect(
-      storeFactory.defineGet(function() {})
+      storeFactory.defineGet(EMPTY_FUNC)
     ).not.toBe(storeFactory);
     expect(
       storeFactory.defineResponses({})
     ).not.toBe(storeFactory);
     expect(
-      storeFactory.defineGetInitialState(function() {})
+      storeFactory.defineGetInitialState(EMPTY_FUNC)
     ).not.toBe(storeFactory);
   });
 
   it('sets getter', () => {
-    let mockGetter = function() {};
-    let newDef = storeFactory.defineGet(mockGetter).getDefinition();
+    const mockGetter = EMPTY_FUNC;
+    const newDef = storeFactory.defineGet(mockGetter).getDefinition();
     expect(newDef.getter).toBe(mockGetter);
   });
 
   it('throws when a getter is already set', () => {
-    let factoryWithGetter = storeFactory.defineGet(function() {});
+    const factoryWithGetter = storeFactory.defineGet(EMPTY_FUNC);
     expect(
-      () => factoryWithGetter.defineGet(function() {})
+      () => factoryWithGetter.defineGet(EMPTY_FUNC)
     ).toThrow();
   });
 
   it('sets getInitialState', () => {
-    let mockStateGetter = function() {};
-    let newDef = storeFactory
+    const mockStateGetter = EMPTY_FUNC;
+    const newDef = storeFactory
       .defineGetInitialState(mockStateGetter)
       .getDefinition();
     expect(newDef.getInitialState).toBe(mockStateGetter);
@@ -58,8 +58,8 @@ describe('StoreFactory', () => {
   });
 
   it('throws when initialState is already set', () => {
-    let emptyFn = function() {};
-    let factoryWithGetInitialState = storeFactory
+    const emptyFn = EMPTY_FUNC;
+    const factoryWithGetInitialState = storeFactory
       .defineGetInitialState(emptyFn);
     expect(
       () => factoryWithGetInitialState.defineGetInitialState(emptyFn)
@@ -67,35 +67,35 @@ describe('StoreFactory', () => {
   });
 
   it('sets responses', () => {
-    let mockResponses = {
-      TEST: function() {},
-      TEST_TWO: function() {},
+    const mockResponses = {
+      TEST: EMPTY_FUNC,
+      TEST_TWO: EMPTY_FUNC,
     };
-    let newDef = storeFactory.defineResponses(mockResponses).getDefinition();
+    const newDef = storeFactory.defineResponses(mockResponses).getDefinition();
     Object.keys(mockResponses).forEach(actionType => {
       expect(newDef.responses[actionType]).toBe(mockResponses[actionType]);
     });
   });
 
   it('throws when a response is already set', () => {
-    let factoryWithResponses = storeFactory.defineResponses({
-      TEST: function() {},
-      TEST_TWO: function() {},
+    const factoryWithResponses = storeFactory.defineResponses({
+      TEST: EMPTY_FUNC,
+      TEST_TWO: EMPTY_FUNC,
     });
     expect(
       () => factoryWithResponses.defineResponses({
-        TEST_THREE: function() {},
+        TEST_THREE: EMPTY_FUNC,
       })
     ).not.toThrow();
     expect(
       () => factoryWithResponses.defineResponses({
-        TEST: function() {},
+        TEST: EMPTY_FUNC,
       })
     ).toThrow();
   });
 
   it('validates the actionType(s) passed to defineResponses', () => {
-    let mockResponse = function() {};
+    const mockResponse = EMPTY_FUNC;
     // invalid args
     expect(
       () => storeFactory.defineResponses({'TESTING': null})
@@ -128,11 +128,11 @@ describe('StoreFactory', () => {
   });
 
   it('throws if register is called without a valid dispatcher', () => {
-    let mockDispatcher = {
+    const mockDispatcher = {
       register: () => 12345,
-      unregister: function() {},
+      unregister: EMPTY_FUNC,
     };
-    storeFactory.defineGet(function() {});
+    storeFactory.defineGet(EMPTY_FUNC);
     expect(() => {
       storeFactory.register({});
     }).toThrow();
@@ -140,5 +140,4 @@ describe('StoreFactory', () => {
       storeFactory.register(mockDispatcher);
     }).not.toThrow();
   });
-
 });
