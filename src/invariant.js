@@ -35,8 +35,6 @@
  * @flow
  */
 
-'use strict';
-
 /**
  * Use invariant() to assert state which your program assumes to be true.
  *
@@ -67,11 +65,10 @@ export default function invariant(
   if (!condition) {
     let error;
     if (process.env.NODE_ENV !== 'production') {
-      let args = [a, b, c, d, e, f];
+      const args = [a, b, c, d, e, f];
       let argIndex = 0;
       error = new Error(
-        'Invariant Violation: ' +
-        format.replace(/%s/g, () => args[argIndex++])
+        `Invariant Violation: ${format.replace(/%s/g, () => args[argIndex++])}`
       );
     } else {
       error = new Error(

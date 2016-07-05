@@ -1,7 +1,4 @@
-/**
- * @flow
- */
-
+/* @flow */
 import type Event from './Event';
 
 export default class EventHandler {

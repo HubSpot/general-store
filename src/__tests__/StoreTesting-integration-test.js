@@ -29,8 +29,8 @@ describe('Store testing integration test', () => {
   });
 
   it('always starts with a clean slate', () => {
-    let first = storeInstance.get();
-    let second = UserStoreFactory.register(dispatcher).get();
+    const first = storeInstance.get();
+    const second = UserStoreFactory.register(dispatcher).get();
     expect(first).toEqual({});
     expect(second).toEqual({});
     expect(first).not.toBe(second);
@@ -40,11 +40,11 @@ describe('Store testing integration test', () => {
     let ids = 0;
     dispatcher.dispatch({
       actionType: ADD_USER,
-      data: {id: ++ids, name: 'User ' + ids},
+      data: {id: ++ids, name: `User ${ids}`},
     });
     dispatcher.dispatch({
       actionType: ADD_USER,
-      data: {id: ++ids, name: 'User ' + ids},
+      data: {id: ++ids, name: `User ${ids}`},
     });
     dispatcher.dispatch({
       actionType: REMOVE_USER,

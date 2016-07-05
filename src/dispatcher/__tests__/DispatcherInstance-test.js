@@ -1,7 +1,6 @@
 jest.dontMock('../DispatcherInstance.js');
 
 describe('DispatcherInstance', () => {
-
   let DispatcherInstance;
 
   let mockDispatcher;
@@ -10,10 +9,10 @@ describe('DispatcherInstance', () => {
     DispatcherInstance = require('../DispatcherInstance.js');
 
     mockDispatcher = {
-      register: function() {
+      register() {
         return 12345;
       },
-      unregister: function() {
+      unregister() {
       },
     };
   });
@@ -32,5 +31,4 @@ describe('DispatcherInstance', () => {
     DispatcherInstance.set(mockDispatcher);
     expect(DispatcherInstance.get()).toBe(mockDispatcher);
   });
-
 });

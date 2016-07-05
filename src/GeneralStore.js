@@ -14,8 +14,8 @@ function defineFactory(): StoreFactory {
 }
 
 export default {
-  define: define,
-  defineFactory: defineFactory,
+  define,
+  defineFactory,
   DispatcherInstance: _DispatcherInstance,
   StoreDependencyMixin: _StoreDependencyMixin,
 };

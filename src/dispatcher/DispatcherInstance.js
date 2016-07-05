@@ -1,9 +1,5 @@
-/**
- * I'm not sure if it's possible to express the runtime enforcement
- * of a dispatcher instance, so I'll use weak mode for now.
- * @flow
- **/
-
+/* @flow */
+import type { Dispatcher } from 'flux';
 import {isDispatcher} from './DispatcherInterface.js';
 import invariant from '../invariant.js';
 

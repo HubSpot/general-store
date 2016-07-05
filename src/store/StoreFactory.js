@@ -1,7 +1,7 @@
 /* @flow */
-
+import type { Dispatcher } from 'flux';
 import DispatcherInstance from '../dispatcher/DispatcherInstance';
-import {isDispatcher} from '../dispatcher/DispatcherInterface.js';
+import { isDispatcher } from '../dispatcher/DispatcherInterface.js';
 import invariant from '../invariant';
 import Store from './Store';
 
@@ -93,7 +93,7 @@ export default class StoreFactory {
   }
 
   defineResponses(newResponses: Responses): StoreFactory {
-    let {responses} = this._definition;
+    const {responses} = this._definition;
     invariant(
       newResponses && typeof newResponses === 'object',
       'StoreFactory.defineResponses: newResponses must be an object'
@@ -149,7 +149,7 @@ export default class StoreFactory {
       ' https://github.com/HubSpot/general-store#dispatcher-interface',
       dispatcher
     );
-    let {getter, getInitialState, responses} = this._definition;
+    const {getter, getInitialState, responses} = this._definition;
     return new Store({
       dispatcher,
       factory: this,

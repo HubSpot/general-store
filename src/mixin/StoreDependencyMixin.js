@@ -15,13 +15,13 @@ const EMPTY_FUNCTION = () => {};
 
 function getPropTypes(dependencyMap: Object): {[key:string]: Function} {
   return Object.keys(dependencyMap).reduce((types, dependencyName) => {
-    let {propTypes} = dependencyMap[dependencyName];
+    const {propTypes} = dependencyMap[dependencyName];
     if (propTypes && typeof propTypes === 'object') {
       Object.keys(propTypes).forEach(propName => {
         types[propName] = propTypes[propName];
       });
     }
-    return types
+    return types;
   }, {});
 }
 
@@ -29,7 +29,7 @@ function calculate(dependency, props, state) {
   if (dependency instanceof Store) {
     return dependency.get();
   }
-  let {deref, stores} = dependency;
+  const {deref, stores} = dependency;
   if (deref.length === 0) {
     return deref();
   }
@@ -41,37 +41,37 @@ function calculate(dependency, props, state) {
 
 function calculateInitial(dependencyMap, props, state) {
   const updates = {};
-  for (let field in dependencyMap) {
+  Object.keys(dependencyMap).forEach((field) => {
     updates[field] = calculate(dependencyMap[field], props, state);
-  }
+  });
   return updates;
 }
 
 function calculateForPropsChange(dependencyMap, props) {
   const updates = {};
-  for (let field in dependencyMap) {
+  Object.keys(dependencyMap).forEach((field) => {
     const dep = dependencyMap[field];
     if (dep.deref && dep.deref.length > 0) {
       updates[field] = calculate(dep, props);
     }
-  }
+  });
   return updates;
 }
 
 function calculateForStateChange(dependencyMap, props, state) {
   const updates = {};
-  for (let field in dependencyMap) {
+  Object.keys(dependencyMap).forEach((field) => {
     const dep = dependencyMap[field];
     if (dep.deref && dep.deref.length > 1) {
       updates[field] = calculate(dep, props, state);
     }
-  }
+  });
   return updates;
 }
 
 function getActionIndex(dependencyMap) {
   const index: ActionIndex = {};
-  for (let field in dependencyMap) {
+  Object.keys(dependencyMap).forEach((field) => {
     const dep = dependencyMap[field];
     const stores = dep instanceof Store ? [dep] : dep.stores;
     stores.forEach((store) => {
@@ -92,12 +92,15 @@ function getActionIndex(dependencyMap) {
         }
       });
     });
-  }
+  });
   return index;
 }
 
 function getUsesState(dependencyMap) {
-  for (let field in dependencyMap) {
+  for (const field in dependencyMap) {
+    if (!dependencyMap.hasOwnProperty(field)) {
+      continue;
+    }
     const dep = dependencyMap[field];
     if (!(dep instanceof Store) && dep.deref.length > 1) {
       return true;
@@ -116,7 +119,6 @@ export default function StoreDependencyMixin(
   dependencyMap: Object,
   overrideDispatcher: ?Object
 ): Object {
-
   const actionIndex = getActionIndex(dependencyMap);
   const dispatcher = overrideDispatcher || DispatcherInstance.get();
 

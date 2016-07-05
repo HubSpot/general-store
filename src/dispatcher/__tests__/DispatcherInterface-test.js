@@ -1,7 +1,6 @@
 jest.dontMock('../DispatcherInterface.js');
 
 describe('DispatcherInterface', () => {
-
   let DispatcherInterface;
 
   beforeEach(() => {
@@ -11,15 +10,15 @@ describe('DispatcherInterface', () => {
   it('correctly validates a dispatcher', () => {
     expect(DispatcherInterface.isDispatcher({})).toBe(false);
     expect(DispatcherInterface.isDispatcher({
-      register: function() {},
+      register() {},
     })).toBe(false);
     expect(DispatcherInterface.isDispatcher({
-      unregister: function() {},
+      unregister() {},
     })).toBe(false);
 
     expect(DispatcherInterface.isDispatcher({
-      register: function() {},
-      unregister: function() {},
+      register() {},
+      unregister() {},
     })).toBe(true);
   });
 
@@ -54,5 +53,4 @@ describe('DispatcherInterface', () => {
       payload: null,
     })).toBe(true);
   });
-
 });

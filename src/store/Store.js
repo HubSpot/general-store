@@ -1,6 +1,6 @@
 /* eslint no-console:0 */
 /* @flow */
-
+import type { Dispatcher } from 'flux';
 import type StoreFactory from './StoreFactory';
 
 import {isPayload} from '../dispatcher/DispatcherInterface.js';
