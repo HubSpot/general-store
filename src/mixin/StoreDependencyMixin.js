@@ -43,10 +43,9 @@ function waitForStores(dispatcher, tokens) {
 
 export default function StoreDependencyMixin(
   dependencies: DependencyMap,
-  overrideDispatcher: ?Dispatcher
+  dispatcher: ?Dispatcher = DispatcherInstance.get()
 ): ReactMixin {
   const dependencyIndex = makeDependencyIndex(dependencies);
-  const dispatcher = overrideDispatcher || DispatcherInstance.get();
 
   const mixin: ReactMixin = {
     getInitialState(): Object {
