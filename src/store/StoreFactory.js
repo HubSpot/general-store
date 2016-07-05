@@ -1,6 +1,6 @@
 /* @flow */
 import type { Dispatcher } from 'flux';
-import DispatcherInstance from '../dispatcher/DispatcherInstance';
+import * as DispatcherInstance from '../dispatcher/DispatcherInstance';
 import { isDispatcher } from '../dispatcher/DispatcherInterface.js';
 import invariant from 'invariant';
 import Store from './Store';

@@ -15,9 +15,8 @@ describe('GeneralStore', () => {
   });
 
   it('should match the export list', () => {
-    expect(GeneralStore.hasOwnProperty('define')).toBe(true);
-    expect(GeneralStore.hasOwnProperty('defineFactory')).toBe(true);
-    expect(GeneralStore.hasOwnProperty('DispatcherInstance')).toBe(true);
-    expect(GeneralStore.hasOwnProperty('StoreDependencyMixin')).toBe(true);
+    exportList.forEach((exportName) => {
+      expect(GeneralStore.hasOwnProperty(exportName)).toBe(true);
+    });
   });
 });
