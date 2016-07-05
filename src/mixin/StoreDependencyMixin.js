@@ -23,6 +23,18 @@ type ReactMixin = {
   componentWillUnmount: Function;
 }
 
+function onlyStoreStateChanged(dependencies, state, prevState): bool {
+  for (const field in state) {
+    if (
+      !dependencies.hasOwnProperty(field) &&
+      state[field] !== prevState[field]
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function waitForStores(dispatcher, tokens) {
   if (dispatcher) {
     dispatcher.waitFor(tokens);
@@ -74,7 +86,10 @@ export default function StoreDependencyMixin(
   };
 
   if (dependenciesUseState(dependencies)) {
-    mixin.componentDidUpdate = () => {
+    mixin.componentDidUpdate = (_, prevState) => {
+      if (onlyStoreStateChanged(dependencies, this.state, prevState)) {
+        return;
+      }
       this.setState(
         calculateForStateChange(dependencies, this.props, this.state)
       );
