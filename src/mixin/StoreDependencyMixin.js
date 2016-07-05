@@ -73,9 +73,9 @@ export default function StoreDependencyMixin(
     },
 
     componentWillReceiveProps(nextProps): void {
-      this.setState(
-        calculateForPropsChange(dependencies, nextProps)
-      );
+      const updates = calculateForPropsChange(dependencies, nextProps);
+      console.log('componentWillReceiveProps', nextProps, updates);
+      this.setState(updates);
     },
 
     componentWillUnmount(): void {
