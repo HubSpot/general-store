@@ -1,6 +1,6 @@
 /* @flow */
 import * as DispatcherInstance from './dispatcher/DispatcherInstance';
-import StoreDependencyMixin from './mixin/StoreDependencyMixin';
+import StoreDependencyMixin from './dependencies/StoreDependencyMixin';
 import StoreSingleton from './store/StoreSingleton';
 import StoreFactory from './store/StoreFactory';
 

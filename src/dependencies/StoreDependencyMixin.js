@@ -1,7 +1,7 @@
 /**
  * @flow
  */
-import type { DependencyMap } from '../dependencies/DependencyMap';
+import type { DependencyMap } from './DependencyMap';
 import type { Dispatcher } from 'flux';
 import {
   calculateInitial,
