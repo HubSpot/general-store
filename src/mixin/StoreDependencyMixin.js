@@ -1,7 +1,7 @@
 /**
  * @flow
  */
-import DispatcherInstance from '../dispatcher/DispatcherInstance';
+import * as DispatcherInstance from '../dispatcher/DispatcherInstance';
 import Store from '../store/Store';
 
 type ActionIndex = {

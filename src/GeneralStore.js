@@ -10,7 +10,5 @@ export function defineFactory(): StoreFactory {
   return new StoreFactory({});
 }
 
-export { default as DispatcherInstance }
-  from './dispatcher/DispatcherInstance.js';
-export { default as StoreDependencyMixin }
-  from './mixin/StoreDependencyMixin.js';
+export { default as DispatcherInstance } from './dispatcher/DispatcherInstance.js';
+export { default as StoreDependencyMixin } from './mixin/StoreDependencyMixin.js';

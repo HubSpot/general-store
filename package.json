@@ -58,7 +58,7 @@
     ],
     "unmockedModulePathPatterns": [
       "immutable-is",
-      "<rootDir>/src/invariant.js",
+      "invariant",
       "<rootDir>/src/dispatcher/DispatcherInterface.js",
       "<rootDir>/src/uniqueid"
     ]

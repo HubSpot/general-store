@@ -1,4 +1,4 @@
-jest.dontMock('../Event.js');
+jest.unmock('../Event.js');
 
 describe('Event', () => {
   let Event;
@@ -7,8 +7,8 @@ describe('Event', () => {
   let eventInstance;
 
   beforeEach(() => {
-    Event = require('../Event.js');
-    EventHandler = require('../EventHandler.js');
+    Event = require('../Event.js').default;
+    EventHandler = require('../EventHandler.js').default;
 
     eventInstance = new Event();
   });

@@ -1,12 +1,12 @@
-jest.dontMock('../EventHandler.js');
+jest.unmock('../EventHandler.js');
 
 describe('EventHandler', () => {
   let Event;
   let EventHandler;
 
   beforeEach(() => {
-    Event = require('../Event.js');
-    EventHandler = require('../EventHandler.js');
+    Event = require('../Event.js').default;
+    EventHandler = require('../EventHandler.js').default;
   });
 
   it('calls removeHandler only once on instance when remove is called', () => {

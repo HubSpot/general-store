@@ -1,10 +1,10 @@
-jest.dontMock('../uniqueID.js');
+jest.unmock('../uniqueID.js');
 
 describe('uniqueId', () => {
   let uniqueId;
 
   beforeEach(() => {
-    uniqueId = require('../uniqueID.js');
+    uniqueId = require('../uniqueID.js').default;
   });
 
   it('always returns a unique number', () => {

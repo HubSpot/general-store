@@ -1,4 +1,4 @@
-jest.dontMock('../StoreSingleton.js');
+jest.unmock('../StoreSingleton.js');
 
 const EMPTY_FUNC = () => {};
 
@@ -11,7 +11,7 @@ describe('StoreSingleton', () => {
 
   beforeEach(() => {
     DispatcherInstance = require('../../dispatcher/DispatcherInstance.js');
-    StoreSingleton = require('../StoreSingleton.js');
+    StoreSingleton = require('../StoreSingleton.js').default;
 
     mockDispatcher = {
       register: () => 12345,

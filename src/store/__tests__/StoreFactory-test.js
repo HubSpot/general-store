@@ -7,7 +7,7 @@ describe('StoreFactory', () => {
   let storeFactory;
 
   beforeEach(() => {
-    StoreFactory = require('../StoreFactory.js');
+    StoreFactory = require('../StoreFactory.js').default;
     storeFactory = new StoreFactory({});
   });
 
