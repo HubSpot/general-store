@@ -1,6 +1,6 @@
 /* @flow */
 import type { Dispatcher } from 'flux';
-import invariant from '../invariant';
+import invariant from 'invariant';
 import Store from './Store';
 import StoreFactory from './StoreFactory';
 

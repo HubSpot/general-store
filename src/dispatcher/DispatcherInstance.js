@@ -1,7 +1,7 @@
 /* @flow */
 import type { Dispatcher } from 'flux';
-import {isDispatcher} from './DispatcherInterface.js';
-import invariant from '../invariant.js';
+import { isDispatcher } from './DispatcherInterface.js';
+import invariant from 'invariant';
 
 let instance = null;
 

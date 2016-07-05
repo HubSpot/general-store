@@ -6,7 +6,7 @@ import type StoreFactory from './StoreFactory';
 import {isPayload} from '../dispatcher/DispatcherInterface.js';
 import Event from '../event/Event.js';
 import EventHandler from '../event/EventHandler.js';
-import invariant from '../invariant.js';
+import invariant from 'invariant';
 import uniqueID from '../uniqueid/uniqueID.js';
 
 const HINT_LINK = 'Learn more about using the Store API:' +

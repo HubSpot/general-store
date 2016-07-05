@@ -48,6 +48,7 @@
     "flow-bin": "^0.27.0",
     "flux": "^2.0.1",
     "immutable-is": "^3.7.4",
+    "invariant": "^2.2.1",
     "jest-cli": "^12.1.1",
     "webpack": "^1.13.1"
   },
