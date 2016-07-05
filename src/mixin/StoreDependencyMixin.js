@@ -11,7 +11,13 @@ type ActionIndex = {
   }
 }
 
-const EMPTY_FUNCTION = () => {};
+type Mixin = {
+  propTypes?: Object;
+  componentWillMount: Function;
+  componentWillReceiveProps: Function;
+  componentDidUpdate?: Function;
+  componentWillUnmount: Function;
+}
 
 function getPropTypes(dependencyMap: Object): {[key:string]: Function} {
   return Object.keys(dependencyMap).reduce((types, dependencyName) => {
@@ -118,15 +124,13 @@ function waitForStores(dispatcher, tokens) {
 export default function StoreDependencyMixin(
   dependencyMap: Object,
   overrideDispatcher: ?Object
-): Object {
+): Mixin {
   const actionIndex = getActionIndex(dependencyMap);
   const dispatcher = overrideDispatcher || DispatcherInstance.get();
 
   let mixinToken;
 
-  const mixin = {
-    propTypes: {},
-
+  const mixin: Mixin = {
     getInitialState(): Object {
       return {};
     },
@@ -156,8 +160,6 @@ export default function StoreDependencyMixin(
         calculateInitial(dependencyMap, this.props, this.state)
       );
     },
-
-    componentDidUpdate: EMPTY_FUNCTION,
 
     componentWillReceiveProps(nextProps): void {
       this.setState(
