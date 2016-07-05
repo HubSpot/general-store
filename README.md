@@ -158,53 +158,83 @@ subscription.remove();
 
 ## React
 
-GeneralStore provides a convenient mixin for binding stores to React components:
+### DependencyMap
+
+GeneralStore has a simple format for declaring dependencies.
+
+```javascript
+const dependencies = {
+  // simple fields can be expressed in the form `key => store`
+  subject: ProfileStore,
+  // compound fields can depend on one or more stores
+  // and specify a function to "dereference" the store's value
+  friends: {
+    stores: [ProfileStore, UsersStore],
+    deref: (props, state) => {
+      friendIds = ProfileStore.get().friendIds;
+      users = UsersStore.get();
+      return friendIds.map(id => users[id]);
+    }
+  }
+};
+```
+
+Once you declare your dependencies there are two ways to connect them to a react component.
+
+### connect
+
+GeneralStore provides a component "enhancer" called `connect`.
+It's similar to redux's `connect` function but it takes a general store DependencyMap.
+`connect` passes the fields defined in the `DependencyMap` to the enhanced component as props.
+
+```javascript
+// ProfileContainer.js
+function ProfileContainer({friends, subject}) {
+  return (
+    <div>
+      <h1>{subject.name}</h1>
+      {this.renderFriends()}
+      <h3>Friends</h3>
+      <ul>
+        {Object.keys(friends).map(id => <li>{friends[id].name}</li>)}
+      </ul>
+    </div>
+  );
+}
+
+export default connect(dependencies, dispatcher)(ProfileComponent);
+```
+
+### StoreDependencyMixin
+
+If you use `React.createClass`, GeneralStore also provides a mixin.
+Instead of passing the dependency fields to the component as props, `StoreDependencyMixin` exposes dependency data in component local state.
 
 ```javascript
 var ProfileComponent = React.createClass({
   mixins: [
-    GeneralStore.StoreDependencyMixin({
-      // simple fields can be expressed in the form `key => store`
-      subject: ProfileStore,
-      // compound fields can depend on one or more stores
-      // and specify a function to "dereference" the store's value
-      friends: {
-        stores: [ProfileStore, UsersStore],
-        deref: (props, state) => {
-          friendIds = ProfileStore.get().friendIds;
-          users = UsersStore.get();
-          return friendIds.map(id => users[id]);
-        }
-      }
-    }, dispatcher)
+    GeneralStore.StoreDependencyMixin(dependencies, dispatcher)
   ],
 
   render: function() {
     return (
       <div>
         <h1>{this.state.subject.name}</h1>
-        {this.renderFriends()}
-      </div>
-    );
-  },
-
-  renderFriends: function() {
-    var friends = this.state.friends;
-    return (
-      <div>
         <h3>Friends</h3>
         <ul>
-          {Object.keys(friends).map(id => <li>{friends[id].name}</li>)}
+          {Object.keys(this.state.friends).map((id) => (
+            <li>{friends[id].name}</li>
+          ))}
         </ul>
       </div>
     );
-  }
+  },
 });
 ```
 
 ## Default Dispatcher Instance
 
-The common Flux architecture has a single central dispatcher. As a convenience `GeneralStore` allows you to set a global dispatcher which will become the default when a store is registered or a `StoreDependencyMixin` is created.
+The common Flux architecture has a single central dispatcher. As a convenience `GeneralStore` allows you to set a global dispatcher which will become the default when a store is registered, a component is enhanced with `connected`, or a `StoreDependencyMixin` is created.
 
 ```javascript
 var dispatcher = new Flux.Dispatcher();
