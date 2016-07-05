@@ -1,4 +1,4 @@
-jest.dontMock('../DispatcherInterface.js');
+jest.unmock('../DispatcherInterface.js');
 
 describe('DispatcherInterface', () => {
   let DispatcherInterface;

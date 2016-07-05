@@ -1,4 +1,4 @@
-jest.dontMock('../StoreFactory.js');
+jest.unmock('../StoreFactory.js');
 
 const EMPTY_FUNC = () => {};
 
