@@ -12,7 +12,7 @@
     "check": "flow check",
     "clean": "rm -rf ./dist && rm -rf lib",
     "lint": "eslint ./src",
-    "prepublish": "npm run clean && npm test && npm run build",
+    "prepublish": "npm run clean && npm run build && npm run test",
     "test": "npm run check && npm run lint && jest"
   },
   "repository": {
