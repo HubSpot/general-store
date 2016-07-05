@@ -61,7 +61,7 @@ export default function StoreDependencyMixin(
             return;
           }
           const entry = dependencyIndex[actionType];
-          waitForStores(dispatcher, entry.dispatchTokens);
+          waitForStores(dispatcher, Object.keys(entry.dispatchTokens));
           this.setState(
             calculateForDispatch(dependencies, entry, this.props, this.state)
           );
@@ -86,7 +86,7 @@ export default function StoreDependencyMixin(
   };
 
   if (dependenciesUseState(dependencies)) {
-    mixin.componentDidUpdate = (_, prevState) => {
+    mixin.componentDidUpdate = function componentDidUpdate(_, prevState) {
       if (onlyStoreStateChanged(dependencies, this.state, prevState)) {
         return;
       }

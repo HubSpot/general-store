@@ -35,21 +35,42 @@ describe('StoreDependencyMixin', () => {
     dispatcher = new Dispatcher();
     dispatcher.register = jest.fn(dispatcher.register);
     dispatcher.unregister = jest.fn(dispatcher.unregister);
+    dispatcher.waitFor = jest.fn(dispatcher.waitFor);
     FirstStore = FirstStoreFactory.register(dispatcher);
     SecondStore = SecondStoreFactory.register(dispatcher);
     dependencies = {
-      one: FirstStore,
+      one: {
+        stores: [FirstStore],
+        deref: () => FirstStore.get(),
+      },
       two: {
         propTypes: {
           add: PropTypes.number,
         },
         stores: [SecondStore],
-        deref: ({add}) => SecondStore.get(add || 0),
+        deref: (props) => SecondStore.get(props.add || 0),
       },
+      third: {
+        stores: [FirstStore, SecondStore],
+        deref: (props, state) => {
+          const localCount = state ? state.localCount : 0;
+          return (
+            FirstStore.get() +
+            SecondStore.get(props.add || 0) +
+            localCount
+          );
+        }
+      }
     };
     mixin = StoreDependencyMixin(dependencies, dispatcher);
     MockComponent = React.createClass({
       mixins: [mixin],
+      getInitialState() {
+        return {
+          localCount: 0,
+        };
+      },
+
       render() {
         return <div />;
       },
@@ -79,8 +100,10 @@ describe('StoreDependencyMixin', () => {
     it('calculates and sets initial state', () => {
       const root = shallow(<MockComponent />);
       expect(root.state()).toEqual({
+        localCount: 0,
         one: 1,
         two: 2,
+        third: 3,
       });
     });
   });
@@ -90,26 +113,55 @@ describe('StoreDependencyMixin', () => {
       const root = shallow(<MockComponent />);
       root.setProps({add: 2});
       expect(root.state()).toEqual({
+        localCount: 0,
         one: 1,
         two: 4,
+        third: 5,
       });
     });
-
-    it('doesnt recalculate fields that dont use props');
   });
 
   describe('componentDidUpdate', () => {
-    it('has a componentDidUpdate if a field uses state');
+    it('has a componentDidUpdate if a field uses state', () => {
+      expect(
+        StoreDependencyMixin({
+          one: FirstStore,
+        }).componentDidUpdate
+      ).toBe(undefined);
+    });
 
-    it('bails out if only store state changed');
-
-    it('only recalculates fields that use state');
+    it('recalculates fields that use state', () => {
+      const root = shallow(<MockComponent />);
+      root.setState({localCount: 2});
+      expect(root.state()).toEqual({
+        localCount: 2,
+        one: 1,
+        two: 2,
+        third: 5,
+      });
+    });
   });
 
   describe('handleDispatch', () => {
-    it('waits for all stores affected by the actionType');
+    it('waits for all stores affected by the actionType', () => {
+      shallow(<MockComponent />);
+      dispatcher.dispatch({actionType: SHARED});
+      expect(dispatcher.waitFor.mock.calls[0][0]).toEqual([
+        FirstStore.getDispatchToken(),
+        SecondStore.getDispatchToken(),
+      ]);
+    });
 
-    it('only updates fields affected by the actionType');
+    it('only updates fields affected by the actionType', () => {
+      const root = shallow(<MockComponent />);
+      dispatcher.dispatch({actionType: SHARED});
+      expect(root.state()).toEqual({
+        localCount: 0,
+        one: 0,
+        two: 1,
+        third: 1,
+      });
+    });
   });
 
   describe('componentWillUnmount', () => {
