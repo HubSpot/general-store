@@ -9,8 +9,9 @@
     "build:umd:min": "NODE_ENV=production webpack --config ./webpack.config.production.js -p src/GeneralStore.js build/GeneralStore.min.js",
     "build": "npm run build:commonjs && npm run build:umd && npm run build:umd:min",
     "check": "flow check",
+    "clean": "rm -rf ./build && rm -rf dist",
     "lint": "eslint ./src",
-    "prepublish": "npm run lint && npm test && npm run build",
+    "prepublish": "npm run clean && npm run lint && npm test && npm run build",
     "test": "npm run check && npm run lint && jest"
   },
   "repository": {
