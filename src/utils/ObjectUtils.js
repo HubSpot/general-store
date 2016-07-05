@@ -21,6 +21,16 @@ export function oMap<T, R>(
   return result;
 }
 
+export function oMerge<T>(
+  subject: {[key:string]: T},
+  updates: {[key:string]: T}
+): {[key:string]: T} {
+  oForEach(updates, (value, key) => {
+    subject[key] = value;
+  });
+  return subject;
+}
+
 export function oReduce<T, R>(
   subject: {[key:string]: T},
   reducer: (acc: R, value: T, key: string) => R,

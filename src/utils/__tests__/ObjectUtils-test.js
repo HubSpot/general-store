@@ -4,6 +4,7 @@ import {
   oForEach,
   oFilterMap,
   oMap,
+  oMerge,
   oReduce,
 } from '../ObjectUtils';
 
@@ -32,6 +33,22 @@ describe('ObjectUtils', () => {
       ).toEqual(
         {one: 2, two: 3, three: 4}
       );
+    });
+  });
+
+  describe('oMerge', () => {
+    it('mutates and returns `subject`', () => {
+      const subject = {one: 1, three: 3};
+      expect(oMerge(subject, {two: 2})).toBe(subject);
+    });
+
+    it('applies the update keys to the subject', () => {
+      const subject = {one: 1, three: 3};
+      expect(oMerge(subject, {two: 2})).toEqual({
+        one: 1,
+        two: 2,
+        three: 3,
+      });
     });
   });
 

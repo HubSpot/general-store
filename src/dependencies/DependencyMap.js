@@ -1,4 +1,4 @@
-import { oFilterMap, oMap, oReduce } from '../utils/ObjectUtils';
+import { oFilterMap, oMap, oMerge, oReduce } from '../utils/ObjectUtils';
 import Store from '../store/Store';
 
 export type CompoundDependency = {
@@ -36,7 +36,7 @@ export function dependencyPropTypes(dependencies: DependencyMap): PropTypes {
     if (!propTypes || typeof propTypes !== 'object') {
       return types;
     }
-    return Object.assign(types, propTypes);
+    return oMerge(types, propTypes);
   }, {});
 }
 
