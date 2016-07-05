@@ -55,6 +55,6 @@ describe('Dispatch', () => {
       ).toBe(
         mockIndex[TEST_ACTION]
       );
-    })
+    });
   });
 });
