@@ -3,8 +3,6 @@
 [![NPM version](http://img.shields.io/npm/v/general-store.svg)](https://www.npmjs.com/package/general-store)
 [![Build Status](https://travis-ci.org/HubSpot/general-store.svg?branch=master)](https://travis-ci.org/HubSpot/general-store)
 
-**This is beta software. It's going to change.**
-
 `general-store` aims to provide all the features of a [Flux](http://facebook.github.io/flux/) store without prescribing the implementation of that store's data or mutations.
 
 Briefly, a store:
@@ -178,7 +176,7 @@ var ProfileComponent = React.createClass({
           return friendIds.map(id => users[id]);
         }
       }
-    })
+    }, dispatcher)
   ],
 
   render: function() {
@@ -206,7 +204,7 @@ var ProfileComponent = React.createClass({
 
 ## Default Dispatcher Instance
 
-The common Flux architecture has a single central dispatcher. As a convenience `GeneralStore` allows you to set a global dispatcher which will become the default when a store is registered.
+The common Flux architecture has a single central dispatcher. As a convenience `GeneralStore` allows you to set a global dispatcher which will become the default when a store is registered or a `StoreDependencyMixin` is created.
 
 ```javascript
 var dispatcher = new Flux.Dispatcher();
