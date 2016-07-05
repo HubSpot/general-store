@@ -12,6 +12,8 @@ import {
 } from '../dependencies/DependencyMap';
 import { handleDispatch } from './Dispatch';
 import * as DispatcherInstance from '../dispatcher/DispatcherInstance';
+import { isDispatcher } from '../dispatcher/DispatcherInterface';
+import invariant from 'invariant';
 
 type ReactMixin = {
   __dispatchToken?: string;
@@ -38,6 +40,11 @@ export default function StoreDependencyMixin(
   dependencies: DependencyMap,
   dispatcher: ?Dispatcher = DispatcherInstance.get()
 ): ReactMixin {
+  invariant(
+    isDispatcher(dispatcher),
+    'expected `dispatcher` to be a `Flux.Dispatcher` but got `%s`',
+    dispatcher
+  );
   const dependencyIndex = makeDependencyIndex(dependencies);
 
   const mixin: ReactMixin = {

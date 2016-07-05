@@ -9,7 +9,7 @@ function BaseComponent() {
   return <div />;
 }
 
-describe('StoreDependencyMixin', () => {
+describe('connect', () => {
   const FIRST_ONLY = 'FIRST_ONLY';
   const SECOND_ONLY = 'SECOND_ONLY';
   const SHARED = 'SHARED';
@@ -74,7 +74,7 @@ describe('StoreDependencyMixin', () => {
 
     it('doesnt have propTypes if no deps specify them', () => {
       expect(
-        connect({one: FirstStore})(BaseComponent).propTypes
+        connect({one: FirstStore}, dispatcher)(BaseComponent).propTypes
       ).toEqual({});
     });
   });

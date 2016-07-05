@@ -162,11 +162,9 @@ function runTest(GeneralStore) {
   it('set the expected state on store change', () => {
     const mockMixin = GeneralStore.StoreDependencyMixin({
       users: UserStore,
-    });
+    }, dispatcher);
     const mockComponent = defineMockComponent();
-    mockComponent.setState(
-      mockMixin.getInitialState.call(mockComponent)
-    );
+    mockComponent.state = mockMixin.getInitialState.call(mockComponent);
     mockMixin.componentWillMount.call(mockComponent);
     expect(mockComponent.state).toEqual({
       users: {},

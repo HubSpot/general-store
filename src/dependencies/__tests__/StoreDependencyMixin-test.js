@@ -87,7 +87,12 @@ describe('StoreDependencyMixin', () => {
     });
 
     it('doesnt have propTypes if no deps specify them', () => {
-      expect(StoreDependencyMixin({one: FirstStore}).propTypes).toEqual({});
+      expect(
+        StoreDependencyMixin(
+          {one: FirstStore},
+          dispatcher
+        ).propTypes
+      ).toEqual({});
     });
   });
 
@@ -126,7 +131,7 @@ describe('StoreDependencyMixin', () => {
       expect(
         StoreDependencyMixin({
           one: FirstStore,
-        }).componentDidUpdate
+        }, dispatcher).componentDidUpdate
       ).toBe(undefined);
     });
 

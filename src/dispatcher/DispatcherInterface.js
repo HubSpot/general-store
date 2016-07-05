@@ -1,8 +1,9 @@
 /* @flow */
 import type { Dispatcher } from 'flux';
 
-export function isDispatcher(dispatcher: Dispatcher): bool {
+export function isDispatcher(dispatcher: ?Dispatcher): bool {
   return (
+    !!dispatcher &&
     typeof dispatcher === 'object' &&
     typeof dispatcher.register === 'function' &&
     typeof dispatcher.unregister === 'function'
