@@ -49,10 +49,15 @@ export default function StoreDependencyMixin(
 
   const mixin: ReactMixin = {
     getInitialState(): Object {
-      return {};
+      return calculateInitial(dependencies, this.props, this.state);
     },
 
     componentWillMount(): void {
+      invariant(
+        this.__dispatchToken === undefined,
+        'Only one `StoreDependencyMixin` may be registered on `%s`',
+        this.constructor.displayName
+      );
       if (dispatcher) {
         this.__dispatchToken = dispatcher.register(
           handleDispatch.bind(
@@ -67,9 +72,6 @@ export default function StoreDependencyMixin(
           )
         );
       }
-      this.setState(
-        calculateInitial(dependencies, this.props, this.state)
-      );
     },
 
     componentWillReceiveProps(nextProps): void {

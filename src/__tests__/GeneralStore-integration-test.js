@@ -170,7 +170,7 @@ function runTest(GeneralStore) {
       users: {},
     });
     addUser(mockUser);
-    expect(mockComponent.setState.mock.calls.length).toBe(2);
+    expect(mockComponent.setState.mock.calls.length).toBe(1);
     expect(mockComponent.state).toEqual({
       users: {
         '123': mockUser,
@@ -194,7 +194,7 @@ function runTest(GeneralStore) {
       userIds: [],
     });
     addUser(mockUser);
-    expect(mockComponent.setState.mock.calls.length).toBe(2);
+    expect(mockComponent.setState.mock.calls.length).toBe(1);
     expect(mockComponent.state).toEqual({
       users: {
         [mockUser.id]: mockUser,
@@ -225,7 +225,7 @@ function runTest(GeneralStore) {
       },
       userCount: 1,
     });
-    expect(mockComponent.setState.mock.calls.length).toBe(2);
+    expect(mockComponent.setState.mock.calls.length).toBe(1);
   });
 }
 
