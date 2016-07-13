@@ -76,7 +76,7 @@ export default function StoreDependencyMixin(
 
     componentWillReceiveProps(nextProps): void {
       this.setState(
-        calculateForPropsChange(dependencies, nextProps)
+        calculateForPropsChange(dependencies, nextProps, this.state)
       );
     },
 
