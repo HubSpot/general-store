@@ -135,12 +135,13 @@ export function calculateForDispatch(
 
 export function calculateForPropsChange(
   dependencies: DependencyMap,
-  props: Object
+  props: Object,
+  state: ?Object
 ): Object {
   return oFilterMap(
     dependencies,
     (dep) => dep.deref && dep.deref.length > 0,
-    (dep) => calculate(dep, props)
+    (dep) => calculate(dep, props, state)
   );
 }
 

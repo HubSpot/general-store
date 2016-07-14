@@ -56,7 +56,7 @@ export default function connect(
 
       componentWillReceiveProps(nextProps: Object): void {
         this.setState(
-          calculateForPropsChange(dependencies, nextProps)
+          calculateForPropsChange(dependencies, nextProps, this.state)
         );
       }
 
