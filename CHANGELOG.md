@@ -1,3 +1,6 @@
+## 1.2.3
+* upgrade to `flow-bin@0.28.0` and accompanying type fixes
+
 ## 1.2.2
 * FIX: resolves a bug in `StoreDependencyMixin` where state wasn't passed through in `componentWillReceiveProps` [#46](https://github.com/HubSpot/general-store/pull/46)
 
