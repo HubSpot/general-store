@@ -141,12 +141,7 @@ export function calculateForPropsChange(
   return oFilterMap(
     dependencies,
     (dep) => dep.deref && dep.deref.length > 0,
-    (dep) => {
-      if (dep.deref.length === 1) {
-        return calculate(dep, props);
-      }
-      return calculate(dep, props, state);
-    }
+    (dep) => calculate(dep, props, state)
   );
 }
 
