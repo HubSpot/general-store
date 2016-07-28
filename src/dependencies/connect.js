@@ -14,6 +14,18 @@ import { isDispatcher } from '../dispatcher/DispatcherInterface';
 import invariant from 'invariant';
 import React, { Component } from 'react';
 
+
+function transferStaticProperties(
+  fromClass: Object,
+  // By setting the type to Object, I'm doing a little dance around the type
+  // checker... I fully expect this to break after a future flow upgrade.
+  toClass: Object
+) {
+  Object.keys(fromClass).forEach((staticField) => {
+    toClass[staticField] = fromClass[staticField];
+  });
+}
+
 export default function connect(
   dependencies: DependencyMap,
   dispatcher: ?Dispatcher = getDispatcherInstance()
@@ -82,11 +94,9 @@ export default function connect(
       }
     }
 
+    transferStaticProperties(BaseComponent, ConnectedComponent);
     ConnectedComponent.displayName = `Connected(${BaseComponent.displayName})`;
-
-    if (process.env.NODE_ENV !== 'production') {
-      ConnectedComponent.propTypes = dependencyPropTypes(dependencies);
-    }
+    ConnectedComponent.propTypes = dependencyPropTypes(dependencies);
 
     return ConnectedComponent;
   };

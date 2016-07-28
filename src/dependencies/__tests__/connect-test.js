@@ -9,6 +9,9 @@ function BaseComponent() {
   return <div />;
 }
 
+BaseComponent.displayName = 'BaseComponent';
+BaseComponent.testStaticMethod = () => true;
+
 describe('connect', () => {
   const FIRST_ONLY = 'FIRST_ONLY';
   const SECOND_ONLY = 'SECOND_ONLY';
@@ -63,12 +66,23 @@ describe('connect', () => {
     MockComponent = connect(dependencies, dispatcher)(BaseComponent);
   });
 
+  describe('statics', () => {
+    it('generates a proper displayName', () => {
+      expect(MockComponent.displayName).toBe('Connected(BaseComponent)');
+    });
+
+    it('passes any statics through to ConnectedComponent', () => {
+      expect(typeof MockComponent.testStaticMethod).toBe('function');
+      expect(MockComponent.testStaticMethod).toBe(BaseComponent.testStaticMethod);
+    });
+  });
+
   describe('propTypes', () => {
     it('has propTypes if a dependency specifices them', () => {
       expect(
         MockComponent.propTypes
       ).toEqual({
-        add: PropTypes.number
+        add: PropTypes.number,
       });
     });
 
