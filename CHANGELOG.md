@@ -1,3 +1,6 @@
+## 1.3.0
+* `connect` transfers static properties/methods from the `BaseComponent` to the `ConnectedComponent`
+
 ## 1.2.3
 * upgrade to `flow-bin@0.28.0` and accompanying type fixes
 
