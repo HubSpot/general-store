@@ -1,9 +1,9 @@
 /* eslint no-console:0 */
 /* @flow */
-import type { Dispatcher } from 'flux';
+import type { Action, Dispatcher } from 'flux';
 import type StoreFactory from './StoreFactory';
 
-import {isPayload} from '../dispatcher/DispatcherInterface.js';
+import { isPayload } from '../dispatcher/DispatcherInterface.js';
 import Event from '../event/Event.js';
 import EventHandler from '../event/EventHandler.js';
 import invariant from 'invariant';
@@ -16,6 +16,23 @@ function getNull() {
   return null;
 }
 
+type StoreResponses = {
+  [key:string]: (
+    state: any,
+    data: any,
+    actionType: string,
+    payload: Action,
+  ) => any
+};
+
+type StoreOptions = {
+  dispatcher: Dispatcher;
+  factory: StoreFactory;
+  getter: (...args: Array<any>) => any;
+  initialState: any;
+  responses: {}
+};
+
 export default class Store {
 
   _dispatcher: Dispatcher;
@@ -23,9 +40,9 @@ export default class Store {
   _factory: StoreFactory;
   _getter: (...args: Array<any>) => any;
   _event: Event;
-  _responses: {[key:string]: (data: any, actionType: string) => any};
+  _responses: StoreResponses;
   _state: any;
-  _uid: number;
+  _uid: string;
 
   constructor({
     dispatcher,
@@ -33,7 +50,7 @@ export default class Store {
     getter,
     initialState,
     responses,
-  }) {
+  }: StoreOptions) {
     this._dispatcher = dispatcher;
     this._factory = factory;
     this._getter = getter;
@@ -100,7 +117,7 @@ export default class Store {
     return this._factory;
   }
 
-  getID(): number {
+  getID(): string {
     return this._uid;
   }
 
@@ -109,7 +126,7 @@ export default class Store {
    * Responds to incoming messages from the Dispatcher
    */
   _handleDispatch(
-    payload: ({actionType: string; data: any}) | ({type: string, payload: any})
+    payload: Action
   ): void {
     if (process.env.NODE_ENV !== 'production') {
       invariant(
@@ -121,13 +138,15 @@ export default class Store {
         ' https://github.com/HubSpot/general-store#dispatcher-interface'
       );
     }
-    if (!this._responses.hasOwnProperty(payload.actionType || payload.type)) {
+    const actionType = payload.actionType || payload.type;
+    const data = payload.hasOwnProperty('data') ? payload.data : payload.payload;
+    if (!actionType || !this._responses.hasOwnProperty(actionType)) {
       return;
     }
-    this._state = this._responses[payload.actionType || payload.type](
+    this._state = this._responses[actionType](
       this._state,
-      typeof payload.data !== 'undefined' ? payload.data : payload.payload,
-      payload.actionType || payload.type,
+      data,
+      actionType,
       payload
     );
     this.triggerChange();

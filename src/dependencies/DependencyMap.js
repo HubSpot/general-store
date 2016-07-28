@@ -13,9 +13,9 @@ export type CompoundDependency = {
   propTypes?: Object,
   stores: Array<Store>;
   deref: (
-    props: Object,
-    state: ?Object,
-    stores: Array<Store>
+    props?: Object,
+    state?: ?Object,
+    stores?: Array<Store>
   ) => any;
 };
 
@@ -84,6 +84,9 @@ export function enforceValidDependencies(
 
 export function dependencyPropTypes(dependencies: DependencyMap): PropTypes {
   return oReduce(dependencies, (types, dependency) => {
+    if (dependency instanceof Store) {
+      return types;
+    }
     const { propTypes } = dependency;
     if (!propTypes || typeof propTypes !== 'object') {
       return types;
@@ -135,12 +138,13 @@ export function calculateForDispatch(
 
 export function calculateForPropsChange(
   dependencies: DependencyMap,
-  props: Object
+  props: Object,
+  state: ?Object
 ): Object {
   return oFilterMap(
     dependencies,
     (dep) => dep.deref && dep.deref.length > 0,
-    (dep) => calculate(dep, props)
+    (dep) => calculate(dep, props, state)
   );
 }
 

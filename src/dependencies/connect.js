@@ -39,7 +39,7 @@ export default function connect(
   const dependencyIndex = makeDependencyIndex(dependencies);
 
   /* global ReactClass */
-  return function connector(BaseComponent: ReactClass): ReactClass {
+  return function connector(BaseComponent: ReactClass<*>): ReactClass<*> {
     class ConnectedComponent extends Component {
       /* eslint react/sort-comp: 0 */
       dispatchToken: ?string;
@@ -68,7 +68,7 @@ export default function connect(
 
       componentWillReceiveProps(nextProps: Object): void {
         this.setState(
-          calculateForPropsChange(dependencies, nextProps)
+          calculateForPropsChange(dependencies, nextProps, this.state)
         );
       }
 

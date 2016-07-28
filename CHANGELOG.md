@@ -1,3 +1,27 @@
+## 1.2.3
+* upgrade to `flow-bin@0.28.0` and accompanying type fixes
+
+## 1.2.2
+* FIX: resolves a bug in `StoreDependencyMixin` where state wasn't passed through in `componentWillReceiveProps` [#46](https://github.com/HubSpot/general-store/pull/46)
+
+## 1.2.1
+* FIX: throw if more than one `StoreDependencyMixin` is detected on a component [#45](https://github.com/HubSpot/general-store/pull/45)
+
+## 1.2.0
+* FIX: make sure `connect` is actually exported!
+
+## 1.1.0
+* FIX: throw if no dispatcher is specified
+* BUILD: rearrange the dist/lib folders to match other HubSpot projects
+
+## 1.0.0
+* FIX: [#26](https://github.com/HubSpot/general-store/issues/26) by making each dependency a dispatch handler
+* NEW: higher order component [decorator](https://github.com/HubSpot/general-store#connect) for store dependencies
+* PERF: optimizes derefs according to the arity of the deref function
+* PERF: optimizes updates by only recalculating if the actionType affects them
+* REMOVE: internal "shouldComponentUpdate" type filters
+* REMOVE: support for multiple StoreDependencyMixins in the same component
+
 ## 0.5.1 (June 1st, 2016)
 * NEW: support flux standard actions [#43](https://github.com/HubSpot/general-store/pull/43)
 

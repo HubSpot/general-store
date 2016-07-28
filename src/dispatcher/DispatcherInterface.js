@@ -1,5 +1,5 @@
 /* @flow */
-import type { Dispatcher } from 'flux';
+import type { Action, Dispatcher } from 'flux';
 
 export function isDispatcher(dispatcher: ?Dispatcher): bool {
   return (
@@ -10,7 +10,7 @@ export function isDispatcher(dispatcher: ?Dispatcher): bool {
   );
 }
 
-export function isPayload(payload: Dispatcher): bool {
+export function isPayload(payload: Action): bool {
   return (
     payload !== null &&
     typeof payload === 'object' &&

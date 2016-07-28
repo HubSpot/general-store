@@ -58,6 +58,10 @@ describe('DependencyMap', () => {
         stores: [CountStore],
         deref: (props, state) => CountStore.get() * 100,
       },
+      timesAHundredMinusState: {
+        stores: [CountStore],
+        deref: (props, state) => CountStore.get() * 100 - state.testState,
+      },
     };
   });
 
@@ -190,6 +194,7 @@ describe('DependencyMap', () => {
         count: initialState,
         negativeCount: -initialState,
         timesAHundred: initialState * 100,
+        timesAHundredMinusState: initialState * 100 - mockState.testState,
       });
     });
   });
@@ -226,6 +231,7 @@ describe('DependencyMap', () => {
       expect(result).toEqual({
         absCount: initialState,
         timesAHundred: initialState * 100,
+        timesAHundredMinusState: initialState * 100 - mockState.testState,
       });
     });
   });
@@ -238,7 +244,8 @@ describe('DependencyMap', () => {
         mockState
       );
       expect(result).toEqual({
-        timesAHundred: initialState * 100
+        timesAHundred: initialState * 100,
+        timesAHundredMinusState: initialState * 100 - mockState.testState,
       });
     });
   });
@@ -251,6 +258,7 @@ describe('DependencyMap', () => {
         negativeCount: true,
         absCount: true,
         timesAHundred: true,
+        timesAHundredMinusState: true,
       });
     });
 
