@@ -82,11 +82,15 @@ export default function connect(
       }
     }
 
-    ConnectedComponent.displayName = `Connected(${BaseComponent.displayName})`;
+    /**
+     * Pass on statics, to maintain the same component API.
+     */
+    Object.keys(BaseComponent).forEach((staticField) => {
+      ConnectedComponent[staticField] = BaseComponent[staticField];
+    });
 
-    if (process.env.NODE_ENV !== 'production') {
-      ConnectedComponent.propTypes = dependencyPropTypes(dependencies);
-    }
+    ConnectedComponent.displayName = `Connected(${BaseComponent.displayName})`;
+    ConnectedComponent.propTypes = dependencyPropTypes(dependencies);
 
     return ConnectedComponent;
   };
