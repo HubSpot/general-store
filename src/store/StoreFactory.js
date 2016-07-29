@@ -82,10 +82,6 @@ export default class StoreFactory {
       typeof getInitialState === 'function',
       'StoreFactory.defineGetInitialState: getInitialState must be a function.'
     );
-    invariant(
-      this._definition.getInitialState === defaultGetInitialState,
-      'StoreFactory.defineGetInitialState: getInitialState is already defined.'
-    );
     return new StoreFactory({
       ...this._definition,
       getInitialState,
