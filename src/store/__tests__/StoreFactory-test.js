@@ -57,13 +57,13 @@ describe('StoreFactory', () => {
     expect(() => storeFactory.defineGetInitialState({})).toThrow();
   });
 
-  it('throws when initialState is already set', () => {
+  it('does not throw when initialState is already set', () => {
     const emptyFn = EMPTY_FUNC;
     const factoryWithGetInitialState = storeFactory
       .defineGetInitialState(emptyFn);
     expect(
       () => factoryWithGetInitialState.defineGetInitialState(emptyFn)
-    ).toThrow();
+    ).not.toThrow();
   });
 
   it('sets responses', () => {
