@@ -1,3 +1,6 @@
+## 1.3.1
+* `defineGetInitialState` allows redefinition for your testing convenience
+
 ## 1.3.0
 * `connect` transfers static properties/methods from the `BaseComponent` to the `ConnectedComponent`
 
