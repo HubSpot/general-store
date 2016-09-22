@@ -42,6 +42,7 @@ function defineUserStore() {
   };
 
   return GeneralStore.define()
+    .defineName('UserStore')
     // the store's getter should return the public subset of its data
     .defineGet(function() {
       return users;
@@ -99,6 +100,7 @@ testing easier and allows you to extend store behavior.
 
 ```javascript
 var UserStoreFactory = GeneralStore.defineFactory()
+  .defineName('UserStore')
   .defineGetInitialState(function() {
     return {};
   })
@@ -140,6 +142,8 @@ describe('UserStore', () => {
   });
 });
 ```
+
+To further assist with testing, the [`InspectStore`](https://github.com/HubSpot/general-store/blob/master/src/store/InspectStore.js) module allows you to read the internal fields of a store instance (e.g. `InspectStore.getState(store)`).
 
 ## Using the Store API
 

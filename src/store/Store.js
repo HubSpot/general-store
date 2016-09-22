@@ -16,7 +16,9 @@ function getNull() {
   return null;
 }
 
-type StoreResponses = {
+export type StoreGetter = (...args: Array<any>) => any;
+
+export type StoreResponses = {
   [key:string]: (
     state: any,
     data: any,
@@ -30,7 +32,8 @@ type StoreOptions = {
   factory: StoreFactory;
   getter: (...args: Array<any>) => any;
   initialState: any;
-  responses: {}
+  name: ?string;
+  responses: {};
 };
 
 export default class Store {
@@ -38,8 +41,9 @@ export default class Store {
   _dispatcher: Dispatcher;
   _dispatchToken: string;
   _factory: StoreFactory;
-  _getter: (...args: Array<any>) => any;
+  _getter: StoreGetter;
   _event: Event;
+  _name: string;
   _responses: StoreResponses;
   _state: any;
   _uid: string;
@@ -49,11 +53,13 @@ export default class Store {
     factory,
     getter,
     initialState,
+    name,
     responses,
   }: StoreOptions) {
     this._dispatcher = dispatcher;
     this._factory = factory;
     this._getter = getter;
+    this._name = name || 'Store';
     this._state = initialState;
     this._responses = responses;
     this._event = new Event();
@@ -89,36 +95,6 @@ export default class Store {
    */
   get(...args: Array<any>): any {
     return this._getter(this._state, ...args);
-  }
-
-  getActionTypes() {
-    return Object.keys(this._responses) || [];
-  }
-
-  /**
-   * Exposes the store's dispatcher instance.
-   *
-   * @return Dispatcher
-   */
-  getDispatcher(): Dispatcher {
-    return this._dispatcher;
-  }
-
-  /**
-   * Exposes the token assigned to the store by the dispatcher
-   *
-   * @return number
-   */
-  getDispatchToken(): string {
-    return this._dispatchToken;
-  }
-
-  getFactory(): StoreFactory {
-    return this._factory;
-  }
-
-  getID(): string {
-    return this._uid;
   }
 
   /**
@@ -157,10 +133,14 @@ export default class Store {
    * Dispatch callback is unregistered. Subscriptions are removed.
    */
   remove(): void {
-    this._dispatcher.unregister(this.getDispatchToken());
+    this._dispatcher.unregister(this._dispatchToken);
     this._event.remove();
     this._getter = getNull;
     this._responses = {};
+  }
+
+  toString(): string {
+    return `${this._name}<${this._state}>`;
   }
 
   /**
@@ -181,5 +161,4 @@ export default class Store {
     this._event.runHandlers();
     return this;
   }
-
 }

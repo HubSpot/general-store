@@ -1,4 +1,5 @@
 /* @flow */
+import { getActionTypes, getDispatchToken } from '../store/InspectStore';
 import invariant from 'invariant';
 import {
   oFilterMap,
@@ -174,12 +175,12 @@ export function makeDependencyIndex(
   return oReduce(dependencies, (index, dep, field) => {
     const stores = dep instanceof Store ? [dep] : dep.stores;
     stores.forEach((store) => {
-      store.getActionTypes().forEach((actionType) => {
+      getActionTypes(store).forEach((actionType) => {
         let entry = index[actionType];
         if (!entry) {
           entry = index[actionType] = makeIndexEntry();
         }
-        const token = store.getDispatchToken();
+        const token = getDispatchToken(store);
         entry.dispatchTokens[token] = true;
         entry.fields[field] = true;
       });

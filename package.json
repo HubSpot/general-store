@@ -1,6 +1,6 @@
 {
   "name": "general-store",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Simple, flexible store implementation for Flux.",
   "main": "lib/GeneralStore.js",
   "scripts": {
@@ -71,6 +71,7 @@
       "immutable-is",
       "invariant",
       "<rootDir>/src/dispatcher/DispatcherInterface.js",
+      "<rootDir>/src/store/InspectStore.js",
       "<rootDir>/src/uniqueid",
       "<rootDir>/src/utils/ObjectUtils.js"
     ]

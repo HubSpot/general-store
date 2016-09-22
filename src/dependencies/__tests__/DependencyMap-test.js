@@ -15,6 +15,7 @@ import {
   makeDependencyIndex,
 } from '../DependencyMap';
 import { Dispatcher } from 'flux';
+import { getDispatchToken } from '../../store/InspectStore';
 import Store from '../../store/Store';
 import StoreFactory from '../../store/StoreFactory';
 
@@ -265,7 +266,7 @@ describe('DependencyMap', () => {
     it('properly calculates dispatchTokens affected by actions', () => {
       const index = makeDependencyIndex(dependencies);
       expect(index[INCREMENT].dispatchTokens).toEqual({
-        [CountStore.getDispatchToken()]: true,
+        [getDispatchToken(CountStore)]: true,
       });
     });
   });

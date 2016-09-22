@@ -1,6 +1,7 @@
 jest.disableAutomock();
 import { Dispatcher } from 'flux';
 import { shallow } from 'enzyme';
+import { getDispatchToken } from '../../store/InspectStore';
 import React, { PropTypes } from 'react';
 import connect from '../connect';
 import StoreFactory from '../../store/StoreFactory';
@@ -126,8 +127,8 @@ describe('connect', () => {
       shallow(<MockComponent />);
       dispatcher.dispatch({actionType: SHARED});
       expect(dispatcher.waitFor.mock.calls[0][0]).toEqual([
-        FirstStore.getDispatchToken(),
-        SecondStore.getDispatchToken(),
+        getDispatchToken(FirstStore),
+        getDispatchToken(SecondStore),
       ]);
     });
 
