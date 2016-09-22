@@ -91,9 +91,10 @@ export default class StoreFactory {
   }
 
   defineName(name: string) {
+    const currentName = this._definition.name;
     return new StoreFactory({
       ...this._definition,
-      name,
+      name: currentName ? `${name}(${currentName})` : name,
     });
   }
 

@@ -38,6 +38,13 @@ describe('StoreFactory', () => {
     expect(newDef.name).toBe(mockName);
   });
 
+  it('compounds the name', () => {
+    const first = 'first';
+    const second = 'second';
+    const newDef = storeFactory.defineName(first).defineName(second).getDefinition();
+    expect(newDef.name).toBe('second(first)');
+  });
+
   it('sets getter', () => {
     const mockGetter = EMPTY_FUNC;
     const newDef = storeFactory.defineGet(mockGetter).getDefinition();
