@@ -71,6 +71,7 @@
       "immutable-is",
       "invariant",
       "<rootDir>/src/dispatcher/DispatcherInterface.js",
+      "<rootDir>/src/store/InspectStore.js",
       "<rootDir>/src/uniqueid",
       "<rootDir>/src/utils/ObjectUtils.js"
     ]

@@ -16,7 +16,9 @@ function getNull() {
   return null;
 }
 
-type StoreResponses = {
+export type StoreGetter = (...args: Array<any>) => any;
+
+export type StoreResponses = {
   [key:string]: (
     state: any,
     data: any,
@@ -38,7 +40,7 @@ export default class Store {
   _dispatcher: Dispatcher;
   _dispatchToken: string;
   _factory: StoreFactory;
-  _getter: (...args: Array<any>) => any;
+  _getter: StoreGetter;
   _event: Event;
   _responses: StoreResponses;
   _state: any;
@@ -91,36 +93,6 @@ export default class Store {
     return this._getter(this._state, ...args);
   }
 
-  getActionTypes() {
-    return Object.keys(this._responses) || [];
-  }
-
-  /**
-   * Exposes the store's dispatcher instance.
-   *
-   * @return Dispatcher
-   */
-  getDispatcher(): Dispatcher {
-    return this._dispatcher;
-  }
-
-  /**
-   * Exposes the token assigned to the store by the dispatcher
-   *
-   * @return number
-   */
-  getDispatchToken(): string {
-    return this._dispatchToken;
-  }
-
-  getFactory(): StoreFactory {
-    return this._factory;
-  }
-
-  getID(): string {
-    return this._uid;
-  }
-
   /**
    * @protected
    * Responds to incoming messages from the Dispatcher
@@ -157,7 +129,7 @@ export default class Store {
    * Dispatch callback is unregistered. Subscriptions are removed.
    */
   remove(): void {
-    this._dispatcher.unregister(this.getDispatchToken());
+    this._dispatcher.unregister(this._dispatchToken);
     this._event.remove();
     this._getter = getNull;
     this._responses = {};

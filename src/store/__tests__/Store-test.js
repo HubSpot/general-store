@@ -77,10 +77,6 @@ describe('Store', () => {
     expect(mockGet.mock.calls[0][2]).toBe(mockArg2);
   });
 
-  it('returns the dispatch token from getDispatchToken', () => {
-    expect(storeFacade.getDispatchToken()).toBe(mockDispatchToken);
-  });
-
   it('runs listeners after a definedResponse', () => {
     const mockListener = jest.genMockFn();
     const mockEvent = require('../../event/Event.js').default.mock.instances[0];
