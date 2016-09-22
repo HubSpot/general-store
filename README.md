@@ -141,6 +141,8 @@ describe('UserStore', () => {
 });
 ```
 
+To further assist with testing, the [`InspectStore`](https://github.com/HubSpot/general-store/blob/master/src/store/InspectStore.js) module allows you to read the internal fields of a store instance (e.g. `InspectStore.getState(store)`).
+
 ## Using the Store API
 
 A registered Store provides methods for "getting" its value and subscribing to changes to that value.
