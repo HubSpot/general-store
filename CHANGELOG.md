@@ -1,4 +1,6 @@
 ## 2.0.0
+* adds `StoreFactory#defineName`
+* adds `Store#toString`
 * adds `GeneralStore.InspectStore` for examining internal state of a store
 * removes `Store#getActionTypes`
 * removes `Store#getDispatcher`
