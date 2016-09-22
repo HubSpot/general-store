@@ -1,3 +1,11 @@
+## 2.0.0
+* adds `GeneralStore.InspectStore` for examining internal state of a store
+* removes `Store#getActionTypes`
+* removes `Store#getDispatcher`
+* removes `Store#getDispatchToken`
+* removes `Store#getFactory`
+* removes `Store#getID`
+
 ## 1.4.0
 * `defineGetInitialState` allows redefinition for your testing convenience
 
