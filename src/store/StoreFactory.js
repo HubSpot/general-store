@@ -43,6 +43,7 @@ type Responses = {
 type StoreFactoryDefinition = {
   getter: Getter;
   getInitialState: () => any;
+  name: ?string;
   responses: Responses;
 };
 
@@ -58,10 +59,11 @@ export default class StoreFactory {
 
   _definition: StoreFactoryDefinition;
 
-  constructor({getter, getInitialState, responses}:Object) {
+  constructor({getter, getInitialState, name, responses}:Object) {
     this._definition = {
       getter: getter || defaultGetter,
       getInitialState: getInitialState || defaultGetInitialState,
+      name,
       responses: responses || {},
     };
   }
@@ -85,6 +87,13 @@ export default class StoreFactory {
     return new StoreFactory({
       ...this._definition,
       getInitialState,
+    });
+  }
+
+  defineName(name: string) {
+    return new StoreFactory({
+      ...this._definition,
+      name,
     });
   }
 
@@ -145,12 +154,13 @@ export default class StoreFactory {
       ' https://github.com/HubSpot/general-store#dispatcher-interface',
       dispatcher
     );
-    const {getter, getInitialState, responses} = this._definition;
+    const {getter, getInitialState, name, responses} = this._definition;
     return new Store({
       dispatcher,
       factory: this,
       getter,
       initialState: getInitialState(),
+      name,
       responses,
     });
   }

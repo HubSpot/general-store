@@ -32,7 +32,8 @@ type StoreOptions = {
   factory: StoreFactory;
   getter: (...args: Array<any>) => any;
   initialState: any;
-  responses: {}
+  name: ?string;
+  responses: {};
 };
 
 export default class Store {
@@ -42,6 +43,7 @@ export default class Store {
   _factory: StoreFactory;
   _getter: StoreGetter;
   _event: Event;
+  _name: string;
   _responses: StoreResponses;
   _state: any;
   _uid: string;
@@ -51,11 +53,13 @@ export default class Store {
     factory,
     getter,
     initialState,
+    name,
     responses,
   }: StoreOptions) {
     this._dispatcher = dispatcher;
     this._factory = factory;
     this._getter = getter;
+    this._name = name || 'Store';
     this._state = initialState;
     this._responses = responses;
     this._event = new Event();
@@ -135,6 +139,10 @@ export default class Store {
     this._responses = {};
   }
 
+  toString(): string {
+    return `${this._name}<${this._state}>`;
+  }
+
   /**
    * Runs all of the store's subscription callbacks
    *
@@ -153,5 +161,4 @@ export default class Store {
     this._event.runHandlers();
     return this;
   }
-
 }

@@ -3,16 +3,16 @@ import type { Dispatcher } from 'flux';
 import type Store, { StoreResponses } from './Store';
 import type StoreFactory from './StoreFactory';
 
+export function getActionTypes(store: Store): Array<string> {
+  return Object.keys(store._responses) || [];
+}
+
 export function getDispatcher(store: Store): Dispatcher {
   return store._dispatcher;
 }
 
 export function getDispatchToken(store: Store): string {
   return store._dispatchToken;
-}
-
-export function getActionTypes(store: Store): Array<string> {
-  return Object.keys(store._responses) || [];
 }
 
 export function getGetter(store: Store): (...args: Array<any>) => any {
@@ -25,6 +25,10 @@ export function getId(store: Store): string {
 
 export function getFactory(store: Store): StoreFactory {
   return store._factory;
+}
+
+export function getName(store: Store): string {
+  return store._name;
 }
 
 export function getResponses(store: Store): StoreResponses {

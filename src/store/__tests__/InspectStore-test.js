@@ -32,6 +32,7 @@ describe('InspectStore', () => {
     secondHandler = jest.genMockFn();
 
     factory = new StoreFactory({})
+      .defineName('TestStore')
       .defineGet(getter)
       .defineGetInitialState(() => {
         return {testing: 'yes'};
@@ -63,6 +64,10 @@ describe('InspectStore', () => {
 
   it('getFactory', () => {
     expect(InspectStore.getFactory(store)).toBe(factory);
+  });
+
+  it('getName', () => {
+    expect(InspectStore.getName(store)).toBe('TestStore');
   });
 
   it('getResponses', () => {

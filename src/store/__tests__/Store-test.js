@@ -9,6 +9,7 @@ describe('Store', () => {
   let mockDispatchToken;
   let mockGet;
   let mockInitialState;
+  let mockName;
   let mockResponse;
   let mockResponses;
 
@@ -23,6 +24,7 @@ describe('Store', () => {
       unregister: jest.genMockFn(),
     };
     mockGet = jest.genMockFn().mockImpl((state) => state.count);
+    mockName = 'TestStore';
     mockResponse = jest.genMockFn().mockImpl((state) => {
       return {count: state.count + 1};
     });
@@ -32,6 +34,7 @@ describe('Store', () => {
     storeFacade = new Store({
       getter: mockGet,
       initialState: mockInitialState,
+      name: mockName,
       responses: mockResponses,
       dispatcher: mockDispatcher,
     });
@@ -39,6 +42,14 @@ describe('Store', () => {
 
   it('registers with the dispatcher', () => {
     expect(mockDispatcher.register.mock.calls.length).toBe(1);
+  });
+
+  it('sets the name', () => {
+    expect(storeFacade._name).toBe(mockName);
+  });
+
+  it('toStrings', () => {
+    expect(storeFacade.toString()).toBe('TestStore<[object Object]>');
   });
 
   it('runs responses when the associated action is dispatched', () => {
