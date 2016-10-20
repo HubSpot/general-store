@@ -1,7 +1,8 @@
 /* @flow */
 import type { Dispatcher } from 'flux';
-import type Store, { StoreResponses } from './Store';
+import type { StoreResponses } from './Store';
 import type StoreFactory from './StoreFactory';
+import Store from './Store';
 
 export function getActionTypes(store: Store): Array<string> {
   return Object.keys(store._responses) || [];
@@ -37,4 +38,8 @@ export function getResponses(store: Store): StoreResponses {
 
 export function getState(store: Store) {
   return store._state;
+}
+
+export function isStore(store: any): bool {
+  return store instanceof Store;
 }
