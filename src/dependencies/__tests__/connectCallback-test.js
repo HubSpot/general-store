@@ -91,8 +91,17 @@ describe('connect', () => {
   it('catches an exception in an update', (done) => {
     const mockError = new Error();
     let callbackCount = 0;
+    const errorCallback = jest.fn((error) => {
+      if (callbackCount > 0) {
+        expect(error).toBe(mockError);
+        done();
+      } else {
+        expect(error).toBe(null);
+        callbackCount++;
+      }
+    });
     let derefCount = 0;
-    connectCallback({
+    const errorDependencies = {
       test: {
         stores: [FirstStore],
         deref() {
@@ -103,16 +112,16 @@ describe('connect', () => {
           }
         },
       },
-    }, dispatcher)((error) => {
-      if (callbackCount > 0) {
-        expect(error).toBe(mockError);
-        done();
-      } else {
-        expect(error).toBe(null);
-        callbackCount++;
-      }
-    });
+    };
+    connectCallback(errorDependencies, dispatcher)(errorCallback);
     dispatcher.dispatch({actionType: ADD});
+    expect(errorCallback.mock.calls.length).toBe(2);
+    dispatcher.dispatch({actionType: ADD});
+    expect(errorCallback.mock.calls.length).toBe(2);
+  });
+
+  it('unregisters when an error occurs', () => {
+
   });
 
   it('unregisters when subscription.remove is called', () => {

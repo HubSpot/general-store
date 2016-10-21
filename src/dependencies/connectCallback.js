@@ -41,6 +41,7 @@ function subscribe(
       };
       callback(null, storeState, prevStoreState, remove);
     } catch (error) {
+      remove();
       callback(error, storeState, prevStoreState, remove);
     }
   }
@@ -58,6 +59,7 @@ function subscribe(
     storeState = calculateInitial(dependencies, props, state);
     callback(null, storeState, {}, remove);
   } catch (error) {
+    remove();
     callback(error, storeState, {}, remove);
   }
 
