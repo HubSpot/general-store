@@ -13,7 +13,6 @@ import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
 import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import React, { Component } from 'react';
 
-
 function transferStaticProperties(
   fromClass: Object,
   // By setting the type to Object, I'm doing a little dance around the type
