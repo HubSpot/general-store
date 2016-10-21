@@ -20,10 +20,10 @@ function subscribe(
   dispatcher: Dispatcher,
   callback: Function,
   props: Object = {},
-  state: Object = {}
+  state: ?Object = null,
 ) {
   let dispatchToken;
-  let storeState;
+  let storeState = {};
 
   function remove() {
     if (dispatchToken) {
@@ -34,11 +34,15 @@ function subscribe(
 
   function handleUpdate(entry: DependencyIndexEntry) {
     const prevStoreState = storeState;
-    storeState = {
-      ...prevStoreState,
-      ...calculateForDispatch(dependencies, entry, props, state),
-    };
-    callback(storeState, prevStoreState, remove);
+    try {
+      storeState = {
+        ...prevStoreState,
+        ...calculateForDispatch(dependencies, entry, props, state),
+      };
+      callback(null, storeState, prevStoreState, remove);
+    } catch (error) {
+      callback(error, storeState, prevStoreState, remove);
+    }
   }
 
   dispatchToken = dispatcher.register(
@@ -49,8 +53,14 @@ function subscribe(
       handleUpdate
     )
   );
-  storeState = calculateInitial(dependencies, props, state);
-  callback(storeState, {}, remove);
+
+  try {
+    storeState = calculateInitial(dependencies, props, state);
+    callback(null, storeState, {}, remove);
+  } catch (error) {
+    callback(error, storeState, {}, remove);
+  }
+
   return {remove};
 }
 
