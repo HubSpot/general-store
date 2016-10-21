@@ -20,6 +20,7 @@ describe('connect', () => {
   let dependencies;
   let callback;
   let fakeProps;
+  let doConnect;
   let subscription;
 
   beforeEach(() => {
@@ -41,13 +42,8 @@ describe('connect', () => {
         },
       },
     };
-    subscription = connectCallback(
-      dependencies,
-      dispatcher
-    )(
-      callback,
-      fakeProps
-    );
+    doConnect = connectCallback(dependencies, dispatcher);
+    subscription = doConnect(callback, fakeProps);
   });
 
   afterEach(() => {
@@ -55,34 +51,37 @@ describe('connect', () => {
   });
 
   it('recevies the available data immediately', () => {
-    expect(
-      callback.mock.calls[0][0]
-    ).toEqual({
-      count: 3
-    });
+    expect(callback.mock.calls[0][0]).toEqual({count: 3});
+    expect(callback.mock.calls[0][1]).toEqual({});
+    expect(typeof callback.mock.calls[0][2]).toBe('function');
   });
 
   it('respondes to actions', () => {
     dispatcher.dispatch({actionType: ADD});
     expect(callback.mock.calls.length).toBe(2);
-    expect(
-      callback.mock.calls[1][0]
-    ).toEqual({
-      count: 5,
-    });
+    expect(callback.mock.calls[1][0]).toEqual({count: 5});
+    expect(callback.mock.calls[1][1]).toEqual({count: 3});
+    expect(typeof callback.mock.calls[1][2]).toBe('function');
+
     dispatcher.dispatch({actionType: SUBTRACT});
     expect(callback.mock.calls.length).toBe(3);
-    expect(
-      callback.mock.calls[2][0]
-    ).toEqual({
-      count: 3,
-    });
+    expect(callback.mock.calls[2][0]).toEqual({count: 3});
+    expect(callback.mock.calls[2][1]).toEqual({count: 5});
+    expect(typeof callback.mock.calls[2][2]).toBe('function');
   });
 
-  it('unregisters when remove is called', () => {
+  it('unregisters when subscription.remove is called', () => {
     subscription.remove();
     expect(dispatcher.unregister.mock.calls.length).toBe(1);
     dispatcher.dispatch({actionType: ADD});
     expect(callback.mock.calls.length).toBe(1);
+  });
+
+  it('unregisters when remove is called from the callback', () => {
+    const removeCallback = jest.fn((s, p, remove) => remove());
+    doConnect(removeCallback);
+    expect(removeCallback.mock.calls.length).toBe(1);
+    dispatcher.dispatch({actionType: ADD});
+    expect(removeCallback.mock.calls.length).toBe(1);
   });
 });

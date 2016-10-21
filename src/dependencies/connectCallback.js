@@ -22,17 +22,26 @@ function subscribe(
   props: Object = {},
   state: Object = {}
 ) {
-  let prevState = calculateInitial(dependencies, props, state);
+  let dispatchToken;
+  let storeState;
 
-  function handleUpdate(entry: DependencyIndexEntry) {
-    prevState = {
-      ...prevState,
-      ...calculateForDispatch(dependencies, entry, props, state),
-    };
-    callback(prevState);
+  function remove() {
+    if (dispatchToken) {
+      dispatcher.unregister(dispatchToken);
+      dispatchToken = null;
+    }
   }
 
-  let dispatchToken = dispatcher.register(
+  function handleUpdate(entry: DependencyIndexEntry) {
+    const prevStoreState = storeState;
+    storeState = {
+      ...prevStoreState,
+      ...calculateForDispatch(dependencies, entry, props, state),
+    };
+    callback(storeState, prevStoreState, remove);
+  }
+
+  dispatchToken = dispatcher.register(
     handleDispatch.bind(
       null,
       dispatcher,
@@ -40,17 +49,9 @@ function subscribe(
       handleUpdate
     )
   );
-
-  callback(prevState);
-
-  return {
-    remove() {
-      if (dispatchToken) {
-        dispatcher.unregister(dispatchToken);
-        dispatchToken = null;
-      }
-    },
-  };
+  storeState = calculateInitial(dependencies, props, state);
+  callback(storeState, {}, remove);
+  return {remove};
 }
 
 export default function connectCallback(
