@@ -1,5 +1,6 @@
 /* @flow */
 import type { Action, Dispatcher } from 'flux';
+import invariant from 'invariant';
 
 export function isDispatcher(dispatcher: ?Dispatcher): bool {
   return (
@@ -7,6 +8,16 @@ export function isDispatcher(dispatcher: ?Dispatcher): bool {
     typeof dispatcher === 'object' &&
     typeof dispatcher.register === 'function' &&
     typeof dispatcher.unregister === 'function'
+  );
+}
+
+export function enforceDispatcher(dispatcher: ?Dispatcher): void {
+  invariant(
+    isDispatcher(dispatcher),
+    'expected `dispatcher` to be a `Flux.Dispatcher` or compatible object but'
+      + 'got `%s` Learn more about the dispatcher interface:'
+      + ' https://github.com/HubSpot/general-store#dispatcher-interface',
+    dispatcher
   );
 }
 

@@ -10,10 +10,8 @@ import {
 } from '../dependencies/DependencyMap';
 import { handleDispatch } from './Dispatch';
 import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
-import { isDispatcher } from '../dispatcher/DispatcherInterface';
-import invariant from 'invariant';
+import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import React, { Component } from 'react';
-
 
 function transferStaticProperties(
   fromClass: Object,
@@ -30,11 +28,7 @@ export default function connect(
   dependencies: DependencyMap,
   dispatcher: ?Dispatcher = getDispatcherInstance()
 ): Function {
-  invariant(
-    isDispatcher(dispatcher),
-    'expected `dispatcher` to be a `Flux.Dispatcher` but got `%s`',
-    dispatcher
-  );
+  enforceDispatcher(dispatcher);
 
   const dependencyIndex = makeDependencyIndex(dependencies);
 

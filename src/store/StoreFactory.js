@@ -1,7 +1,7 @@
 /* @flow */
 import type { Dispatcher } from 'flux';
 import * as DispatcherInstance from '../dispatcher/DispatcherInstance';
-import { isDispatcher } from '../dispatcher/DispatcherInterface.js';
+import { enforceDispatcher } from '../dispatcher/DispatcherInterface.js';
 import invariant from 'invariant';
 import Store from './Store';
 
@@ -147,14 +147,7 @@ export default class StoreFactory {
       ' instance.' +
       ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
     );
-    invariant(
-      isDispatcher(dispatcher),
-      'StoreFactory.register: Expected dispatcher to be an object' +
-      ' with a register method, and an unregister method but got "%s".' +
-      ' Learn more about the dispatcher interface:' +
-      ' https://github.com/HubSpot/general-store#dispatcher-interface',
-      dispatcher
-    );
+    enforceDispatcher(dispatcher);
     const {getter, getInitialState, name, responses} = this._definition;
     return new Store({
       dispatcher,

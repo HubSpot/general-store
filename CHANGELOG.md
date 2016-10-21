@@ -1,3 +1,8 @@
+## 2.1.0
+* adds `InspectStore.isStore`
+* adds `connectCallback` for subscribing to dependencies outside of React
+* consolidate some invariant checks into shared functions
+
 ## 2.0.0
 * adds `StoreFactory#defineName`
 * adds `Store#toString`

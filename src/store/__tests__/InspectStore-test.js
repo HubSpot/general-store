@@ -80,4 +80,9 @@ describe('InspectStore', () => {
   it('getState', () => {
     expect(InspectStore.getState(store)).toEqual({testing: 'yes'});
   });
+
+  it('isStore', () => {
+    expect(InspectStore.isStore({})).toBe(false);
+    expect(InspectStore.isStore(store)).toBe(true);
+  });
 });
