@@ -1,5 +1,6 @@
 /* @flow */
 import connect from './dependencies/connect';
+import connectCallback from './dependencies/connectCallback';
 import * as DispatcherInstance from './dispatcher/DispatcherInstance';
 import * as InspectStore from './store/InspectStore';
 import StoreDependencyMixin from './dependencies/StoreDependencyMixin';
@@ -16,6 +17,7 @@ function defineFactory(): StoreFactory {
 
 module.exports = {
   connect,
+  connectCallback,
   define: defineSingleton,
   defineFactory,
   DispatcherInstance,

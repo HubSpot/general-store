@@ -1,3 +1,6 @@
+## 2.1.1
+* exports `connectCallback` from the index module
+
 ## 2.1.0
 * adds `InspectStore.isStore`
 * adds `connectCallback` for subscribing to dependencies outside of React
