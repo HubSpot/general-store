@@ -1,17 +1,17 @@
 /* @flow */
-import type { DependencyIndexEntry, DependencyMap } from './DependencyMap';
-import type { Dispatcher } from 'flux';
+import type {DependencyIndexEntry, DependencyMap} from './DependencyMap';
+import type {Dispatcher} from 'flux';
 import {
   calculateInitial,
   calculateForDispatch,
   calculateForPropsChange,
   dependencyPropTypes,
-  makeDependencyIndex,
+  makeDependencyIndex
 } from '../dependencies/DependencyMap';
-import { handleDispatch } from './Dispatch';
-import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
-import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
-import React, { Component } from 'react';
+import {handleDispatch} from './Dispatch';
+import {get as getDispatcherInstance} from '../dispatcher/DispatcherInstance';
+import {enforceDispatcher} from '../dispatcher/DispatcherInterface';
+import React, {Component} from 'react';
 
 function transferStaticProperties(
   fromClass: Object,
@@ -19,7 +19,7 @@ function transferStaticProperties(
   // checker... I fully expect this to break after a future flow upgrade.
   toClass: Object
 ) {
-  Object.keys(fromClass).forEach((staticField) => {
+  Object.keys(fromClass).forEach(staticField => {
     toClass[staticField] = fromClass[staticField];
   });
 }
@@ -55,9 +55,7 @@ export default function connect(
             )
           );
         }
-        this.setState(
-          calculateInitial(dependencies, this.props, this.state)
-        );
+        this.setState(calculateInitial(dependencies, this.props, this.state));
       }
 
       componentWillReceiveProps(nextProps: Object): void {
@@ -79,18 +77,16 @@ export default function connect(
       }
 
       render() {
-        return (
-          <BaseComponent
-            {...this.props}
-            {...this.state}
-          />
-        );
+        return <BaseComponent {...this.props} {...this.state} />;
       }
     }
 
     transferStaticProperties(BaseComponent, ConnectedComponent);
     ConnectedComponent.displayName = `Connected(${BaseComponent.displayName})`;
-    ConnectedComponent.propTypes = dependencyPropTypes(dependencies);
+    ConnectedComponent.propTypes = dependencyPropTypes(
+      dependencies,
+      BaseComponent.propTypes
+    );
 
     return ConnectedComponent;
   };

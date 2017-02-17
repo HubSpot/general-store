@@ -13,6 +13,7 @@
     "clean": "rm -rf ./dist && rm -rf lib",
     "lint": "eslint ./src",
     "prepublish": "npm run build-and-test",
+    "test:unit": "jest",
     "test": "npm run check && npm run lint && jest"
   },
   "repository": {
