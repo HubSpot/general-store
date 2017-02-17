@@ -1,6 +1,6 @@
 {
   "name": "general-store",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Simple, flexible store implementation for Flux.",
   "main": "lib/GeneralStore.js",
   "scripts": {
@@ -13,6 +13,7 @@
     "clean": "rm -rf ./dist && rm -rf lib",
     "lint": "eslint ./src",
     "prepublish": "npm run build-and-test",
+    "test:unit": "jest",
     "test": "npm run check && npm run lint && jest"
   },
   "repository": {

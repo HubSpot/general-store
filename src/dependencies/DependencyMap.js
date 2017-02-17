@@ -1,42 +1,38 @@
 /* @flow */
-import { getActionTypes, getDispatchToken } from '../store/InspectStore';
+import {getActionTypes, getDispatchToken} from '../store/InspectStore';
 import invariant from 'invariant';
 import {
   oFilterMap,
   oForEach,
   oMap,
   oMerge,
-  oReduce,
+  oReduce
 } from '../utils/ObjectUtils';
 import Store from '../store/Store';
 
 export type CompoundDependency = {
   propTypes?: Object,
-  stores: Array<Store>;
-  deref: (
-    props?: Object,
-    state?: ?Object,
-    stores?: Array<Store>
-  ) => any;
+  stores: Array<Store>,
+  deref: (props?: Object, state?: ?Object, stores?: Array<Store>) => any
 };
 
 export type Dependency = CompoundDependency | Store;
 
 export type DependencyIndexEntry = {
-  dispatchTokens: {[key:string]: bool};
-  fields: {[key:string]: bool};
+  dispatchTokens: {[key: string]: boolean},
+  fields: {[key: string]: boolean}
 };
 
 export type DependencyIndex = {
-  [key:string]: DependencyIndexEntry;
+  [key: string]: DependencyIndexEntry
 };
 
 export type DependencyMap = {
-  [key:string]: Dependency;
+  [key: string]: Dependency
 };
 
 export type PropTypes = {
-  [key:string]: Function;
+  [key: string]: Function
 };
 
 export function enforceValidDependencies(
@@ -57,7 +53,7 @@ export function enforceValidDependencies(
       field,
       dependency
     );
-    const { deref, stores } = dependency;
+    const {deref, stores} = dependency;
     invariant(
       typeof deref === 'function',
       'expected `%s.deref` to be a function but got `%s`',
@@ -83,17 +79,34 @@ export function enforceValidDependencies(
   return dependencies;
 }
 
-export function dependencyPropTypes(dependencies: DependencyMap): PropTypes {
-  return oReduce(dependencies, (types, dependency) => {
-    if (dependency instanceof Store) {
-      return types;
-    }
-    const { propTypes } = dependency;
-    if (!propTypes || typeof propTypes !== 'object') {
-      return types;
-    }
-    return oMerge(types, propTypes);
-  }, {});
+export function dependencyPropTypes(
+  dependencies: DependencyMap,
+  existingPropTypes: {[key: string]: Function} = {}
+): PropTypes {
+  const unrelatedPropTypes = oReduce(
+    existingPropTypes,
+    (keep, type, name) => {
+      if (!dependencies.hasOwnProperty(name)) {
+        keep[name] = type;
+      }
+      return keep;
+    },
+    {}
+  );
+  return oReduce(
+    dependencies,
+    (types, dependency) => {
+      if (dependency instanceof Store) {
+        return types;
+      }
+      const {propTypes} = dependency;
+      if (!propTypes || typeof propTypes !== 'object') {
+        return types;
+      }
+      return oMerge(types, propTypes);
+    },
+    unrelatedPropTypes
+  );
 }
 
 export function calculate(
@@ -104,7 +117,7 @@ export function calculate(
   if (dependency instanceof Store) {
     return dependency.get();
   }
-  const { deref, stores } = dependency;
+  const {deref, stores} = dependency;
   if (deref.length === 0) {
     return deref();
   }
@@ -119,10 +132,7 @@ export function calculateInitial(
   props: Object,
   state: ?Object
 ): Object {
-  return oMap(
-    dependencies,
-    (dependency) => calculate(dependency, props, state)
-  );
+  return oMap(dependencies, dependency => calculate(dependency, props, state));
 }
 
 export function calculateForDispatch(
@@ -131,10 +141,8 @@ export function calculateForDispatch(
   props: Object,
   state: ?Object
 ): Object {
-  return oMap(
-    dependencyIndexEntry.fields,
-    (_, field) => calculate(dependencies[field], props, state),
-  );
+  return oMap(dependencyIndexEntry.fields, (_, field) =>
+    calculate(dependencies[field], props, state));
 }
 
 export function calculateForPropsChange(
@@ -144,8 +152,8 @@ export function calculateForPropsChange(
 ): Object {
   return oFilterMap(
     dependencies,
-    (dep) => dep.deref && dep.deref.length > 0,
-    (dep) => calculate(dep, props, state)
+    dep => dep.deref && dep.deref.length > 0,
+    dep => calculate(dep, props, state)
   );
 }
 
@@ -156,15 +164,15 @@ export function calculateForStateChange(
 ): Object {
   return oFilterMap(
     dependencies,
-    (dep) => dep.deref && dep.deref.length > 1,
-    (dep) => calculate(dep, props, state)
+    dep => dep.deref && dep.deref.length > 1,
+    dep => calculate(dep, props, state)
   );
 }
 
 function makeIndexEntry(): DependencyIndexEntry {
   return {
     fields: {},
-    dispatchTokens: {},
+    dispatchTokens: {}
   };
 }
 
@@ -172,24 +180,28 @@ export function makeDependencyIndex(
   dependencies: DependencyMap
 ): DependencyIndex {
   enforceValidDependencies(dependencies);
-  return oReduce(dependencies, (index, dep, field) => {
-    const stores = dep instanceof Store ? [dep] : dep.stores;
-    stores.forEach((store) => {
-      getActionTypes(store).forEach((actionType) => {
-        let entry = index[actionType];
-        if (!entry) {
-          entry = index[actionType] = makeIndexEntry();
-        }
-        const token = getDispatchToken(store);
-        entry.dispatchTokens[token] = true;
-        entry.fields[field] = true;
+  return oReduce(
+    dependencies,
+    (index, dep, field) => {
+      const stores = dep instanceof Store ? [dep] : dep.stores;
+      stores.forEach(store => {
+        getActionTypes(store).forEach(actionType => {
+          let entry = index[actionType];
+          if (!entry) {
+            entry = index[actionType] = makeIndexEntry();
+          }
+          const token = getDispatchToken(store);
+          entry.dispatchTokens[token] = true;
+          entry.fields[field] = true;
+        });
       });
-    });
-    return index;
-  }, {});
+      return index;
+    },
+    {}
+  );
 }
 
-export function dependenciesUseState(dependencies: DependencyMap): bool {
+export function dependenciesUseState(dependencies: DependencyMap): boolean {
   for (const field in dependencies) {
     if (!dependencies.hasOwnProperty(field)) {
       continue;
