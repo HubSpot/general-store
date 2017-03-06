@@ -1,23 +1,23 @@
 /* @flow */
-import type {DependencyIndexEntry, DependencyMap} from './DependencyMap';
-import type {Dispatcher} from 'flux';
+import type { DependencyIndexEntry, DependencyMap } from './DependencyMap';
+import type { Dispatcher } from 'flux';
 import {
   calculateInitial,
   calculateForDispatch,
   calculateForPropsChange,
   dependencyPropTypes,
-  makeDependencyIndex
+  makeDependencyIndex,
 } from '../dependencies/DependencyMap';
-import {handleDispatch} from './Dispatch';
-import {get as getDispatcherInstance} from '../dispatcher/DispatcherInstance';
-import {enforceDispatcher} from '../dispatcher/DispatcherInterface';
-import React, {Component} from 'react';
+import { handleDispatch } from './Dispatch';
+import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
+import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
+import React, { Component } from 'react';
 
 function transferStaticProperties(
   fromClass: Object,
   // By setting the type to Object, I'm doing a little dance around the type
   // checker... I fully expect this to break after a future flow upgrade.
-  toClass: Object
+  toClass: Object,
 ) {
   Object.keys(fromClass).forEach(staticField => {
     toClass[staticField] = fromClass[staticField];
@@ -26,7 +26,7 @@ function transferStaticProperties(
 
 export default function connect(
   dependencies: DependencyMap,
-  dispatcher: ?Dispatcher = getDispatcherInstance()
+  dispatcher: ?Dispatcher = getDispatcherInstance(),
 ): Function {
   enforceDispatcher(dispatcher);
 
@@ -47,33 +47,26 @@ export default function connect(
       componentWillMount() {
         if (dispatcher) {
           this.dispatchToken = dispatcher.register(
-            handleDispatch.bind(
-              null,
-              dispatcher,
-              dependencyIndex,
-              this.handleDispatch.bind(this)
-            )
+            handleDispatch.bind(null, dispatcher, dependencyIndex, this.handleDispatch.bind(this)),
           );
         }
         this.setState(calculateInitial(dependencies, this.props, this.state));
       }
 
       componentWillReceiveProps(nextProps: Object): void {
-        this.setState(
-          calculateForPropsChange(dependencies, nextProps, this.state)
-        );
+        this.setState(calculateForPropsChange(dependencies, nextProps, this.state));
       }
 
       componentWillUnmount(): void {
-        if (dispatcher && this.dispatchToken) {
-          dispatcher.unregister(this.dispatchToken);
+        const dispatchToken = this.dispatchToken;
+        if (dispatcher && dispatchToken) {
+          this.dispatchToken = null;
+          dispatcher.unregister(dispatchToken);
         }
       }
 
       handleDispatch(entry: DependencyIndexEntry) {
-        this.setState(
-          calculateForDispatch(dependencies, entry, this.props, this.state)
-        );
+        this.setState(calculateForDispatch(dependencies, entry, this.props, this.state));
       }
 
       render() {
@@ -83,10 +76,7 @@ export default function connect(
 
     transferStaticProperties(BaseComponent, ConnectedComponent);
     ConnectedComponent.displayName = `Connected(${BaseComponent.displayName})`;
-    ConnectedComponent.propTypes = dependencyPropTypes(
-      dependencies,
-      BaseComponent.propTypes
-    );
+    ConnectedComponent.propTypes = dependencyPropTypes(dependencies, BaseComponent.propTypes);
 
     return ConnectedComponent;
   };
