@@ -78,8 +78,10 @@ export default function StoreDependencyMixin(
     },
 
     componentWillUnmount(): void {
-      if (dispatcher && this.__dispatchToken) {
-        dispatcher.unregister(this.__dispatchToken);
+      const dispatchToken = this.__dispatchToken;
+      if (dispatcher && dispatchToken) {
+        this.__dispatchToken = null;
+        dispatcher.unregister(dispatchToken);
       }
     },
 

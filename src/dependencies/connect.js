@@ -65,8 +65,10 @@ export default function connect(
       }
 
       componentWillUnmount(): void {
-        if (dispatcher && this.dispatchToken) {
-          dispatcher.unregister(this.dispatchToken);
+        const dispatchToken = this.dispatchToken;
+        if (dispatcher && dispatchToken) {
+          this.dispatchToken = null;
+          dispatcher.unregister(dispatchToken);
         }
       }
 
