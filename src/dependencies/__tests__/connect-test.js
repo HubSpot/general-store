@@ -72,6 +72,10 @@ describe('connect', () => {
       expect(MockComponent.dependencies).toEqual(dependencies);
     });
 
+    it('exports WrappedComponent', () => {
+      expect(MockComponent.WrappedComponent).toEqual(BaseComponent);
+    });
+
     it('generates a proper displayName', () => {
       expect(MockComponent.displayName).toBe('Connected(BaseComponent)');
     });
