@@ -36,6 +36,7 @@ export default function connect(
   return function connector(BaseComponent: ReactClass<*>): ReactClass<*> {
     class ConnectedComponent extends Component {
       static dependencies: DependencyMap;
+      static WrappedComponent: ReactClass<*>;
 
       /* eslint react/sort-comp: 0 */
       dispatchToken: ?string;
@@ -92,6 +93,7 @@ export default function connect(
       dependencies,
       BaseComponent.propTypes
     );
+    ConnectedComponent.WrappedComponent = BaseComponent;
 
     return ConnectedComponent;
   };
