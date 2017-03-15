@@ -1,8 +1,8 @@
 jest.disableAutomock();
-import { Dispatcher } from 'flux';
-import { shallow } from 'enzyme';
-import { getDispatchToken } from '../../store/InspectStore';
-import React, { PropTypes } from 'react';
+import {Dispatcher} from 'flux';
+import {shallow} from 'enzyme';
+import {getDispatchToken} from '../../store/InspectStore';
+import React, {PropTypes} from 'react';
 import connect from '../connect';
 import StoreFactory from '../../store/StoreFactory';
 
@@ -18,18 +18,18 @@ describe('connect', () => {
   const SECOND_ONLY = 'SECOND_ONLY';
   const SHARED = 'SHARED';
   const FirstStoreFactory = new StoreFactory({})
-    .defineGet((state) => state)
+    .defineGet(state => state)
     .defineGetInitialState(() => 1)
     .defineResponses({
-      [FIRST_ONLY]: (state) => state + 1,
-      [SHARED]: (state) => state - 1,
+      [FIRST_ONLY]: state => state + 1,
+      [SHARED]: state => state - 1,
     });
   const SecondStoreFactory = new StoreFactory({})
     .defineGet((state, add) => state + add)
     .defineGetInitialState(() => 2)
     .defineResponses({
-      [SECOND_ONLY]: (state) => state + 1,
-      [SHARED]: (state) => state - 1,
+      [SECOND_ONLY]: state => state + 1,
+      [SHARED]: state => state - 1,
     });
 
   let dispatcher;
@@ -55,34 +55,38 @@ describe('connect', () => {
           add: PropTypes.number,
         },
         stores: [SecondStore],
-        deref: (props) => SecondStore.get(props.add || 0),
+        deref: props => SecondStore.get(props.add || 0),
       },
       third: {
         stores: [FirstStore, SecondStore],
-        deref: (props) => {
+        deref: props => {
           return FirstStore.get() + SecondStore.get(props.add || 0);
-        }
-      }
+        },
+      },
     };
     MockComponent = connect(dependencies, dispatcher)(BaseComponent);
   });
 
   describe('statics', () => {
+    it('exports dependencies', () => {
+      expect(MockComponent.dependencies).toEqual(dependencies);
+    });
+
     it('generates a proper displayName', () => {
       expect(MockComponent.displayName).toBe('Connected(BaseComponent)');
     });
 
     it('passes any statics through to ConnectedComponent', () => {
       expect(typeof MockComponent.testStaticMethod).toBe('function');
-      expect(MockComponent.testStaticMethod).toBe(BaseComponent.testStaticMethod);
+      expect(MockComponent.testStaticMethod).toBe(
+        BaseComponent.testStaticMethod
+      );
     });
   });
 
   describe('propTypes', () => {
     it('has propTypes if a dependency specifices them', () => {
-      expect(
-        MockComponent.propTypes
-      ).toEqual({
+      expect(MockComponent.propTypes).toEqual({
         add: PropTypes.number,
       });
     });

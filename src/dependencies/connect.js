@@ -6,7 +6,7 @@ import {
   calculateForDispatch,
   calculateForPropsChange,
   dependencyPropTypes,
-  makeDependencyIndex
+  makeDependencyIndex,
 } from '../dependencies/DependencyMap';
 import {handleDispatch} from './Dispatch';
 import {get as getDispatcherInstance} from '../dispatcher/DispatcherInstance';
@@ -35,6 +35,8 @@ export default function connect(
   /* global ReactClass */
   return function connector(BaseComponent: ReactClass<*>): ReactClass<*> {
     class ConnectedComponent extends Component {
+      static dependencies: DependencyMap;
+
       /* eslint react/sort-comp: 0 */
       dispatchToken: ?string;
       state: Object;
@@ -84,6 +86,7 @@ export default function connect(
     }
 
     transferStaticProperties(BaseComponent, ConnectedComponent);
+    ConnectedComponent.dependencies = dependencies;
     ConnectedComponent.displayName = `Connected(${BaseComponent.displayName})`;
     ConnectedComponent.propTypes = dependencyPropTypes(
       dependencies,
