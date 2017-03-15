@@ -1,3 +1,6 @@
+## 2.2.2
+* connect adds a static `dependencies` field to the connected component
+
 ## 2.2.1
 * Fix a potential bug in connect/StoreDependencyMixin that could cause an exeption in `componentWillUnmount`
 
