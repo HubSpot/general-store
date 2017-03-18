@@ -1,6 +1,6 @@
 /* @flow */
-import type { DependencyIndexEntry, DependencyMap } from './DependencyMap';
-import type { Dispatcher } from 'flux';
+import type {DependencyIndexEntry, DependencyMap} from './DependencyMap';
+import type {Dispatcher} from 'flux';
 import {
   calculateInitial,
   calculateForDispatch,
@@ -8,10 +8,17 @@ import {
   dependencyPropTypes,
   makeDependencyIndex,
 } from '../dependencies/DependencyMap';
-import { handleDispatch } from './Dispatch';
-import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
-import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
-import React, { Component } from 'react';
+import {handleDispatch} from './Dispatch';
+import {get as getDispatcherInstance} from '../dispatcher/DispatcherInstance';
+import {enforceDispatcher} from '../dispatcher/DispatcherInterface';
+import React, {Component} from 'react';
+
+function focuser(instance, ...args) {
+  if (!instance.wrappedInstance) {
+    return undefined;
+  }
+  return instance.wrappedInstance.focus(...args);
+}
 
 function transferStaticProperties(
   fromClass: Object,
@@ -40,12 +47,8 @@ export default function connect(
 
       /* eslint react/sort-comp: 0 */
       dispatchToken: ?string;
-      state: Object;
-
-      constructor() {
-        super();
-        this.state = {};
-      }
+      state: Object = {};
+      wrappedInstance: ?Object = null;
 
       componentWillMount() {
         if (dispatcher) {
@@ -75,14 +78,28 @@ export default function connect(
         }
       }
 
+      focus = typeof BaseComponent.prototype.focus === 'function'
+        ? focuser.bind(this)
+        : undefined;
+
       handleDispatch(entry: DependencyIndexEntry) {
         this.setState(
           calculateForDispatch(dependencies, entry, this.props, this.state)
         );
       }
 
+      setWrappedInstance = ref => {
+        this.wrappedInstance = ref;
+      };
+
       render() {
-        return <BaseComponent {...this.props} {...this.state} />;
+        return (
+          <BaseComponent
+            {...this.props}
+            {...this.state}
+            ref={this.setWrappedInstance}
+          />
+        );
       }
     }
 
