@@ -2,10 +2,7 @@
 import type { Dispatcher } from 'flux';
 import type { DependencyIndex, DependencyIndexEntry } from './DependencyMap';
 
-function waitForStores(
-  dispatcher: Dispatcher,
-  tokens: Array<string>
-) {
+function waitForStores(dispatcher: Dispatcher, tokens: Array<string>) {
   dispatcher.waitFor(tokens);
 }
 

@@ -4,8 +4,7 @@ import invariant from 'invariant';
 import Store from './Store';
 import StoreFactory from './StoreFactory';
 
-const HINT_LINK =
-  'Learn more about defining stores:' +
+const HINT_LINK = 'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
 function dropFirstArg(func) {
@@ -13,7 +12,6 @@ function dropFirstArg(func) {
 }
 
 export default class StoreSingleton {
-
   _facade: ?Store;
   _factory: StoreFactory;
   _getter: ?Function;
@@ -31,19 +29,17 @@ export default class StoreSingleton {
     this._getter = null;
   }
 
-  defineGet(
-    getter: () => any
-  ): StoreSingleton {
+  defineGet(getter: () => any): StoreSingleton {
     invariant(
       !this.isRegistered(),
       'StoreSingleton.defineGet: this store definition cannot be modified' +
-      ' because is has already been registered with a dispatcher. %s',
+        ' because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
     invariant(
       typeof getter === 'function',
       'StoreSingleton.defineGet: expected getter to be a function but got' +
-      ' "%s" instead. %s',
+        ' "%s" instead. %s',
       getter,
       HINT_LINK
     );
@@ -58,7 +54,7 @@ export default class StoreSingleton {
     invariant(
       !this.isRegistered(),
       'StoreSingleton.defineResponseTo: this store definition cannot be' +
-      ' modified because is has already been registered with a dispatcher. %s',
+        ' modified because is has already been registered with a dispatcher. %s',
       HINT_LINK
     );
     this._factory = this._factory.defineResponseTo(
@@ -68,7 +64,7 @@ export default class StoreSingleton {
     return this;
   }
 
-  isRegistered(): bool {
+  isRegistered(): boolean {
     return this._facade instanceof Store;
   }
 
@@ -76,8 +72,8 @@ export default class StoreSingleton {
     invariant(
       typeof this._getter === 'function',
       'StoreSingleton.register: a store cannot be registered without a' +
-      ' getter. Use GeneralStore.define().defineGet(getter) to define a' +
-      ' getter. %s',
+        ' getter. Use GeneralStore.define().defineGet(getter) to define a' +
+        ' getter. %s',
       HINT_LINK
     );
     if (!this._facade) {

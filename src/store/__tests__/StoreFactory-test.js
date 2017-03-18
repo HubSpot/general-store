@@ -12,7 +12,7 @@ describe('StoreFactory', () => {
   });
 
   it('sets the default definition', () => {
-    const {getInitialState, getter, ...rest} = storeFactory.getDefinition();
+    const { getInitialState, getter, ...rest } = storeFactory.getDefinition();
     expect(typeof getInitialState).toBe('function');
     expect(typeof getter).toBe('function');
     expect(rest).toEqual({
@@ -21,15 +21,11 @@ describe('StoreFactory', () => {
   });
 
   it('returns a new store', () => {
-    expect(
-      storeFactory.defineGet(EMPTY_FUNC)
-    ).not.toBe(storeFactory);
-    expect(
-      storeFactory.defineResponses({})
-    ).not.toBe(storeFactory);
-    expect(
-      storeFactory.defineGetInitialState(EMPTY_FUNC)
-    ).not.toBe(storeFactory);
+    expect(storeFactory.defineGet(EMPTY_FUNC)).not.toBe(storeFactory);
+    expect(storeFactory.defineResponses({})).not.toBe(storeFactory);
+    expect(storeFactory.defineGetInitialState(EMPTY_FUNC)).not.toBe(
+      storeFactory
+    );
   });
 
   it('sets the name', () => {
@@ -41,7 +37,10 @@ describe('StoreFactory', () => {
   it('compounds the name', () => {
     const first = 'first';
     const second = 'second';
-    const newDef = storeFactory.defineName(first).defineName(second).getDefinition();
+    const newDef = storeFactory
+      .defineName(first)
+      .defineName(second)
+      .getDefinition();
     expect(newDef.name).toBe('second(first)');
   });
 
@@ -53,9 +52,7 @@ describe('StoreFactory', () => {
 
   it('throws when a getter is already set', () => {
     const factoryWithGetter = storeFactory.defineGet(EMPTY_FUNC);
-    expect(
-      () => factoryWithGetter.defineGet(EMPTY_FUNC)
-    ).toThrow();
+    expect(() => factoryWithGetter.defineGet(EMPTY_FUNC)).toThrow();
   });
 
   it('sets getInitialState', () => {
@@ -72,11 +69,11 @@ describe('StoreFactory', () => {
 
   it('does not throw when initialState is already set', () => {
     const emptyFn = EMPTY_FUNC;
-    const factoryWithGetInitialState = storeFactory
-      .defineGetInitialState(emptyFn);
-    expect(
-      () => factoryWithGetInitialState.defineGetInitialState(emptyFn)
-    ).not.toThrow();
+    const factoryWithGetInitialState = storeFactory.defineGetInitialState(
+      emptyFn
+    );
+    expect(() =>
+      factoryWithGetInitialState.defineGetInitialState(emptyFn)).not.toThrow();
   });
 
   it('sets responses', () => {
@@ -95,31 +92,27 @@ describe('StoreFactory', () => {
       TEST: EMPTY_FUNC,
       TEST_TWO: EMPTY_FUNC,
     });
-    expect(
-      () => factoryWithResponses.defineResponses({
+    expect(() =>
+      factoryWithResponses.defineResponses({
         TEST_THREE: EMPTY_FUNC,
-      })
-    ).not.toThrow();
-    expect(
-      () => factoryWithResponses.defineResponses({
+      })).not.toThrow();
+    expect(() =>
+      factoryWithResponses.defineResponses({
         TEST: EMPTY_FUNC,
-      })
-    ).toThrow();
+      })).toThrow();
   });
 
   it('validates the actionType(s) passed to defineResponses', () => {
     const mockResponse = EMPTY_FUNC;
     // invalid args
-    expect(
-      () => storeFactory.defineResponses({'TESTING': null})
-    ).toThrow();
+    expect(() => storeFactory.defineResponses({ TESTING: null })).toThrow();
     expect(() => storeFactory.defineResponses(mockResponse)).toThrow();
     expect(() => storeFactory.defineResponses('testAction')).toThrow();
     expect(() => storeFactory.defineResponses('testAction', [])).toThrow();
 
     // valid args
     expect(() => {
-      storeFactory.defineResponses({'testAction': mockResponse});
+      storeFactory.defineResponses({ testAction: mockResponse });
     }).not.toThrow();
 
     // valid array of actions
@@ -132,11 +125,13 @@ describe('StoreFactory', () => {
 
     // duplicates should throw
     expect(() => {
-      storeFactory.defineResponses({
-        'testAction': mockResponse,
-      }).defineResponses({
-        'testAction': mockResponse,
-      });
+      storeFactory
+        .defineResponses({
+          testAction: mockResponse,
+        })
+        .defineResponses({
+          testAction: mockResponse,
+        });
     }).toThrow();
   });
 

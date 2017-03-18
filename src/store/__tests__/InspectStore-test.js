@@ -27,7 +27,7 @@ describe('InspectStore', () => {
       register: jest.genMockFn().mockReturnValue(dispatchToken),
       unregister: jest.genMockFn(),
     };
-    getter = (state) => state;
+    getter = state => state;
     firstHandler = jest.genMockFn();
     secondHandler = jest.genMockFn();
 
@@ -35,7 +35,7 @@ describe('InspectStore', () => {
       .defineName('TestStore')
       .defineGet(getter)
       .defineGetInitialState(() => {
-        return {testing: 'yes'};
+        return { testing: 'yes' };
       })
       .defineResponseTo(FIRST_ACTION, firstHandler)
       .defineResponseTo(SECOND_ACTION, secondHandler);
@@ -78,7 +78,7 @@ describe('InspectStore', () => {
   });
 
   it('getState', () => {
-    expect(InspectStore.getState(store)).toEqual({testing: 'yes'});
+    expect(InspectStore.getState(store)).toEqual({ testing: 'yes' });
   });
 
   it('isStore', () => {

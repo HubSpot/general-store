@@ -16,7 +16,7 @@ describe('GeneralStore', () => {
   });
 
   it('should match the export list', () => {
-    exportList.forEach((exportName) => {
+    exportList.forEach(exportName => {
       expect(GeneralStore.hasOwnProperty(exportName)).toBe(true);
     });
   });

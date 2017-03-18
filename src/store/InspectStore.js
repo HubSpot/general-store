@@ -40,6 +40,6 @@ export function getState(store: Store) {
   return store._state;
 }
 
-export function isStore(store: any): bool {
+export function isStore(store: any): boolean {
   return store instanceof Store;
 }

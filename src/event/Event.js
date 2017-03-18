@@ -3,8 +3,7 @@ import EventHandler from './EventHandler.js';
 import uniqueID from '../uniqueid/uniqueID.js';
 
 export default class Event {
-
-  _handlers: {[key: string]: Function};
+  _handlers: { [key: string]: Function };
 
   constructor() {
     this._handlers = {};
@@ -73,5 +72,4 @@ export default class Event {
   static runMultiple(events: Array<Event>): void {
     events.forEach(evt => evt.runHandlers());
   }
-
 }

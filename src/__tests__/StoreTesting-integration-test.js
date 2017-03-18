@@ -1,7 +1,7 @@
 jest.autoMockOff();
 
 describe('Store testing integration test', () => {
-  const {Dispatcher} = require('flux');
+  const { Dispatcher } = require('flux');
   const GeneralStore = require('../GeneralStore');
 
   const ADD_USER = 'ADD_USER';
@@ -40,11 +40,11 @@ describe('Store testing integration test', () => {
     let ids = 0;
     dispatcher.dispatch({
       actionType: ADD_USER,
-      data: {id: ++ids, name: `User ${ids}`},
+      data: { id: ++ids, name: `User ${ids}` },
     });
     dispatcher.dispatch({
       actionType: ADD_USER,
-      data: {id: ++ids, name: `User ${ids}`},
+      data: { id: ++ids, name: `User ${ids}` },
     });
     dispatcher.dispatch({
       actionType: REMOVE_USER,

@@ -16,19 +16,18 @@ import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import invariant from 'invariant';
 
 type ReactMixin = {
-  __dispatchToken?: string;
-  propTypes?: Object;
-  componentWillMount: Function;
-  componentWillReceiveProps: Function;
-  componentDidUpdate?: Function;
-  componentWillUnmount: Function;
-}
+  __dispatchToken?: string,
+  propTypes?: Object,
+  componentWillMount: Function,
+  componentWillReceiveProps: Function,
+  componentDidUpdate?: Function,
+  componentWillUnmount: Function,
+};
 
-function onlyStoreStateChanged(dependencies, state, prevState): bool {
+function onlyStoreStateChanged(dependencies, state, prevState): boolean {
   for (const field in state) {
     if (
-      !dependencies.hasOwnProperty(field) &&
-      state[field] !== prevState[field]
+      !dependencies.hasOwnProperty(field) && state[field] !== prevState[field]
     ) {
       return false;
     }
@@ -57,16 +56,11 @@ export default function StoreDependencyMixin(
       );
       if (dispatcher) {
         this.__dispatchToken = dispatcher.register(
-          handleDispatch.bind(
-            null,
-            dispatcher,
-            dependencyIndex,
-            (entry) => {
-              this.setState(
-                calculateForDispatch(dependencies, entry, this.props, this.state)
-              );
-            }
-          )
+          handleDispatch.bind(null, dispatcher, dependencyIndex, entry => {
+            this.setState(
+              calculateForDispatch(dependencies, entry, this.props, this.state)
+            );
+          })
         );
       }
     },
@@ -84,7 +78,6 @@ export default function StoreDependencyMixin(
         dispatcher.unregister(dispatchToken);
       }
     },
-
   };
 
   if (dependenciesUseState(dependencies)) {

@@ -5,29 +5,28 @@ import { enforceDispatcher } from '../dispatcher/DispatcherInterface.js';
 import invariant from 'invariant';
 import Store from './Store';
 
-const HINT_LINK =
-  'Learn more about defining stores:' +
+const HINT_LINK = 'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
 function enforceResponse(existingResponses, actionType, response) {
   invariant(
     typeof actionType === 'string',
     'StoreFactory.defineResponses: expected actionType to be a string' +
-    ' but got "%s" instead. %s',
+      ' but got "%s" instead. %s',
     actionType,
     HINT_LINK
   );
   invariant(
     !existingResponses.hasOwnProperty(actionType),
     'StoreFactory.defineResponses: conflicting resposes for actionType' +
-    ' "%s". Only one response can be defined per actionType per Store. %s',
+      ' "%s". Only one response can be defined per actionType per Store. %s',
     actionType,
     HINT_LINK
   );
   invariant(
     typeof response === 'function',
     'StoreFactory.defineResponses: expected response to be a function' +
-    ' but got "%s" instead. %s',
+      ' but got "%s" instead. %s',
     response
   );
 }
@@ -37,14 +36,14 @@ type Getter = (state: any) => any;
 type Response = (state: any, payload: any, actionType: string) => any;
 
 type Responses = {
-  [key: string]: Response
+  [key: string]: Response,
 };
 
 type StoreFactoryDefinition = {
-  getter: Getter;
-  getInitialState: () => any;
-  name: ?string;
-  responses: Responses;
+  getter: Getter,
+  getInitialState: () => any,
+  name: ?string,
+  responses: Responses,
 };
 
 function defaultGetInitialState() {
@@ -56,10 +55,9 @@ function defaultGetter(state: any): any {
 }
 
 export default class StoreFactory {
-
   _definition: StoreFactoryDefinition;
 
-  constructor({getter, getInitialState, name, responses}:Object) {
+  constructor({ getter, getInitialState, name, responses }: Object) {
     this._definition = {
       getter: getter || defaultGetter,
       getInitialState: getInitialState || defaultGetInitialState,
@@ -99,18 +97,13 @@ export default class StoreFactory {
   }
 
   defineResponses(newResponses: Responses): StoreFactory {
-    const {responses} = this._definition;
+    const { responses } = this._definition;
     invariant(
       newResponses && typeof newResponses === 'object',
       'StoreFactory.defineResponses: newResponses must be an object'
     );
-    Object.keys(newResponses).forEach(
-      actionType => enforceResponse(
-        responses,
-        actionType,
-        newResponses[actionType]
-      )
-    );
+    Object.keys(newResponses).forEach(actionType =>
+      enforceResponse(responses, actionType, newResponses[actionType]));
     return new StoreFactory({
       ...this._definition,
       responses: {
@@ -140,15 +133,15 @@ export default class StoreFactory {
     dispatcher = dispatcher || DispatcherInstance.get();
     invariant(
       dispatcher !== null && typeof dispatcher === 'object',
-      'StoreFactory.register: you haven\'t provided a dispatcher instance.' +
-      ' You can pass an instance to' +
-      ' GeneralStore.define().register(dispatcher) or use' +
-      ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' +
-      ' instance.' +
-      ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
+      "StoreFactory.register: you haven't provided a dispatcher instance." +
+        ' You can pass an instance to' +
+        ' GeneralStore.define().register(dispatcher) or use' +
+        ' GeneralStore.DispatcherInstance.set(dispatcher) to set a global' +
+        ' instance.' +
+        ' https://github.com/HubSpot/general-store#default-dispatcher-instance'
     );
     enforceDispatcher(dispatcher);
-    const {getter, getInitialState, name, responses} = this._definition;
+    const { getter, getInitialState, name, responses } = this._definition;
     return new Store({
       dispatcher,
       factory: this,

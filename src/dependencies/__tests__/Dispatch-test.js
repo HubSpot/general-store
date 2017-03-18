@@ -8,12 +8,12 @@ describe('Dispatch', () => {
   const mockIndex = {
     [TEST_ACTION]: {
       dispatchTokens: {
-        'ID_1': true,
-        'ID_2': true,
+        ID_1: true,
+        ID_2: true,
       },
       fields: {
-        'one': true,
-        'two': true,
+        one: true,
+        two: true,
       },
     },
   };
@@ -39,9 +39,7 @@ describe('Dispatch', () => {
       handleDispatch(dispatcher, mockIndex, mockThen, {
         actionType: TEST_ACTION,
       });
-      expect(
-        dispatcher.waitFor.mock.calls[0][0]
-      ).toEqual(
+      expect(dispatcher.waitFor.mock.calls[0][0]).toEqual(
         Object.keys(mockIndex[TEST_ACTION].dispatchTokens)
       );
     });
@@ -50,11 +48,7 @@ describe('Dispatch', () => {
       handleDispatch(dispatcher, mockIndex, mockThen, {
         actionType: TEST_ACTION,
       });
-      expect(
-        mockThen.mock.calls[0][0]
-      ).toBe(
-        mockIndex[TEST_ACTION]
-      );
+      expect(mockThen.mock.calls[0][0]).toBe(mockIndex[TEST_ACTION]);
     });
   });
 });

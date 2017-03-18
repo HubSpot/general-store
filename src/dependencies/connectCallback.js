@@ -20,7 +20,7 @@ function subscribe(
   dispatcher: Dispatcher,
   callback: Function,
   props: Object = {},
-  state: ?Object = null,
+  state: ?Object = null
 ) {
   let dispatchToken;
   let storeState = {};
@@ -47,12 +47,7 @@ function subscribe(
   }
 
   dispatchToken = dispatcher.register(
-    handleDispatch.bind(
-      null,
-      dispatcher,
-      dependencyIndex,
-      handleUpdate
-    )
+    handleDispatch.bind(null, dispatcher, dependencyIndex, handleUpdate)
   );
 
   try {
@@ -63,7 +58,7 @@ function subscribe(
     callback(error, storeState, {}, remove);
   }
 
-  return {remove};
+  return { remove };
 }
 
 export default function connectCallback(

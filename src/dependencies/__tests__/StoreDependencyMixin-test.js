@@ -11,18 +11,18 @@ describe('StoreDependencyMixin', () => {
   const SECOND_ONLY = 'SECOND_ONLY';
   const SHARED = 'SHARED';
   const FirstStoreFactory = new StoreFactory({})
-    .defineGet((state) => state)
+    .defineGet(state => state)
     .defineGetInitialState(() => 1)
     .defineResponses({
-      [FIRST_ONLY]: (state) => state + 1,
-      [SHARED]: (state) => state - 1,
+      [FIRST_ONLY]: state => state + 1,
+      [SHARED]: state => state - 1,
     });
   const SecondStoreFactory = new StoreFactory({})
     .defineGet((state, add) => state + add)
     .defineGetInitialState(() => 2)
     .defineResponses({
-      [SECOND_ONLY]: (state) => state + 1,
-      [SHARED]: (state) => state - 1,
+      [SECOND_ONLY]: state => state + 1,
+      [SHARED]: state => state - 1,
     });
 
   let dispatcher;
@@ -49,19 +49,17 @@ describe('StoreDependencyMixin', () => {
           add: PropTypes.number,
         },
         stores: [SecondStore],
-        deref: (props) => SecondStore.get(props.add || 0),
+        deref: props => SecondStore.get(props.add || 0),
       },
       third: {
         stores: [FirstStore, SecondStore],
         deref: (props, state) => {
           const localCount = state ? state.localCount : 0;
-          return (
-            FirstStore.get() +
+          return FirstStore.get() +
             SecondStore.get(props.add || 0) +
-            localCount
-          );
-        }
-      }
+            localCount;
+        },
+      },
     };
     mixin = StoreDependencyMixin(dependencies, dispatcher);
     MockComponent = React.createClass({
@@ -80,19 +78,14 @@ describe('StoreDependencyMixin', () => {
 
   describe('propTypes', () => {
     it('has propTypes if a dependency specifices them', () => {
-      expect(
-        mixin.propTypes
-      ).toEqual({
-        add: PropTypes.number
+      expect(mixin.propTypes).toEqual({
+        add: PropTypes.number,
       });
     });
 
     it('doesnt have propTypes if no deps specify them', () => {
       expect(
-        StoreDependencyMixin(
-          {one: FirstStore},
-          dispatcher
-        ).propTypes
+        StoreDependencyMixin({ one: FirstStore }, dispatcher).propTypes
       ).toEqual({});
     });
   });
@@ -117,7 +110,7 @@ describe('StoreDependencyMixin', () => {
   describe('componentWillReceiveProps', () => {
     it('calculates and sets state', () => {
       const root = shallow(<MockComponent />);
-      root.setProps({add: 2});
+      root.setProps({ add: 2 });
       expect(root.state()).toEqual({
         localCount: 0,
         one: 1,
@@ -130,15 +123,18 @@ describe('StoreDependencyMixin', () => {
   describe('componentDidUpdate', () => {
     it('has a componentDidUpdate if a field uses state', () => {
       expect(
-        StoreDependencyMixin({
-          one: FirstStore,
-        }, dispatcher).componentDidUpdate
+        StoreDependencyMixin(
+          {
+            one: FirstStore,
+          },
+          dispatcher
+        ).componentDidUpdate
       ).toBe(undefined);
     });
 
     it('recalculates fields that use state', () => {
       const root = shallow(<MockComponent />);
-      root.setState({localCount: 2});
+      root.setState({ localCount: 2 });
       expect(root.state()).toEqual({
         localCount: 2,
         one: 1,
@@ -151,7 +147,7 @@ describe('StoreDependencyMixin', () => {
   describe('handleDispatch', () => {
     it('waits for all stores affected by the actionType', () => {
       shallow(<MockComponent />);
-      dispatcher.dispatch({actionType: SHARED});
+      dispatcher.dispatch({ actionType: SHARED });
       expect(dispatcher.waitFor.mock.calls[0][0]).toEqual([
         getDispatchToken(FirstStore),
         getDispatchToken(SecondStore),
@@ -160,7 +156,7 @@ describe('StoreDependencyMixin', () => {
 
     it('only updates fields affected by the actionType', () => {
       const root = shallow(<MockComponent />);
-      dispatcher.dispatch({actionType: SHARED});
+      dispatcher.dispatch({ actionType: SHARED });
       expect(root.state()).toEqual({
         localCount: 0,
         one: 0,

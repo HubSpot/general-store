@@ -12,8 +12,8 @@ import {
   enforceValidDependencies,
   makeDependencyIndex,
 } from '../DependencyMap';
-import {Dispatcher} from 'flux';
-import {getDispatchToken} from '../../store/InspectStore';
+import { Dispatcher } from 'flux';
+import { getDispatchToken } from '../../store/InspectStore';
 import Store from '../../store/Store';
 import StoreFactory from '../../store/StoreFactory';
 
@@ -30,8 +30,8 @@ describe('DependencyMap', () => {
 
   beforeEach(() => {
     dispatcher = new Dispatcher();
-    mockProps = {testProp: 123};
-    mockState = {testState: 456};
+    mockProps = { testProp: 123 };
+    mockState = { testState: 456 };
     CountStore = new Store({
       dispatcher,
       factory: new StoreFactory(),
@@ -73,7 +73,7 @@ describe('DependencyMap', () => {
         propTypes: {
           n: isNumberType,
         },
-        deref({n}) {
+        deref({ n }) {
           return CountStore.get() + n;
         },
       },
@@ -84,7 +84,7 @@ describe('DependencyMap', () => {
     });
 
     it('includes and dependency level propTypes', () => {
-      expect(dependencyPropTypes(depsWithTypes)).toEqual({n: isNumberType});
+      expect(dependencyPropTypes(depsWithTypes)).toEqual({ n: isNumberType });
     });
 
     it('includes any existing propTypes', () => {

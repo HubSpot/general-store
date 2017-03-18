@@ -1,5 +1,5 @@
 /* @flow */
-import {getActionTypes, getDispatchToken} from '../store/InspectStore';
+import { getActionTypes, getDispatchToken } from '../store/InspectStore';
 import invariant from 'invariant';
 import {
   oFilterMap,
@@ -19,8 +19,8 @@ export type CompoundDependency = {
 export type Dependency = CompoundDependency | Store;
 
 export type DependencyIndexEntry = {
-  dispatchTokens: {[key: string]: boolean},
-  fields: {[key: string]: boolean},
+  dispatchTokens: { [key: string]: boolean },
+  fields: { [key: string]: boolean },
 };
 
 export type DependencyIndex = {
@@ -53,7 +53,7 @@ export function enforceValidDependencies(
       field,
       dependency
     );
-    const {deref, stores} = dependency;
+    const { deref, stores } = dependency;
     invariant(
       typeof deref === 'function',
       'expected `%s.deref` to be a function but got `%s`',
@@ -81,7 +81,7 @@ export function enforceValidDependencies(
 
 export function dependencyPropTypes(
   dependencies: DependencyMap,
-  existingPropTypes: {[key: string]: Function} = {}
+  existingPropTypes: { [key: string]: Function } = {}
 ): PropTypes {
   const unrelatedPropTypes = oReduce(
     existingPropTypes,
@@ -99,7 +99,7 @@ export function dependencyPropTypes(
       if (dependency instanceof Store) {
         return types;
       }
-      const {propTypes} = dependency;
+      const { propTypes } = dependency;
       if (!propTypes || typeof propTypes !== 'object') {
         return types;
       }
@@ -117,7 +117,7 @@ export function calculate(
   if (dependency instanceof Store) {
     return dependency.get();
   }
-  const {deref, stores} = dependency;
+  const { deref, stores } = dependency;
   if (deref.length === 0) {
     return deref();
   }

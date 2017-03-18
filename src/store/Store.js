@@ -19,25 +19,24 @@ function getNull() {
 export type StoreGetter = (...args: Array<any>) => any;
 
 export type StoreResponses = {
-  [key:string]: (
+  [key: string]: (
     state: any,
     data: any,
     actionType: string,
-    payload: Action,
-  ) => any
+    payload: Action
+  ) => any,
 };
 
 type StoreOptions = {
-  dispatcher: Dispatcher;
-  factory: StoreFactory;
-  getter: (...args: Array<any>) => any;
-  initialState: any;
-  name: ?string;
-  responses: {};
+  dispatcher: Dispatcher,
+  factory: StoreFactory,
+  getter: (...args: Array<any>) => any,
+  initialState: any,
+  name: ?string,
+  responses: {},
 };
 
 export default class Store {
-
   _dispatcher: Dispatcher;
   _dispatchToken: string;
   _factory: StoreFactory;
@@ -48,14 +47,16 @@ export default class Store {
   _state: any;
   _uid: string;
 
-  constructor({
-    dispatcher,
-    factory,
-    getter,
-    initialState,
-    name,
-    responses,
-  }: StoreOptions) {
+  constructor(
+    {
+      dispatcher,
+      factory,
+      getter,
+      initialState,
+      name,
+      responses,
+    }: StoreOptions
+  ) {
     this._dispatcher = dispatcher;
     this._factory = factory;
     this._getter = getter;
@@ -80,7 +81,7 @@ export default class Store {
     invariant(
       typeof callback === 'function',
       'Store.addOnChange: expected callback to be a function' +
-      ' but got "%s" instead. %s',
+        ' but got "%s" instead. %s',
       callback,
       HINT_LINK
     );
@@ -101,21 +102,21 @@ export default class Store {
    * @protected
    * Responds to incoming messages from the Dispatcher
    */
-  _handleDispatch(
-    payload: Action
-  ): void {
+  _handleDispatch(payload: Action): void {
     if (process.env.NODE_ENV !== 'production') {
       invariant(
         isPayload(payload),
         'Store: expected dispatched payload to be an object with a' +
-        ' property "actionType" containing a string and an optional property' +
-        ' "data" containing any value but got "%s" instead. Learn more about' +
-        ' the dispatcher interface:' +
-        ' https://github.com/HubSpot/general-store#dispatcher-interface'
+          ' property "actionType" containing a string and an optional property' +
+          ' "data" containing any value but got "%s" instead. Learn more about' +
+          ' the dispatcher interface:' +
+          ' https://github.com/HubSpot/general-store#dispatcher-interface'
       );
     }
     const actionType = payload.actionType || payload.type;
-    const data = payload.hasOwnProperty('data') ? payload.data : payload.payload;
+    const data = payload.hasOwnProperty('data')
+      ? payload.data
+      : payload.payload;
     if (!actionType || !this._responses.hasOwnProperty(actionType)) {
       return;
     }

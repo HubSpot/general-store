@@ -23,14 +23,14 @@ describe('Store', () => {
       register: jest.genMockFn().mockReturnValue(mockDispatchToken),
       unregister: jest.genMockFn(),
     };
-    mockGet = jest.genMockFn().mockImpl((state) => state.count);
+    mockGet = jest.genMockFn().mockImpl(state => state.count);
     mockName = 'TestStore';
-    mockResponse = jest.genMockFn().mockImpl((state) => {
-      return {count: state.count + 1};
+    mockResponse = jest.genMockFn().mockImpl(state => {
+      return { count: state.count + 1 };
     });
     mockResponses = {};
     mockResponses[mockAction] = mockResponse;
-    mockInitialState = {count: 0};
+    mockInitialState = { count: 0 };
     storeFacade = new Store({
       getter: mockGet,
       initialState: mockInitialState,
@@ -55,23 +55,26 @@ describe('Store', () => {
   it('runs responses when the associated action is dispatched', () => {
     const handler = mockDispatcher.register.mock.calls[0][0];
     const mockData = {};
-    handler({actionType: mockAction, data: mockData});
+    handler({ actionType: mockAction, data: mockData });
     expect(mockResponse.mock.calls.length).toBe(1);
     expect(mockResponse.mock.calls[0][0]).toBe(mockInitialState);
     expect(mockResponse.mock.calls[0][1]).toBe(mockData);
     expect(mockResponse.mock.calls[0][2]).toBe(mockAction);
   });
 
-  it('runs responses when the associated action is dispatched with ' +
-     'type/payload structure', () => {
-    const handler = mockDispatcher.register.mock.calls[0][0];
-    const mockData = {};
-    handler({type: mockAction, payload: mockData});
-    expect(mockResponse.mock.calls.length).toBe(1);
-    expect(mockResponse.mock.calls[0][0]).toBe(mockInitialState);
-    expect(mockResponse.mock.calls[0][1]).toBe(mockData);
-    expect(mockResponse.mock.calls[0][2]).toBe(mockAction);
-  });
+  it(
+    'runs responses when the associated action is dispatched with ' +
+      'type/payload structure',
+    () => {
+      const handler = mockDispatcher.register.mock.calls[0][0];
+      const mockData = {};
+      handler({ type: mockAction, payload: mockData });
+      expect(mockResponse.mock.calls.length).toBe(1);
+      expect(mockResponse.mock.calls[0][0]).toBe(mockInitialState);
+      expect(mockResponse.mock.calls[0][1]).toBe(mockData);
+      expect(mockResponse.mock.calls[0][2]).toBe(mockAction);
+    }
+  );
 
   it('calls the getter from get', () => {
     expect(storeFacade.get()).toBe(0);
@@ -94,10 +97,10 @@ describe('Store', () => {
     storeFacade.addOnChange(mockListener);
 
     const handler = mockDispatcher.register.mock.calls[0][0];
-    handler({actionType: 'random action', data: {}});
+    handler({ actionType: 'random action', data: {} });
     expect(mockEvent.runHandlers.mock.calls.length).toBe(0);
 
-    handler({actionType: mockAction, data: {}});
+    handler({ actionType: mockAction, data: {} });
     expect(mockEvent.runHandlers.mock.calls.length).toBe(1);
   });
 
@@ -122,7 +125,7 @@ describe('Store', () => {
     const handler = mockDispatcher.register.mock.calls[0][0];
     const mockData = {};
     storeFacade.remove();
-    handler({actionType: mockAction, data: mockData});
+    handler({ actionType: mockAction, data: mockData });
     expect(mockResponse.mock.calls.length).toBe(0);
   });
 
@@ -130,15 +133,15 @@ describe('Store', () => {
     const handler = mockDispatcher.register.mock.calls[0][0];
     expect(() => handler(null)).toThrow();
     expect(() => handler({})).toThrow();
-    expect(() => handler({actionType: 'test!'})).not.toThrow();
+    expect(() => handler({ actionType: 'test!' })).not.toThrow();
   });
 
   it('properly tracks state updates', () => {
     const handler = mockDispatcher.register.mock.calls[0][0];
     expect(storeFacade.get()).toBe(0);
-    handler({actionType: mockAction});
+    handler({ actionType: mockAction });
     expect(storeFacade.get()).toBe(1);
-    handler({actionType: mockAction});
+    handler({ actionType: mockAction });
     expect(storeFacade.get()).toBe(2);
   });
 });

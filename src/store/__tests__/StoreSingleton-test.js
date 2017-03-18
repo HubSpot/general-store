@@ -32,12 +32,9 @@ describe('StoreSingleton', () => {
   });
 
   it('throws if define* are called after register', () => {
-    storeDefinition
-      .defineGet(EMPTY_FUNC)
-      .register(mockDispatcher);
-    expect(
-      () => storeDefinition.defineResponseTo('test', EMPTY_FUNC)
-    ).toThrow();
+    storeDefinition.defineGet(EMPTY_FUNC).register(mockDispatcher);
+    expect(() =>
+      storeDefinition.defineResponseTo('test', EMPTY_FUNC)).toThrow();
     expect(() => storeDefinition.defineGet(EMPTY_FUNC)).toThrow();
   });
 });

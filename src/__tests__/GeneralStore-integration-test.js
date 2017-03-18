@@ -43,11 +43,8 @@ function runTest(GeneralStore) {
     const mockComponent = {
       props: {},
       state: {},
-      setState: jest.fn((updates) => {
-        mockComponent.state = merge(
-          mockComponent.state,
-          updates
-        );
+      setState: jest.fn(updates => {
+        mockComponent.state = merge(mockComponent.state, updates);
       }),
     };
     return mockComponent;
@@ -58,10 +55,10 @@ function runTest(GeneralStore) {
       .defineGet(count => count)
       .defineGetInitialState(() => 0)
       .defineResponses({
-        [incAction]: (count) => count + 1,
-        [decAction]: (count) => {
+        [incAction]: count => count + 1,
+        [decAction]: count => {
           return count > 0 ? count - 1 : count;
-        }
+        },
       });
   }
 
@@ -73,16 +70,10 @@ function runTest(GeneralStore) {
     const users = {};
     return GeneralStore.define()
       .defineGet(() => users)
-      .defineResponseTo(
-        ADD_USER,
-        user => {
-          users[user.id] = user;
-        }
-      )
-      .defineResponseTo(
-        REMOVE_USER,
-        user => delete users[user.id]
-      )
+      .defineResponseTo(ADD_USER, user => {
+        users[user.id] = user;
+      })
+      .defineResponseTo(REMOVE_USER, user => delete users[user.id])
       .register(dispatcher);
   }
 
@@ -160,9 +151,12 @@ function runTest(GeneralStore) {
   });
 
   it('set the expected state on store change', () => {
-    const mockMixin = GeneralStore.StoreDependencyMixin({
-      users: UserStore,
-    }, dispatcher);
+    const mockMixin = GeneralStore.StoreDependencyMixin(
+      {
+        users: UserStore,
+      },
+      dispatcher
+    );
     const mockComponent = defineMockComponent();
     mockComponent.state = mockMixin.getInitialState.call(mockComponent);
     mockMixin.componentWillMount.call(mockComponent);
@@ -179,13 +173,16 @@ function runTest(GeneralStore) {
   });
 
   it('triggers ONE update for fields with a common Store', () => {
-    const mockMixin = GeneralStore.StoreDependencyMixin({
-      users: UserStore,
-      userIds: {
-        stores: [UserStore],
-        deref: () => Object.keys(UserStore.get()),
+    const mockMixin = GeneralStore.StoreDependencyMixin(
+      {
+        users: UserStore,
+        userIds: {
+          stores: [UserStore],
+          deref: () => Object.keys(UserStore.get()),
+        },
       },
-    }, dispatcher);
+      dispatcher
+    );
     const mockComponent = defineMockComponent();
     mockComponent.state = mockMixin.getInitialState.call(mockComponent);
     mockMixin.componentWillMount.call(mockComponent);
@@ -199,19 +196,20 @@ function runTest(GeneralStore) {
       users: {
         [mockUser.id]: mockUser,
       },
-      userIds: [
-        mockUser.id,
-      ],
+      userIds: [mockUser.id],
     });
   });
 
   it('triggers ONE update for stores that respond to a common action', () => {
     const UserCountStore = defineUserCountStore();
     const mockComponent = defineMockComponent();
-    const mockMixin = GeneralStore.StoreDependencyMixin({
-      users: UserStore,
-      userCount: UserCountStore,
-    }, dispatcher);
+    const mockMixin = GeneralStore.StoreDependencyMixin(
+      {
+        users: UserStore,
+        userCount: UserCountStore,
+      },
+      dispatcher
+    );
     mockComponent.state = mockMixin.getInitialState.call(mockComponent);
     mockMixin.componentWillMount.call(mockComponent);
     expect(mockComponent.state).toEqual({
@@ -234,19 +232,13 @@ function runTest(GeneralStore) {
  * the source, dev, and prod builds of GeneralStore.
  */
 describe('GeneralStore src integration test', () => {
-  runTest(
-    require('../GeneralStore.js')
-  );
+  runTest(require('../GeneralStore.js'));
 });
 
 describe('GeneralStore dev build integration test', () => {
-  runTest(
-    require('../../dist/general-store.js')
-  );
+  runTest(require('../../dist/general-store.js'));
 });
 
 describe('GeneralStore prod build integration test', () => {
-  runTest(
-    require('../../dist/general-store.min.js')
-  );
+  runTest(require('../../dist/general-store.min.js'));
 });

@@ -1,8 +1,8 @@
 jest.disableAutomock();
-import {Dispatcher} from 'flux';
-import {shallow} from 'enzyme';
-import {getDispatchToken} from '../../store/InspectStore';
-import React, {PropTypes} from 'react';
+import { Dispatcher } from 'flux';
+import { shallow } from 'enzyme';
+import { getDispatchToken } from '../../store/InspectStore';
+import React, { PropTypes } from 'react';
 import connect from '../connect';
 import StoreFactory from '../../store/StoreFactory';
 
@@ -97,7 +97,7 @@ describe('connect', () => {
 
     it('doesnt have propTypes if no deps specify them', () => {
       expect(
-        connect({one: FirstStore}, dispatcher)(BaseComponent).propTypes
+        connect({ one: FirstStore }, dispatcher)(BaseComponent).propTypes
       ).toEqual({});
     });
   });
@@ -121,7 +121,7 @@ describe('connect', () => {
   describe('componentWillReceiveProps', () => {
     it('calculates and sets state', () => {
       const root = shallow(<MockComponent />);
-      root.setProps({add: 2});
+      root.setProps({ add: 2 });
       expect(root.state()).toEqual({
         one: 1,
         two: 4,
@@ -133,7 +133,7 @@ describe('connect', () => {
   describe('handleDispatch', () => {
     it('waits for all stores affected by the actionType', () => {
       shallow(<MockComponent />);
-      dispatcher.dispatch({actionType: SHARED});
+      dispatcher.dispatch({ actionType: SHARED });
       expect(dispatcher.waitFor.mock.calls[0][0]).toEqual([
         getDispatchToken(FirstStore),
         getDispatchToken(SecondStore),
@@ -142,7 +142,7 @@ describe('connect', () => {
 
     it('only updates fields affected by the actionType', () => {
       const root = shallow(<MockComponent />);
-      dispatcher.dispatch({actionType: SHARED});
+      dispatcher.dispatch({ actionType: SHARED });
       expect(root.state()).toEqual({
         one: 0,
         two: 1,
