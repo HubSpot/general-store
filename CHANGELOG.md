@@ -1,3 +1,6 @@
+## 2.2.3
+* connect adds a `focus` method that calls through to `BaseComponent.focus`
+
 ## 2.2.2
 * connect adds a static `dependencies` field to the connected component
 * connect adds a static `WrappedComponent` field mirroring react-redux
