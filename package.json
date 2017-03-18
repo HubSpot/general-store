@@ -61,6 +61,7 @@
     "invariant": "^2.2.1",
     "jest-cli": "^12.1.1",
     "prettier": "^0.22.0",
+    "react": "^15.2.0",
     "react-addons-test-utils": "^15.2.0",
     "react-dom": "^15.2.0",
     "webpack": "^1.13.1"
