@@ -1,6 +1,6 @@
 jest.disableAutomock();
 import { Dispatcher } from 'flux';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { getDispatchToken } from '../../store/InspectStore';
 import React, { PropTypes } from 'react';
 import connect from '../connect';
@@ -127,6 +127,33 @@ describe('connect', () => {
         two: 4,
         third: 5,
       });
+    });
+  });
+
+  describe('focus', () => {
+    it('is undefined if BaseComponent has no focus method', () => {
+      expect(MockComponent.focus).toBe(undefined);
+    });
+
+    it('calls through to the BaseComponents focus', () => {
+      const focusSpy = jest.fn();
+      class ComponentWithFocus extends React.Component {
+        focus(...args) {
+          return focusSpy(...args);
+        }
+
+        render() {
+          return <div />;
+        }
+      }
+      const ConnectedComponentWithFocus = connect(dependencies, dispatcher)(
+        ComponentWithFocus
+      );
+      const rendered = mount(<ConnectedComponentWithFocus />);
+      const connectedInstance = rendered.instance();
+      connectedInstance.focus('test', 123);
+      expect(focusSpy.mock.calls.length).toBe(1);
+      expect(focusSpy.mock.calls[0]).toEqual(['test', 123]);
     });
   });
 

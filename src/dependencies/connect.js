@@ -1,6 +1,6 @@
 /* @flow */
-import type {DependencyIndexEntry, DependencyMap} from './DependencyMap';
-import type {Dispatcher} from 'flux';
+import type { DependencyIndexEntry, DependencyMap } from './DependencyMap';
+import type { Dispatcher } from 'flux';
 import {
   calculateInitial,
   calculateForDispatch,
@@ -8,10 +8,10 @@ import {
   dependencyPropTypes,
   makeDependencyIndex,
 } from '../dependencies/DependencyMap';
-import {handleDispatch} from './Dispatch';
-import {get as getDispatcherInstance} from '../dispatcher/DispatcherInstance';
-import {enforceDispatcher} from '../dispatcher/DispatcherInterface';
-import React, {Component} from 'react';
+import { handleDispatch } from './Dispatch';
+import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
+import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
+import React, { Component } from 'react';
 
 function focuser(instance, ...args) {
   if (!instance.wrappedInstance) {
@@ -79,7 +79,7 @@ export default function connect(
       }
 
       focus = typeof BaseComponent.prototype.focus === 'function'
-        ? focuser.bind(this)
+        ? (...args) => focuser(this, ...args)
         : undefined;
 
       handleDispatch(entry: DependencyIndexEntry) {
