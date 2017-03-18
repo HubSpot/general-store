@@ -10,7 +10,7 @@ import {
   dependenciesUseState,
   dependencyPropTypes,
   enforceValidDependencies,
-  makeDependencyIndex
+  makeDependencyIndex,
 } from '../DependencyMap';
 import {Dispatcher} from 'flux';
 import {getDispatchToken} from '../../store/InspectStore';
@@ -39,28 +39,28 @@ describe('DependencyMap', () => {
       initialState,
       responses: {
         [DECREMENT]: count => count - 1,
-        [INCREMENT]: count => count + 1
-      }
+        [INCREMENT]: count => count + 1,
+      },
     });
 
     dependencies = {
       count: CountStore,
       negativeCount: {
         stores: [CountStore],
-        deref: () => CountStore.get() * (-1)
+        deref: () => CountStore.get() * -1,
       },
       absCount: {
         stores: [CountStore],
-        deref: props => Math.abs(CountStore.get())
+        deref: props => Math.abs(CountStore.get()), // eslint-disable-line no-unused-vars
       },
       timesAHundred: {
         stores: [CountStore],
-        deref: (props, state) => CountStore.get() * 100
+        deref: (props, state) => CountStore.get() * 100, // eslint-disable-line no-unused-vars
       },
       timesAHundredMinusState: {
         stores: [CountStore],
-        deref: (props, state) => CountStore.get() * 100 - state.testState
-      }
+        deref: (props, state) => CountStore.get() * 100 - state.testState,
+      },
     };
   });
 
@@ -71,12 +71,12 @@ describe('DependencyMap', () => {
       countPlusN: {
         stores: [CountStore],
         propTypes: {
-          n: isNumberType
+          n: isNumberType,
         },
         deref({n}) {
           return CountStore.get() + n;
-        }
-      }
+        },
+      },
     };
 
     it('returns an empty object if no types are defined', () => {
@@ -89,22 +89,22 @@ describe('DependencyMap', () => {
 
     it('includes any existing propTypes', () => {
       const existing = {
-        someProp: isStringType
+        someProp: isStringType,
       };
       expect(dependencyPropTypes(depsWithTypes, existing)).toEqual({
         n: isNumberType,
-        someProp: isStringType
+        someProp: isStringType,
       });
     });
 
     it('drops any propTypes that conflict with the dependency', () => {
       const existing = {
         countPlusN: isNumberType,
-        someProp: isStringType
+        someProp: isStringType,
       };
       expect(dependencyPropTypes(depsWithTypes, existing)).toEqual({
         n: isNumberType,
-        someProp: isStringType
+        someProp: isStringType,
       });
     });
   });
@@ -116,45 +116,50 @@ describe('DependencyMap', () => {
     });
 
     it('throws if a dependency is not an object', () => {
-      expect(() => enforceValidDependencies({
-        test: null
-      })).toThrow();
+      expect(() =>
+        enforceValidDependencies({
+          test: null,
+        })).toThrow();
     });
 
     it('throws if a dependency.deref is not a function', () => {
-      expect(() => enforceValidDependencies({
-        test: {
-          stores: [],
-          deref: null
-        }
-      })).toThrow();
+      expect(() =>
+        enforceValidDependencies({
+          test: {
+            stores: [],
+            deref: null,
+          },
+        })).toThrow();
     });
 
     it('throws if a dependency.stores is not an Array', () => {
-      expect(() => enforceValidDependencies({
-        test: {
-          stores: null,
-          deref: () => {}
-        }
-      })).toThrow();
+      expect(() =>
+        enforceValidDependencies({
+          test: {
+            stores: null,
+            deref: () => {},
+          },
+        })).toThrow();
     });
 
     it('throws if an item in dependency.stores is not Store', () => {
-      expect(() => enforceValidDependencies({
-        test: {
-          stores: [null],
-          deref: () => {}
-        }
-      })).toThrow();
+      expect(() =>
+        enforceValidDependencies({
+          test: {
+            stores: [null],
+            deref: () => {},
+          },
+        })).toThrow();
     });
 
     it('doesnt throw if the dependency is valid', () => {
-      expect(() => enforceValidDependencies({
-        test: {
-          stores: [CountStore],
-          deref: () => {}
-        }
-      })).not.toThrow();
+      expect(() =>
+        enforceValidDependencies({
+          test: {
+            stores: [CountStore],
+            deref: () => {},
+          },
+        })).not.toThrow();
     });
   });
 
@@ -173,7 +178,7 @@ describe('DependencyMap', () => {
               expect(args[1]).toBe(undefined);
               expect(args[2]).toBe(undefined);
               return CountStore.get();
-            }
+            },
           },
           mockProps,
           mockState
@@ -191,7 +196,7 @@ describe('DependencyMap', () => {
               expect(args[1]).toBe(undefined);
               expect(args[2]).toBe(undefined);
               return CountStore.get();
-            }
+            },
           },
           mockProps,
           mockState
@@ -210,7 +215,7 @@ describe('DependencyMap', () => {
               expect(state).toBe(mockState);
               expect(stores).toBe(mockStores);
               return CountStore.get();
-            }
+            },
           },
           mockProps,
           mockState
@@ -229,7 +234,7 @@ describe('DependencyMap', () => {
               expect(state).toBe(mockState);
               expect(stores).toBe(mockStores);
               return CountStore.get();
-            }
+            },
           },
           mockProps,
           mockState
@@ -246,7 +251,7 @@ describe('DependencyMap', () => {
         count: initialState,
         negativeCount: -initialState,
         timesAHundred: initialState * 100,
-        timesAHundredMinusState: initialState * 100 - mockState.testState
+        timesAHundredMinusState: initialState * 100 - mockState.testState,
       });
     });
   });
@@ -256,14 +261,14 @@ describe('DependencyMap', () => {
       const mockIndexEntry = {
         fields: {
           count: true,
-          absCount: true
-        }
+          absCount: true,
+        },
       };
       expect(
         calculateForDispatch(dependencies, mockIndexEntry, {}, {})
       ).toEqual({
         count: initialState,
-        absCount: initialState
+        absCount: initialState,
       });
     });
   });
@@ -278,7 +283,7 @@ describe('DependencyMap', () => {
       expect(result).toEqual({
         absCount: initialState,
         timesAHundred: initialState * 100,
-        timesAHundredMinusState: initialState * 100 - mockState.testState
+        timesAHundredMinusState: initialState * 100 - mockState.testState,
       });
     });
   });
@@ -292,7 +297,7 @@ describe('DependencyMap', () => {
       );
       expect(result).toEqual({
         timesAHundred: initialState * 100,
-        timesAHundredMinusState: initialState * 100 - mockState.testState
+        timesAHundredMinusState: initialState * 100 - mockState.testState,
       });
     });
   });
@@ -305,14 +310,14 @@ describe('DependencyMap', () => {
         negativeCount: true,
         absCount: true,
         timesAHundred: true,
-        timesAHundredMinusState: true
+        timesAHundredMinusState: true,
       });
     });
 
     it('properly calculates dispatchTokens affected by actions', () => {
       const index = makeDependencyIndex(dependencies);
       expect(index[INCREMENT].dispatchTokens).toEqual({
-        [getDispatchToken(CountStore)]: true
+        [getDispatchToken(CountStore)]: true,
       });
     });
   });
@@ -323,7 +328,7 @@ describe('DependencyMap', () => {
         dependenciesUseState({
           count: dependencies.count,
           negativeCount: dependencies.negativeCount,
-          absCount: dependencies.absCount
+          absCount: dependencies.absCount,
         })
       ).toBe(false);
     });

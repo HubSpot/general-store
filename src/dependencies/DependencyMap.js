@@ -6,33 +6,33 @@ import {
   oForEach,
   oMap,
   oMerge,
-  oReduce
+  oReduce,
 } from '../utils/ObjectUtils';
 import Store from '../store/Store';
 
 export type CompoundDependency = {
   propTypes?: Object,
   stores: Array<Store>,
-  deref: (props?: Object, state?: ?Object, stores?: Array<Store>) => any
+  deref: (props?: Object, state?: ?Object, stores?: Array<Store>) => any,
 };
 
 export type Dependency = CompoundDependency | Store;
 
 export type DependencyIndexEntry = {
   dispatchTokens: {[key: string]: boolean},
-  fields: {[key: string]: boolean}
+  fields: {[key: string]: boolean},
 };
 
 export type DependencyIndex = {
-  [key: string]: DependencyIndexEntry
+  [key: string]: DependencyIndexEntry,
 };
 
 export type DependencyMap = {
-  [key: string]: Dependency
+  [key: string]: Dependency,
 };
 
 export type PropTypes = {
-  [key: string]: Function
+  [key: string]: Function,
 };
 
 export function enforceValidDependencies(
@@ -152,7 +152,8 @@ export function calculateForPropsChange(
 ): Object {
   return oFilterMap(
     dependencies,
-    dep => dep.deref && dep.deref.length > 0,
+    (dep: Dependency) =>
+      typeof dep.deref === 'function' && dep.deref.length > 0,
     dep => calculate(dep, props, state)
   );
 }
@@ -164,7 +165,8 @@ export function calculateForStateChange(
 ): Object {
   return oFilterMap(
     dependencies,
-    dep => dep.deref && dep.deref.length > 1,
+    (dep: Dependency) =>
+      typeof dep.deref === 'function' && dep.deref.length > 1,
     dep => calculate(dep, props, state)
   );
 }
@@ -172,7 +174,7 @@ export function calculateForStateChange(
 function makeIndexEntry(): DependencyIndexEntry {
   return {
     fields: {},
-    dispatchTokens: {}
+    dispatchTokens: {},
   };
 }
 
@@ -188,7 +190,7 @@ export function makeDependencyIndex(
         getActionTypes(store).forEach(actionType => {
           let entry = index[actionType];
           if (!entry) {
-            entry = index[actionType] = makeIndexEntry();
+            entry = (index[actionType] = makeIndexEntry());
           }
           const token = getDispatchToken(store);
           entry.dispatchTokens[token] = true;
