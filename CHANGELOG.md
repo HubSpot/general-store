@@ -1,3 +1,6 @@
+## 2.3.0
+* `connectWithState` wraps a normal `connect` in a state container to fill the `StoreDependencyMixin` use case https://github.com/HubSpot/general-store/pull/55
+
 ## 2.2.3
 * connect adds a `focus` method that calls through to `BaseComponent.focus`
 

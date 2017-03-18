@@ -1,6 +1,11 @@
 /* @flow */
-import type { DependencyIndexEntry, DependencyMap } from './DependencyMap';
-import type { Dispatcher } from 'flux';
+import type {DependencyIndexEntry, DependencyMap} from './DependencyMap';
+import type {Dispatcher} from 'flux';
+import {
+  makeDisplayName,
+  focuser,
+  transferNonReactStatics,
+} from './BuildComponent';
 import {
   calculateInitial,
   calculateForDispatch,
@@ -8,28 +13,10 @@ import {
   dependencyPropTypes,
   makeDependencyIndex,
 } from '../dependencies/DependencyMap';
-import { handleDispatch } from './Dispatch';
-import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
-import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
-import React, { Component } from 'react';
-
-function focuser(instance, ...args) {
-  if (!instance.wrappedInstance) {
-    return undefined;
-  }
-  return instance.wrappedInstance.focus(...args);
-}
-
-function transferStaticProperties(
-  fromClass: Object,
-  // By setting the type to Object, I'm doing a little dance around the type
-  // checker... I fully expect this to break after a future flow upgrade.
-  toClass: Object
-) {
-  Object.keys(fromClass).forEach(staticField => {
-    toClass[staticField] = fromClass[staticField];
-  });
-}
+import {handleDispatch} from './Dispatch';
+import {get as getDispatcherInstance} from '../dispatcher/DispatcherInstance';
+import {enforceDispatcher} from '../dispatcher/DispatcherInterface';
+import React, {Component} from 'react';
 
 export default function connect(
   dependencies: DependencyMap,
@@ -42,8 +29,14 @@ export default function connect(
   /* global ReactClass */
   return function connector(BaseComponent: ReactClass<*>): ReactClass<*> {
     class ConnectedComponent extends Component {
-      static dependencies: DependencyMap;
-      static WrappedComponent: ReactClass<*>;
+      static defaultProps: ?Object = BaseComponent.defaultProps;
+      static dependencies: DependencyMap = dependencies;
+      static displayName = makeDisplayName('Connected', BaseComponent);
+      static propTypes = dependencyPropTypes(
+        dependencies,
+        BaseComponent.propTypes
+      );
+      static WrappedComponent: ReactClass<*> = BaseComponent;
 
       /* eslint react/sort-comp: 0 */
       dispatchToken: ?string;
@@ -103,14 +96,7 @@ export default function connect(
       }
     }
 
-    transferStaticProperties(BaseComponent, ConnectedComponent);
-    ConnectedComponent.dependencies = dependencies;
-    ConnectedComponent.displayName = `Connected(${BaseComponent.displayName})`;
-    ConnectedComponent.propTypes = dependencyPropTypes(
-      dependencies,
-      BaseComponent.propTypes
-    );
-    ConnectedComponent.WrappedComponent = BaseComponent;
+    transferNonReactStatics(BaseComponent, ConnectedComponent);
 
     return ConnectedComponent;
   };
