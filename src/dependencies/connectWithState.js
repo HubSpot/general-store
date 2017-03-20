@@ -26,8 +26,8 @@ function connector(
   class ConnectedComponentWithState extends Component {
     static displayName = makeDisplayName('Stateful', ConnectedComponent);
     static propTypes = {
-      initialState: PropTypes.object,
       ...transferrablePropTypes,
+      initialState: PropTypes.object,
     };
     static WrappedComponent = BaseComponent;
 

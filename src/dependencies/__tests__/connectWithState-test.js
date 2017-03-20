@@ -61,12 +61,12 @@ describe('connect', () => {
   describe('propTypes', () => {
     it('exports propTypes with initialState and without state & setState', () => {
       expect(MockComponent.propTypes).toEqual({
-        initialState: stateType,
+        initialState: PropTypes.object,
         otherProp: PropTypes.any,
       });
     });
 
-    it('adds a default initialState in non is specified', () => {
+    it('adds an optional initialState', () => {
       function NoInitialStateComponent() {
         return <div />;
       }
