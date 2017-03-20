@@ -9,12 +9,15 @@ function BaseComponent() {
   return <div />;
 }
 
+const stateType = PropTypes.shape({
+  testing: PropTypes.bool.isRequired,
+}).isRequired;
+
 BaseComponent.displayName = 'BaseComponent';
 BaseComponent.propTypes = {
+  initialState: stateType,
   otherProp: PropTypes.any,
-  state: PropTypes.shape({
-    testing: PropTypes.bool.isRequired,
-  }).isRequired,
+  state: stateType,
 };
 BaseComponent.testStaticMethod = () => true;
 
@@ -55,16 +58,31 @@ describe('connect', () => {
     )(BaseComponent);
   });
 
+  describe('propTypes', () => {
+    it('exports propTypes with initialState and without state & setState', () => {
+      expect(MockComponent.propTypes).toEqual({
+        initialState: stateType,
+        otherProp: PropTypes.any,
+      });
+    });
+
+    it('adds a default initialState in non is specified', () => {
+      function NoInitialStateComponent() {
+        return <div />;
+      }
+      NoInitialStateComponent.propTypes = {};
+      const WrappedComponent = connectWithState({}, dependencies, dispatcher)(
+        NoInitialStateComponent
+      );
+      expect(WrappedComponent.propTypes).toEqual({
+        initialState: PropTypes.object,
+      });
+    });
+  });
+
   describe('statics', () => {
     it('exports dependencies', () => {
       expect(MockComponent.dependencies).toEqual(dependencies);
-    });
-
-    it('exports propTypes with initialState and without state & setState', () => {
-      expect(MockComponent.propTypes).toEqual({
-        initialState: PropTypes.object,
-        otherProp: PropTypes.any,
-      });
     });
 
     it('exports WrappedComponent', () => {

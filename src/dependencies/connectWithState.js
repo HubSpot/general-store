@@ -19,15 +19,15 @@ function connector(
 ) {
   const ConnectedComponent = depConnector(BaseComponent);
   const {
-    setState,
-    state,
+    setState: setStateType,
+    state: stateType,
     ...transferrablePropTypes
   } = ConnectedComponent.propTypes;
   class ConnectedComponentWithState extends Component {
     static displayName = makeDisplayName('Stateful', ConnectedComponent);
     static propTypes = {
-      ...transferrablePropTypes,
       initialState: PropTypes.object,
+      ...transferrablePropTypes,
     };
     static WrappedComponent = BaseComponent;
 
