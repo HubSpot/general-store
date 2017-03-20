@@ -1,5 +1,9 @@
 {
-  "extends": "hubspot",
+  "extends": [
+    "plugin:react/recommended",
+    "prettier",
+    "prettier/react",
+  ],
   "parser": "babel-eslint",
   "env": {
     "jest": true

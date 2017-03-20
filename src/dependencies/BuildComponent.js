@@ -3,7 +3,7 @@
 /* global ReactClass */
 export function makeDisplayName(
   prefix: string,
-  BaseComponent: {displayName: string}
+  BaseComponent: { displayName: string }
 ) {
   return `${prefix}(${BaseComponent.displayName})`;
 }

@@ -123,6 +123,13 @@ array-unique@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.2.1.tgz#a1d97ccafcbc2625cc70fadceb36a50c58b01a53"
 
+array.prototype.find@^2.0.1:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/array.prototype.find/-/array.prototype.find-2.0.3.tgz#08c3ec33e32ec4bab362a2958e686ae92f59271d"
+  dependencies:
+    define-properties "^1.1.2"
+    es-abstract "^1.7.0"
+
 arrify@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
@@ -238,15 +245,15 @@ babel-core@^6.0.0, babel-core@^6.10.4, babel-core@^6.23.0:
     slash "^1.0.0"
     source-map "^0.5.0"
 
-babel-eslint@^6.1.0:
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-6.1.2.tgz#5293419fe3672d66598d327da9694567ba6a5f2f"
+babel-eslint@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-7.1.1.tgz#8a6a884f085aa7060af69cfc77341c2f99370fb2"
   dependencies:
-    babel-traverse "^6.0.20"
-    babel-types "^6.0.19"
-    babylon "^6.0.18"
-    lodash.assign "^4.0.0"
-    lodash.pickby "^4.0.0"
+    babel-code-frame "^6.16.0"
+    babel-traverse "^6.15.0"
+    babel-types "^6.15.0"
+    babylon "^6.13.0"
+    lodash.pickby "^4.6.0"
 
 babel-generator@^6.23.0:
   version "6.23.0"
@@ -834,7 +841,7 @@ babel-template@^6.22.0, babel-template@^6.23.0:
     babylon "^6.11.0"
     lodash "^4.2.0"
 
-babel-traverse@^6.0.20, babel-traverse@^6.22.0, babel-traverse@^6.23.0, babel-traverse@^6.23.1:
+babel-traverse@^6.15.0, babel-traverse@^6.22.0, babel-traverse@^6.23.0, babel-traverse@^6.23.1:
   version "6.23.1"
   resolved "https://registry.yarnpkg.com/babel-traverse/-/babel-traverse-6.23.1.tgz#d3cb59010ecd06a97d81310065f966b699e14f48"
   dependencies:
@@ -848,7 +855,7 @@ babel-traverse@^6.0.20, babel-traverse@^6.22.0, babel-traverse@^6.23.0, babel-tr
     invariant "^2.2.0"
     lodash "^4.2.0"
 
-babel-types@^6.0.19, babel-types@^6.19.0, babel-types@^6.22.0, babel-types@^6.23.0:
+babel-types@^6.15.0, babel-types@^6.19.0, babel-types@^6.22.0, babel-types@^6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-types/-/babel-types-6.23.0.tgz#bb17179d7538bad38cd0c9e115d340f77e7e9acf"
   dependencies:
@@ -865,7 +872,7 @@ babylon@6.15.0:
   version "6.15.0"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.15.0.tgz#ba65cfa1a80e1759b0e89fb562e27dccae70348e"
 
-babylon@^6.0.18, babylon@^6.11.0, babylon@^6.15.0:
+babylon@^6.11.0, babylon@^6.13.0, babylon@^6.15.0:
   version "6.16.1"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.16.1.tgz#30c5a22f481978a9e7f8cdfdf496b11d94b404d3"
 
@@ -1105,7 +1112,7 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
 
-concat-stream@^1.4.6:
+concat-stream@^1.5.2:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.6.0.tgz#0aac662fd52be78964d5532f694784e70110acf7"
   dependencies:
@@ -1278,6 +1285,13 @@ doctrine@^1.2.2:
     esutils "^2.0.2"
     isarray "^1.0.0"
 
+doctrine@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.0.0.tgz#c73d8d2909d22291e1a007a395804da8b665fe63"
+  dependencies:
+    esutils "^2.0.2"
+    isarray "^1.0.0"
+
 dom-serializer@0, dom-serializer@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-0.1.0.tgz#073c697546ce0780ce23be4a28e293e40bc30c82"
@@ -1358,7 +1372,7 @@ enzyme@^2.3.0:
   dependencies:
     prr "~0.0.0"
 
-es-abstract@^1.6.1:
+es-abstract@^1.6.1, es-abstract@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.7.0.tgz#dfade774e01bfcd97f96180298c449c8623fb94c"
   dependencies:
@@ -1451,28 +1465,34 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint-config-hubspot@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-hubspot/-/eslint-config-hubspot-6.2.0.tgz#1e8be9269e0d0a61fb52bd0e1b22a5305d223f79"
-
-eslint-plugin-react@^5.2.2:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-5.2.2.tgz#7db068e1f5487f6871e4deef36a381c303eac161"
+eslint-config-prettier@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-1.5.0.tgz#969b6d21b2eb2574a6810426507f755072db1963"
   dependencies:
-    doctrine "^1.2.2"
-    jsx-ast-utils "^1.2.1"
+    get-stdin "^5.0.1"
 
-eslint@^3.0.0:
-  version "3.17.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.17.0.tgz#e2704b09c5bae9fb49ee8bafeea3832c7257d498"
+eslint-plugin-react@^6.10.2:
+  version "6.10.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-6.10.2.tgz#e5492fc842ab19a3ba3e26bbf7a3455bd9c7b06f"
+  dependencies:
+    array.prototype.find "^2.0.1"
+    doctrine "^1.2.2"
+    has "^1.0.1"
+    jsx-ast-utils "^1.3.4"
+    object.assign "^4.0.4"
+
+eslint@3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.18.0.tgz#647e985c4ae71502d20ac62c109f66d5104c8a4b"
   dependencies:
     babel-code-frame "^6.16.0"
     chalk "^1.1.3"
-    concat-stream "^1.4.6"
+    concat-stream "^1.5.2"
     debug "^2.1.1"
-    doctrine "^1.2.2"
+    doctrine "^2.0.0"
     escope "^3.6.0"
     espree "^3.4.0"
+    esquery "^1.0.0"
     estraverse "^4.2.0"
     esutils "^2.0.2"
     file-entry-cache "^2.0.0"
@@ -1516,6 +1536,12 @@ esprima@^3.1.1:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.1.3.tgz#fdca51cee6133895e3c88d535ce49dbff62a4633"
 
+esquery@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.0.0.tgz#cfba8b57d7fba93f17298a8a006a04cda13d80fa"
+  dependencies:
+    estraverse "^4.0.0"
+
 esrecurse@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/esrecurse/-/esrecurse-4.1.0.tgz#4713b6536adf7f2ac4f327d559e7756bff648220"
@@ -1527,7 +1553,7 @@ estraverse@^1.9.1:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/estraverse/-/estraverse-1.9.3.tgz#af67f2dc922582415950926091a4005d29c9bb44"
 
-estraverse@^4.1.1, estraverse@^4.2.0:
+estraverse@^4.0.0, estraverse@^4.1.1, estraverse@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/estraverse/-/estraverse-4.2.0.tgz#0dee3fed31fcd469618ce7342099fc1afa0bdb13"
 
@@ -1787,7 +1813,7 @@ generate-object-property@^1.1.0:
   dependencies:
     is-property "^1.0.0"
 
-get-stdin@5.0.1:
+get-stdin@5.0.1, get-stdin@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/get-stdin/-/get-stdin-5.0.1.tgz#122e161591e21ff4c52530305693f20e6393a398"
 
@@ -2383,7 +2409,7 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.3.6"
 
-jsx-ast-utils@^1.2.1:
+jsx-ast-utils@^1.3.4:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-1.4.0.tgz#5afe38868f56bc8cc7aeaef0100ba8c75bd12591"
   dependencies:
@@ -2423,10 +2449,6 @@ lodash._reinterpolate@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/lodash._reinterpolate/-/lodash._reinterpolate-3.0.0.tgz#0ccf2d89166af03b3663c796538b75ac6e114d9d"
 
-lodash.assign@^4.0.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/lodash.assign/-/lodash.assign-4.2.0.tgz#0d99f3ccd7a6d261d19bdaeb9245005d285808e7"
-
 lodash.assignin@^4.0.9:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.assignin/-/lodash.assignin-4.2.0.tgz#ba8df5fb841eb0a3e8044232b0e263a8dc6a28a2"
@@ -2463,7 +2485,7 @@ lodash.pick@^4.2.1:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
 
-lodash.pickby@^4.0.0:
+lodash.pickby@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.pickby/-/lodash.pickby-4.6.0.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
 

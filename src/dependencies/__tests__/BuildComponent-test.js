@@ -8,10 +8,10 @@ import {
 describe('BuildComponent', () => {
   describe('focuser', () => {
     it('calls focus on wrappedInstance if it has a focus method', () => {
-      expect(() => focuser({wrappedInstance: {}})).not.toThrow();
+      expect(() => focuser({ wrappedInstance: {} })).not.toThrow();
       const focus = jest.fn();
       const fakeInstance = {
-        wrappedInstance: {focus},
+        wrappedInstance: { focus },
       };
       focuser(fakeInstance, 'test', 123);
       expect(focus.mock.calls[0]).toEqual(['test', 123]);
@@ -20,7 +20,7 @@ describe('BuildComponent', () => {
 
   describe('makeDisplayName', () => {
     it('creates a prefixed displayName', () => {
-      const BaseComponent = {displayName: 'BaseComponent'};
+      const BaseComponent = { displayName: 'BaseComponent' };
       expect(makeDisplayName('Test', BaseComponent)).toBe(
         'Test(BaseComponent)'
       );

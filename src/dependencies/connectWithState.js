@@ -5,10 +5,10 @@ import {
   transferNonReactStatics,
 } from './BuildComponent';
 import connect from './connect';
-import type {DependencyMap} from './DependencyMap';
-import {get as getDispatcherInstance} from '../dispatcher/DispatcherInstance';
-import type {Dispatcher} from 'flux';
-import React, {Component, PropTypes} from 'react';
+import type { DependencyMap } from './DependencyMap';
+import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
+import type { Dispatcher } from 'flux';
+import React, { Component, PropTypes } from 'react';
 
 /* global ReactClass */
 function connector(
@@ -18,16 +18,18 @@ function connector(
   BaseComponent: ReactClass<*>
 ) {
   const ConnectedComponent = depConnector(BaseComponent);
+  const {
+    setState,
+    state,
+    ...transferrablePropTypes
+  } = ConnectedComponent.propTypes;
   class ConnectedComponentWithState extends Component {
     static displayName = makeDisplayName('Stateful', ConnectedComponent);
     static propTypes = {
-      ...ConnectedComponent.propTypes,
-      setState: undefined,
-      state: undefined,
+      ...transferrablePropTypes,
       initialState: PropTypes.object,
     };
     static WrappedComponent = BaseComponent;
-    static wrappedInstance: ?Object = null;
 
     state = this.props.initialState || defaultInitialState;
     wrappedInstance: ?Object;
@@ -43,7 +45,7 @@ function connector(
     };
 
     render() {
-      const {initialState, ...props} = this.props;
+      const { initialState, ...props } = this.props;
       return (
         <ConnectedComponent
           {...props}
