@@ -1,19 +1,28 @@
 jest.disableAutomock();
 import connectWithState from '../connectWithState';
-import {Dispatcher} from 'flux';
-import {mount, shallow} from 'enzyme';
-import React from 'react';
+import { Dispatcher } from 'flux';
+import { mount, shallow } from 'enzyme';
+import React, { PropTypes } from 'react';
 import StoreFactory from '../../store/StoreFactory';
 
 function BaseComponent() {
   return <div />;
 }
 
+const stateType = PropTypes.shape({
+  testing: PropTypes.bool.isRequired,
+}).isRequired;
+
 BaseComponent.displayName = 'BaseComponent';
+BaseComponent.propTypes = {
+  initialState: stateType,
+  otherProp: PropTypes.any,
+  state: stateType,
+};
 BaseComponent.testStaticMethod = () => true;
 
 describe('connect', () => {
-  const defaultInitialState = {testing: true};
+  const defaultInitialState = { testing: true };
 
   const FIRST_ONLY = 'FIRST_ONLY';
   const SHARED = 'SHARED';
@@ -47,6 +56,28 @@ describe('connect', () => {
       dependencies,
       dispatcher
     )(BaseComponent);
+  });
+
+  describe('propTypes', () => {
+    it('exports propTypes with initialState and without state & setState', () => {
+      expect(MockComponent.propTypes).toEqual({
+        initialState: PropTypes.object,
+        otherProp: PropTypes.any,
+      });
+    });
+
+    it('adds an optional initialState', () => {
+      function NoInitialStateComponent() {
+        return <div />;
+      }
+      NoInitialStateComponent.propTypes = {};
+      const WrappedComponent = connectWithState({}, dependencies, dispatcher)(
+        NoInitialStateComponent
+      );
+      expect(WrappedComponent.propTypes).toEqual({
+        initialState: PropTypes.object,
+      });
+    });
   });
 
   describe('statics', () => {
@@ -108,7 +139,7 @@ describe('connect', () => {
     });
 
     it('passes initialState if it is specified', () => {
-      const initialState = {testing: false};
+      const initialState = { testing: false };
       const rendered = shallow(<MockComponent initialState={initialState} />);
       expect(rendered.prop('initialState')).toEqual(initialState);
     });
@@ -118,8 +149,8 @@ describe('connect', () => {
     it('updates state', () => {
       const rendered = shallow(<MockComponent />);
       expect(rendered.prop('state')).toEqual(defaultInitialState);
-      rendered.prop('setState')({testing: false});
-      expect(rendered.prop('state')).toEqual({testing: false});
+      rendered.prop('setState')({ testing: false });
+      expect(rendered.prop('state')).toEqual({ testing: false });
     });
   });
 });

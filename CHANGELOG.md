@@ -1,3 +1,6 @@
+## 2.3.1
+* `connectWithState` no longer exports invalid propTypes
+
 ## 2.3.0
 * `connectWithState` wraps a normal `connect` in a state container to fill the `StoreDependencyMixin` use case https://github.com/HubSpot/general-store/pull/55
 
