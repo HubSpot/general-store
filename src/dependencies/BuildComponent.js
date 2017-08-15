@@ -5,7 +5,7 @@ export function makeDisplayName(
   prefix: string,
   BaseComponent: { displayName?: string, name?: string }
 ) {
-  const baseComponentName = BaseComponent.displayName || BaseComponent.name;
+  const baseComponentName = BaseComponent.displayName || BaseComponent.name || 'Component';
   return `${prefix}(${baseComponentName})`;
 }
 
