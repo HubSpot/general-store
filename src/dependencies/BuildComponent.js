@@ -5,7 +5,8 @@ export function makeDisplayName(
   prefix: string,
   BaseComponent: { displayName: string }
 ) {
-  return `${prefix}(${BaseComponent.displayName})`;
+  const baseComponentName = BaseComponent.displayName || BaseComponent.name;
+  return `${prefix}(${baseComponentName})`;
 }
 
 export function focuser(instance: Object, ...args: Array<*>) {
