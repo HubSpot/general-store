@@ -1,3 +1,6 @@
+## 2.3.2
+* fixes the name that developer tools show for wrapped components that don't have displayName attributes (eg `Connected(undefined)` is now `Connected(BaseComponent)`)
+
 ## 2.3.1
 * `connectWithState` no longer exports invalid propTypes
 
