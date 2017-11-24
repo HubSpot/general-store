@@ -12,6 +12,8 @@ import uniqueID from '../uniqueid/uniqueID.js';
 const HINT_LINK = 'Learn more about using the Store API:' +
   ' https://github.com/HubSpot/general-store#using-the-store-api';
 
+const hasReduxDevTools = typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__;
+
 function getNull() {
   return null;
 }
@@ -69,6 +71,22 @@ export default class Store {
     this._dispatchToken = this._dispatcher.register(
       this._handleDispatch.bind(this)
     );
+
+    if (hasReduxDevTools) {
+      this._devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__.connect({
+        name: `${this._name}_${this._uid}`,
+        instanceId: this._uid
+      });
+
+      this._unsubscribe = this._devToolsExtension.subscribe(message => {
+        if (
+          message.type === 'DISPATCH' &&
+          message.payload.type === 'JUMP_TO_STATE'
+        ) {
+          this._handleDispatch(message.payload)
+        }
+      });
+    }
   }
 
   /**
@@ -127,6 +145,9 @@ export default class Store {
       payload
     );
     this.triggerChange();
+    if (this._devToolsExtension) {
+      this._devToolsExtension.send(actionType, this._state);
+    }
   }
 
   /**
@@ -138,6 +159,9 @@ export default class Store {
     this._event.remove();
     this._getter = getNull;
     this._responses = {};
+
+    typeof this._unsubscribe === 'function' && this._unsubscribe();
+    typeof this._devToolsExtension !== 'undefined' && this._devToolsExtension.disconnect();
   }
 
   toString(): string {
