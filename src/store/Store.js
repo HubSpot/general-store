@@ -1,9 +1,9 @@
 /* eslint no-console:0 */
 /* @flow */
-import type {Action, Dispatcher} from 'flux';
+import type { Action, Dispatcher } from 'flux';
 import type StoreFactory from './StoreFactory';
 
-import {isPayload} from '../dispatcher/DispatcherInterface.js';
+import { isPayload } from '../dispatcher/DispatcherInterface.js';
 import Event from '../event/Event.js';
 import EventHandler from '../event/EventHandler.js';
 import invariant from 'invariant';
@@ -54,7 +54,7 @@ export default class Store {
   _responses: StoreResponses;
   _state: any;
   _uid: string;
-  _devToolsExtension: DevToolsExtension;
+  _devToolsExtension: ?DevToolsExtension;
   _unsubscribeDevTools: ?() => any;
 
   constructor(
@@ -82,7 +82,7 @@ export default class Store {
 
     if (hasReduxDevTools) {
       this._devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__.connect({
-        name: `${this._name}_${this._uid}`,
+        name: name || `Store_${this._uid}`,
         instanceId: this._uid,
       });
 
