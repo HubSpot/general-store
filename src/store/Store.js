@@ -54,7 +54,7 @@ export default class Store {
   _responses: StoreResponses;
   _state: any;
   _uid: string;
-  _devToolsExtension: ?DevToolsExtension;
+  _devToolsExtension: DevToolsExtension;
   _unsubscribeDevTools: ?() => any;
 
   constructor(
