@@ -89,9 +89,10 @@ export default class Store {
       this._unsubscribeDevTools = this._devToolsExtension.subscribe(message => {
         if (
           message.type === 'DISPATCH' &&
-          message.payload.type === 'JUMP_TO_STATE'
+          message.payload.type === 'JUMP_TO_ACTION'
         ) {
-          this._handleDispatch(message.payload);
+          this._state = JSON.parse(message.state);
+          this.triggerChange();
         }
       });
     }

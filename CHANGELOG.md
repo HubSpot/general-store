@@ -1,3 +1,6 @@
+## 2.4.0
+* Adds the ability to use the [Redux Devtools Extension](https://github.com/zalmoxisus/redux-devtools-extension/) to inspect the state of stores.
+
 ## 2.3.2
 * fixes the name that developer tools show for wrapped components that don't have displayName attributes (eg `Connected(undefined)` is now `Connected(BaseComponent)`)
 
