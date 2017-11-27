@@ -276,7 +276,7 @@ type Dispatcher = {
 ```
 ## Redux Devtools Extension
 
-Using [Redux devtools extension](https://github.com/zalmoxisus/redux-devtools-extension) you can inspect the state of a store and see how the state changes between dispatches. The "Jump" feature should work but it is dependent on you using regular JS objects as the backing state.
+Using [Redux devtools extension](https://github.com/zalmoxisus/redux-devtools-extension) you can inspect the state of a store and see how the state changes between dispatches. The "Jump" (ability to change store state to what it was after a specific dispatch) feature should work but it is dependent on you using regular JS objects as the backing state.
 
 Using the `defineFactory` way of creating stores is highly recommended for this integration as you can define a name for your store and always for the state of the store to be inspected programmatically.
 
