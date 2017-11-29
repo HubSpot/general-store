@@ -1,3 +1,6 @@
+## 2.4.1
+* Fixes the function as the latest version of the extension uses `unsubscribe` instead of `disconnect`.
+
 ## 2.4.0
 * Adds the ability to use the [Redux Devtools Extension](https://github.com/zalmoxisus/redux-devtools-extension/) to inspect the state of stores.
 
