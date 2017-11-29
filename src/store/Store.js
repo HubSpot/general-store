@@ -172,7 +172,7 @@ export default class Store {
     typeof this._unsubscribeDevTools === 'function' &&
       this._unsubscribeDevTools();
     typeof this._devToolsExtension !== 'undefined' &&
-      this._devToolsExtension.disconnect();
+      this._devToolsExtension.unsubscribe();
   }
 
   toString(): string {
