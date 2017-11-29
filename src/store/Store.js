@@ -41,7 +41,7 @@ type StoreOptions = {
 
 type DevToolsExtension = {
   send: (string, any) => any,
-  disconnect: () => any,
+  unsubscribe: () => any,
 };
 
 export default class Store {
