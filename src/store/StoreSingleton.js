@@ -47,6 +47,11 @@ export default class StoreSingleton {
     return this;
   }
 
+  defineName(name: string): StoreSingleton {
+    this._factory.defineName(name);
+    return this;
+  }
+
   defineResponseTo(
     actionTypes: Array<string> | string,
     response: (data: any) => void

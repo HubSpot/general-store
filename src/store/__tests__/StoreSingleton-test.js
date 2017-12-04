@@ -31,6 +31,13 @@ describe('StoreSingleton', () => {
     expect(() => storeDefinition.defineGet(EMPTY_FUNC)).not.toThrow();
   });
 
+  it('calls through to defineName on the factory', () => {
+    const storeName = 'TestStore';
+    spyOn(storeDefinition._factory, 'defineName');
+    storeDefinition.defineName(storeName);
+    expect(storeDefinition._factory.defineName).toHaveBeenCalledWith(storeName);
+  });
+
   it('throws if define* are called after register', () => {
     storeDefinition.defineGet(EMPTY_FUNC).register(mockDispatcher);
     expect(() =>
