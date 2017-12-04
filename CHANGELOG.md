@@ -1,3 +1,6 @@
+## 2.5.0
+* Stores created with `GeneralStore.define()` support `defineName`
+
 ## 2.4.1
 * Fixes the function as the latest version of the extension uses `unsubscribe` instead of `disconnect`.
 
