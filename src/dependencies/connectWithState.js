@@ -2,13 +2,13 @@
 import {
   makeDisplayName,
   focuser,
-  transferNonReactStatics,
 } from './BuildComponent';
 import connect from './connect';
 import type { DependencyMap } from './DependencyMap';
 import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
 import type { Dispatcher } from 'flux';
 import React, { Component, PropTypes } from 'react';
+import hoistStatics from 'hoist-non-react-statics'
 
 /* global ReactClass */
 function connector(
@@ -58,9 +58,7 @@ function connector(
     }
   }
 
-  transferNonReactStatics(ConnectedComponent, ConnectedComponentWithState);
-
-  return ConnectedComponentWithState;
+  return hoistStatics(ConnectedComponentWithState, ConnectedComponent);
 }
 
 export default function connectWithState(

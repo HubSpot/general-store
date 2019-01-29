@@ -78,5 +78,8 @@
       "<rootDir>/src/uniqueid",
       "<rootDir>/src/utils/ObjectUtils.js"
     ]
+  },
+  "dependencies": {
+    "hoist-non-react-statics": "^2.5.0"
   }
 }
