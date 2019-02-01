@@ -4,7 +4,6 @@ import type { Dispatcher } from 'flux';
 import {
   makeDisplayName,
   focuser,
-  transferNonReactStatics,
 } from './BuildComponent';
 import {
   calculateInitial,
@@ -17,6 +16,7 @@ import { handleDispatch } from './Dispatch';
 import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
 import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import React, { Component } from 'react';
+import hoistStatics from 'hoist-non-react-statics'
 
 export default function connect(
   dependencies: DependencyMap,
@@ -96,8 +96,6 @@ export default function connect(
       }
     }
 
-    transferNonReactStatics(BaseComponent, ConnectedComponent);
-
-    return ConnectedComponent;
+    return hoistStatics(ConnectedComponent, BaseComponent);
   };
 }

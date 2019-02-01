@@ -1,3 +1,6 @@
+## 2.5.1
+* Support React 16.x by using [hoist-non-react-statics@2.5.0](https://github.com/mridgway/hoist-non-react-statics) (without `ForwardRef` support)
+
 ## 2.5.0
 * Stores created with `GeneralStore.define()` support `defineName`
 
