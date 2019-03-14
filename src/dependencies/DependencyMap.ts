@@ -1,4 +1,3 @@
-/* @flow */
 import { getActionTypes, getDispatchToken } from '../store/InspectStore';
 import invariant from 'invariant';
 import {
@@ -11,28 +10,28 @@ import {
 import Store from '../store/Store';
 
 export type CompoundDependency = {
-  propTypes?: Object,
-  stores: Array<Store>,
-  deref: (props?: Object, state?: ?Object, stores?: Array<Store>) => any,
+  propTypes?: Object;
+  stores: Array<Store>;
+  deref: (props?: Object, state?: Object, stores?: Array<Store>) => any;
 };
 
 export type Dependency = CompoundDependency | Store;
 
 export type DependencyIndexEntry = {
-  dispatchTokens: { [key: string]: boolean },
-  fields: { [key: string]: boolean },
+  dispatchTokens: { [key: string]: boolean };
+  fields: { [key: string]: boolean };
 };
 
 export type DependencyIndex = {
-  [key: string]: DependencyIndexEntry,
+  [key: string]: DependencyIndexEntry;
 };
 
 export type DependencyMap = {
-  [key: string]: Dependency,
+  [key: string]: Dependency;
 };
 
 export type PropTypes = {
-  [key: string]: Function,
+  [key: string]: Function;
 };
 
 export function enforceValidDependencies(
@@ -95,7 +94,7 @@ export function dependencyPropTypes(
   );
   return oReduce(
     dependencies,
-    (types, dependency) => {
+    (types, dependency: any) => {
       if (dependency instanceof Store) {
         return types;
       }
@@ -109,10 +108,10 @@ export function dependencyPropTypes(
   );
 }
 
-export function calculate(
+export function calculate<Props, State>(
   dependency: Dependency,
-  props: Object,
-  state: ?Object
+  props: Props,
+  state?: State
 ): any {
   if (dependency instanceof Store) {
     return dependency.get();
@@ -127,46 +126,49 @@ export function calculate(
   return deref(props, state, stores);
 }
 
-export function calculateInitial(
+export function calculateInitial<Props, State>(
   dependencies: DependencyMap,
-  props: Object,
-  state: ?Object
+  props: Props,
+  state?: State
 ): Object {
   return oMap(dependencies, dependency => calculate(dependency, props, state));
 }
 
-export function calculateForDispatch(
+export function calculateForDispatch<Props, State>(
   dependencies: DependencyMap,
   dependencyIndexEntry: DependencyIndexEntry,
-  props: Object,
-  state: ?Object
+  props: Props,
+  state?: State
 ): Object {
   return oMap(dependencyIndexEntry.fields, (_, field) =>
-    calculate(dependencies[field], props, state));
+    calculate(dependencies[field], props, state)
+  );
 }
 
-export function calculateForPropsChange(
+export function calculateForPropsChange<Props, State>(
   dependencies: DependencyMap,
-  props: Object,
-  state: ?Object
+  props: Props,
+  state?: State
 ): Object {
   return oFilterMap(
     dependencies,
     (dep: Dependency) =>
-      typeof dep.deref === 'function' && dep.deref.length > 0,
+      typeof (<CompoundDependency>dep).deref === 'function' &&
+      (<CompoundDependency>dep).deref.length > 0,
     dep => calculate(dep, props, state)
   );
 }
 
-export function calculateForStateChange(
+export function calculateForStateChange<Props, State>(
   dependencies: DependencyMap,
-  props: Object,
-  state: ?Object
+  props: Props,
+  state?: State
 ): Object {
   return oFilterMap(
     dependencies,
     (dep: Dependency) =>
-      typeof dep.deref === 'function' && dep.deref.length > 1,
+      typeof (<CompoundDependency>dep).deref === 'function' &&
+      (<CompoundDependency>dep).deref.length > 1,
     dep => calculate(dep, props, state)
   );
 }
@@ -190,7 +192,7 @@ export function makeDependencyIndex(
         getActionTypes(store).forEach(actionType => {
           let entry = index[actionType];
           if (!entry) {
-            entry = (index[actionType] = makeIndexEntry());
+            entry = index[actionType] = makeIndexEntry();
           }
           const token = getDispatchToken(store);
           entry.dispatchTokens[token] = true;

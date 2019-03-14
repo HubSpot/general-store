@@ -1,21 +1,20 @@
 {
   "name": "general-store",
-  "version": "2.5.1",
+  "version": "3.0.0-alpha.0",
   "description": "Simple, flexible store implementation for Flux.",
   "main": "lib/GeneralStore.js",
   "scripts": {
-    "build:commonjs": "BABEL_ENV=commonjs babel src --ignore *-test.js --out-dir lib",
-    "build:umd": "NODE_ENV=development webpack --config ./webpack.config.development.js src/GeneralStore.js dist/general-store.js",
-    "build:umd:min": "NODE_ENV=production webpack --config ./webpack.config.production.js -p src/GeneralStore.js dist/general-store.min.js",
+    "build:commonjs": "BABEL_ENV=commonjs babel src --ignore *-test.js --out-dir lib --extensions \".ts\",\".tsx\"",
+    "build:umd": "NODE_ENV=development webpack --config webpack.config.development.js --entry ./lib/GeneralStore.js",
+    "build:umd:min": "NODE_ENV=production webpack --config webpack.config.production.js --entry ./lib/GeneralStore.js",
     "build": "npm run build:commonjs && npm run build:umd && npm run build:umd:min",
     "build-and-test": "npm run clean && npm run build && npm test",
-    "check": "flow check",
     "clean": "rm -rf ./dist && rm -rf lib",
     "format": "prettier --single-quote -l --bracket-spacing --jsx-bracket-same-line --trailing-comma es5 --parser flow --write \"{src,__{tests,mocks}__}/**/*.js\"",
-    "lint": "eslint ./src",
+    "lint": "eslint ./src/**/*.ts",
     "prepublish": "npm run build-and-test",
     "test:unit": "jest",
-    "test": "npm run check && npm run lint && jest"
+    "test": "npm run lint && jest"
   },
   "repository": {
     "type": "git",
@@ -37,37 +36,39 @@
   },
   "homepage": "https://github.com/HubSpot/general-store",
   "peerDependencies": {
-    "react": ">= 0.14"
+    "prop-types": "^15.7.2",
+    "react": ">= 16.8.0"
   },
   "devDependencies": {
-    "babel": "^6.5.2",
-    "babel-cli": "^6.10.1",
-    "babel-core": "^6.10.4",
-    "babel-eslint": "^7.1.1",
-    "babel-jest": "^13.0.0",
-    "babel-loader": "^6.2.4",
-    "babel-plugin-transform-class-properties": "^6.10.2",
-    "babel-polyfill": "^6.9.1",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-react": "^6.11.1",
-    "babel-preset-stage-2": "^6.11.0",
-    "enzyme": "^2.3.0",
-    "eslint": "3.18.0",
-    "eslint-config-prettier": "^1.5.0",
-    "eslint-plugin-react": "^6.10.2",
-    "flow-bin": "^0.42.0",
+    "@babel/cli": "7.2.3",
+    "@babel/core": "7.3.4",
+    "@babel/plugin-proposal-class-properties": "7.3.4",
+    "@babel/polyfill": "7.2.5",
+    "@babel/preset-env": "7.3.4",
+    "@babel/preset-react": "7.0.0",
+    "@babel/preset-typescript": "7.3.3",
+    "@types/flux": "^3.1.8",
+    "@typescript-eslint/eslint-plugin": "^1.4.2",
+    "@typescript-eslint/parser": "^1.4.2",
+    "enzyme": "3.9.0",
+    "enzyme-adapter-react-16": "1.11.0",
+    "eslint": "5.15.1",
+    "eslint-config-prettier": "4.1.0",
+    "eslint-plugin-jest": "^22.3.2",
+    "eslint-plugin-react-app": "^4.0.1",
     "flux": "^2.0.1",
     "immutable-is": "^3.7.4",
     "invariant": "^2.2.1",
-    "jest-cli": "^12.1.1",
-    "prettier": "^0.22.0",
-    "react": "^15.2.0",
-    "react-addons-test-utils": "^15.2.0",
-    "react-dom": "^15.2.0",
-    "webpack": "^1.13.1"
+    "jest": "24.5.0",
+    "prettier": "1.16.4",
+    "react": "16.8.4",
+    "react-dom": "16.8.4",
+    "typescript": "^3.3.3333",
+    "webpack": "4.29.6",
+    "webpack-cli": "3.2.3"
   },
   "jest": {
-    "testPathDirs": [
+    "roots": [
       "<rootDir>/src"
     ],
     "unmockedModulePathPatterns": [
@@ -80,6 +81,6 @@
     ]
   },
   "dependencies": {
-    "hoist-non-react-statics": "^2.5.0"
+    "hoist-non-react-statics": "3.3.0"
   }
 }

@@ -1,23 +1,18 @@
-jest.unmock('../StoreSingleton.js');
+import * as DispatcherInstance from '../../dispatcher/DispatcherInstance';
+const StoreSingleton = jest.requireActual('../StoreSingleton').default;
 
 const EMPTY_FUNC = () => {};
 
 describe('StoreSingleton', () => {
-  let DispatcherInstance;
-  let StoreSingleton;
-
   let mockDispatcher;
   let storeDefinition;
 
   beforeEach(() => {
-    DispatcherInstance = require('../../dispatcher/DispatcherInstance.js');
-    StoreSingleton = require('../StoreSingleton.js').default;
-
     mockDispatcher = {
       register: () => 12345,
       unregister: EMPTY_FUNC,
     };
-    DispatcherInstance.get.mockReturnValue(mockDispatcher);
+    jest.spyOn(DispatcherInstance, 'get').mockReturnValue(mockDispatcher);
     storeDefinition = new StoreSingleton();
   });
 
@@ -41,7 +36,8 @@ describe('StoreSingleton', () => {
   it('throws if define* are called after register', () => {
     storeDefinition.defineGet(EMPTY_FUNC).register(mockDispatcher);
     expect(() =>
-      storeDefinition.defineResponseTo('test', EMPTY_FUNC)).toThrow();
+      storeDefinition.defineResponseTo('test', EMPTY_FUNC)
+    ).toThrow();
     expect(() => storeDefinition.defineGet(EMPTY_FUNC)).toThrow();
   });
 });

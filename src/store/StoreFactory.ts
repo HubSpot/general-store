@@ -1,11 +1,11 @@
-/* @flow */
-import type { Dispatcher } from 'flux';
+import { Dispatcher } from 'flux';
 import * as DispatcherInstance from '../dispatcher/DispatcherInstance';
-import { enforceDispatcher } from '../dispatcher/DispatcherInterface.js';
+import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import invariant from 'invariant';
 import Store from './Store';
 
-const HINT_LINK = 'Learn more about defining stores:' +
+const HINT_LINK =
+  'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
 function enforceResponse(existingResponses, actionType, response) {
@@ -36,14 +36,14 @@ type Getter = (state: any) => any;
 type Response = (state: any, payload: any, actionType: string) => any;
 
 type Responses = {
-  [key: string]: Response,
+  [key: string]: Response;
 };
 
 type StoreFactoryDefinition = {
-  getter: Getter,
-  getInitialState: () => any,
-  name: ?string,
-  responses: Responses,
+  getter?: Getter;
+  getInitialState?: () => any;
+  name?: string;
+  responses?: Responses;
 };
 
 function defaultGetInitialState() {
@@ -57,7 +57,12 @@ function defaultGetter(state: any): any {
 export default class StoreFactory {
   _definition: StoreFactoryDefinition;
 
-  constructor({ getter, getInitialState, name, responses }: Object) {
+  constructor({
+    getter,
+    getInitialState,
+    name,
+    responses,
+  }: StoreFactoryDefinition = {}) {
     this._definition = {
       getter: getter || defaultGetter,
       getInitialState: getInitialState || defaultGetInitialState,
@@ -103,7 +108,8 @@ export default class StoreFactory {
       'StoreFactory.defineResponses: newResponses must be an object'
     );
     Object.keys(newResponses).forEach(actionType =>
-      enforceResponse(responses, actionType, newResponses[actionType]));
+      enforceResponse(responses, actionType, newResponses[actionType])
+    );
     return new StoreFactory({
       ...this._definition,
       responses: {
@@ -129,7 +135,7 @@ export default class StoreFactory {
     return this._definition;
   }
 
-  register(dispatcher: ?Dispatcher): Store {
+  register(dispatcher?: Dispatcher<any>): Store {
     dispatcher = dispatcher || DispatcherInstance.get();
     invariant(
       dispatcher !== null && typeof dispatcher === 'object',

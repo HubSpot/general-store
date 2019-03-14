@@ -1,4 +1,6 @@
-jest.unmock('../Store.js');
+jest.unmock('../Store');
+jest.mock('../../event/Event');
+import Event from '../../event/Event';
 
 describe('Store', () => {
   let Store;
@@ -14,18 +16,17 @@ describe('Store', () => {
   let mockResponses;
 
   beforeEach(() => {
-    Store = require('../Store.js').default;
-
+    Store = require('../Store').default;
     mockAction = 'INCREMENT';
     mockDispatchToken = 'test-token';
     mockDispatcher = {
-      isDispatching: jest.genMockFn().mockReturnValue(true),
-      register: jest.genMockFn().mockReturnValue(mockDispatchToken),
-      unregister: jest.genMockFn(),
+      isDispatching: jest.fn(() => true),
+      register: jest.fn(() => mockDispatchToken),
+      unregister: jest.fn(),
     };
-    mockGet = jest.genMockFn().mockImpl(state => state.count);
+    mockGet = jest.fn(state => state.count);
     mockName = 'TestStore';
-    mockResponse = jest.genMockFn().mockImpl(state => {
+    mockResponse = jest.fn(state => {
       return { count: state.count + 1 };
     });
     mockResponses = {};
@@ -92,8 +93,8 @@ describe('Store', () => {
   });
 
   it('runs listeners after a definedResponse', () => {
-    const mockListener = jest.genMockFn();
-    const mockEvent = require('../../event/Event.js').default.mock.instances[0];
+    const mockListener = jest.fn();
+    const mockEvent = Event.mock.instances[Event.mock.instances.length - 1];
     storeFacade.addOnChange(mockListener);
 
     const handler = mockDispatcher.register.mock.calls[0][0];
@@ -111,7 +112,7 @@ describe('Store', () => {
   });
 
   it('removes its event on remove', () => {
-    const mockEvent = require('../../event/Event.js').default.mock.instances[0];
+    const mockEvent = Event.mock.instances[Event.mock.instances.length - 1];
     storeFacade.remove();
     expect(mockEvent.remove.mock.calls.length).toBe(1);
   });

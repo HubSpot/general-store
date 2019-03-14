@@ -1,15 +1,14 @@
-/* @flow */
-import type { Dispatcher } from 'flux';
-import { isDispatcher } from './DispatcherInterface.js';
+import { Dispatcher } from 'flux';
+import { isDispatcher } from './DispatcherInterface';
 import invariant from 'invariant';
 
 let instance = null;
 
-export function get(): ?Dispatcher {
+export function get(): Dispatcher<any> | null {
   return instance;
 }
 
-export function set(dispatcher: Dispatcher): void {
+export function set(dispatcher: Dispatcher<any>): void {
   invariant(
     isDispatcher(dispatcher),
     'DispatcherInstance.set: Expected dispatcher to be an object' +
@@ -19,4 +18,10 @@ export function set(dispatcher: Dispatcher): void {
     dispatcher
   );
   instance = dispatcher;
+}
+
+export function clear(): Dispatcher<any> {
+  const oldInstance = instance;
+  instance = null;
+  return oldInstance;
 }

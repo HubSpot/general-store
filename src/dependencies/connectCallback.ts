@@ -1,5 +1,4 @@
-// @flow
-import type {
+import {
   DependencyIndex,
   DependencyIndexEntry,
   DependencyMap,
@@ -12,15 +11,15 @@ import {
 import { handleDispatch } from './Dispatch';
 import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
 import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
-import type { Dispatcher } from 'flux';
+import { Dispatcher } from 'flux';
 
 function subscribe(
   dependencies: DependencyMap,
   dependencyIndex: DependencyIndex,
-  dispatcher: Dispatcher,
+  dispatcher: Dispatcher<any>,
   callback: Function,
   props: Object = {},
-  state: ?Object = null
+  state: Object = null
 ) {
   let dispatchToken;
   let storeState = {};
@@ -63,7 +62,7 @@ function subscribe(
 
 export default function connectCallback(
   dependencies: DependencyMap,
-  dispatcher: ?Dispatcher = getDispatcherInstance()
+  dispatcher: Dispatcher<any> = getDispatcherInstance()
 ) {
   enforceDispatcher(dispatcher);
   if (!dispatcher) {

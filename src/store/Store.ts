@@ -1,23 +1,36 @@
 /* eslint no-console:0 */
-/* @flow */
-import type { Action, Dispatcher } from 'flux';
-import type StoreFactory from './StoreFactory';
+import { Dispatcher } from 'flux';
+import StoreFactory from './StoreFactory';
 
-import { isPayload } from '../dispatcher/DispatcherInterface.js';
-import Event from '../event/Event.js';
-import EventHandler from '../event/EventHandler.js';
+import { isPayload } from '../dispatcher/DispatcherInterface';
+import Event from '../event/Event';
+import EventHandler from '../event/EventHandler';
 import invariant from 'invariant';
-import uniqueID from '../uniqueid/uniqueID.js';
+import uniqueID from '../uniqueid/uniqueID';
 
-const HINT_LINK = 'Learn more about using the Store API:' +
+const HINT_LINK =
+  'Learn more about using the Store API:' +
   ' https://github.com/HubSpot/general-store#using-the-store-api';
 
-const hasReduxDevTools = typeof window !== 'undefined' &&
-  window.__REDUX_DEVTOOLS_EXTENSION__;
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION__: DevToolsExtension;
+  }
+}
+
+const hasReduxDevTools =
+  typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__;
 
 function getNull() {
   return null;
 }
+
+export type Action = {
+  actionType: string;
+  type: string;
+  data: any;
+  payload: any;
+};
 
 export type StoreGetter = (...args: Array<any>) => any;
 
@@ -27,25 +40,38 @@ export type StoreResponses = {
     data: any,
     actionType: string,
     payload: Action
-  ) => any,
+  ) => any;
 };
 
 type StoreOptions = {
-  dispatcher: Dispatcher,
-  factory: StoreFactory,
-  getter: (...args: Array<any>) => any,
-  initialState: any,
-  name: ?string,
-  responses: {},
+  dispatcher: Dispatcher<any>;
+  factory: StoreFactory;
+  getter: (...args: Array<any>) => any;
+  initialState: any;
+  name?: string;
+  responses: {};
+};
+
+type DevToolsOptions = {
+  name: string;
+  instanceId: string;
+};
+
+type DevToolsMessage = {
+  type: string;
+  state: any;
+  payload: DevToolsMessage;
 };
 
 type DevToolsExtension = {
-  send: (string, any) => any,
-  unsubscribe: () => any,
+  connect: (options: DevToolsOptions) => DevToolsExtension;
+  send: (message: string, data: any) => any;
+  unsubscribe: () => any;
+  subscribe: (callback: (message: DevToolsMessage) => void) => any;
 };
 
 export default class Store {
-  _dispatcher: Dispatcher;
+  _dispatcher: Dispatcher<any>;
   _dispatchToken: string;
   _factory: StoreFactory;
   _getter: StoreGetter;
@@ -55,18 +81,16 @@ export default class Store {
   _state: any;
   _uid: string;
   _devToolsExtension: DevToolsExtension;
-  _unsubscribeDevTools: ?() => any;
+  _unsubscribeDevTools?: () => any;
 
-  constructor(
-    {
-      dispatcher,
-      factory,
-      getter,
-      initialState,
-      name,
-      responses,
-    }: StoreOptions
-  ) {
+  constructor({
+    dispatcher,
+    factory,
+    getter,
+    initialState,
+    name,
+    responses,
+  }: StoreOptions) {
     this._dispatcher = dispatcher;
     this._factory = factory;
     this._getter = getter;

@@ -1,31 +1,24 @@
 'use strict';
 
-var webpack = require('webpack');
-
-var reactExternal = {
-  root: 'React',
-  commonjs2: 'react',
-  commonjs: 'react',
-  amd: 'react',
-};
-
 module.exports = {
   externals: {
-    'react': reactExternal,
+    react: {
+      root: 'React',
+      commonjs2: 'react',
+      commonjs: 'react',
+      amd: 'react',
+    },
   },
   module: {
-    loaders: [{
-      test: /\.js$/,
-      loaders: ['babel-loader'],
-      exclude: /node_modules/,
-    }],
-  },
-  output: {
-    library: 'GeneralStore',
-    libraryTarget: 'umd',
-    sourcePrefix: '  ',
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loaders: ['babel-loader'],
+        exclude: /node_modules/,
+      },
+    ],
   },
   resolve: {
-    extensions: ['', '.js'],
+    extensions: ['.ts', '.tsx', '.js'],
   },
 };

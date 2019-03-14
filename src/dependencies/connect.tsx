@@ -1,10 +1,6 @@
-/* @flow */
-import type { DependencyIndexEntry, DependencyMap } from './DependencyMap';
-import type { Dispatcher } from 'flux';
-import {
-  makeDisplayName,
-  focuser,
-} from './BuildComponent';
+import { DependencyIndexEntry, DependencyMap } from './DependencyMap';
+import { Dispatcher } from 'flux';
+import { makeDisplayName, focuser } from './BuildComponent';
 import {
   calculateInitial,
   calculateForDispatch,
@@ -15,33 +11,34 @@ import {
 import { handleDispatch } from './Dispatch';
 import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
 import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
-import React, { Component } from 'react';
-import hoistStatics from 'hoist-non-react-statics'
+import * as React from 'react';
+import { Component, ComponentType } from 'react';
+import hoistStatics from 'hoist-non-react-statics';
 
 export default function connect(
   dependencies: DependencyMap,
-  dispatcher: ?Dispatcher = getDispatcherInstance()
+  dispatcher: Dispatcher<any> = getDispatcherInstance()
 ): Function {
   enforceDispatcher(dispatcher);
 
   const dependencyIndex = makeDependencyIndex(dependencies);
 
-  /* global ReactClass */
-  return function connector(BaseComponent: ReactClass<*>): ReactClass<*> {
-    class ConnectedComponent extends Component {
-      static defaultProps: ?Object = BaseComponent.defaultProps;
+  return function connector<Props extends {}>(
+    BaseComponent: ComponentType<Props>
+  ): ComponentType<Props> {
+    class ConnectedComponent extends Component<Props, any> {
+      static defaultProps?: Partial<Props> = BaseComponent.defaultProps;
       static dependencies: DependencyMap = dependencies;
       static displayName = makeDisplayName('Connected', BaseComponent);
-      static propTypes = dependencyPropTypes(
+      static propTypes: any = dependencyPropTypes(
         dependencies,
         BaseComponent.propTypes
       );
-      static WrappedComponent: ReactClass<*> = BaseComponent;
+      static WrappedComponent: ComponentType<Props> = BaseComponent;
 
-      /* eslint react/sort-comp: 0 */
-      dispatchToken: ?string;
-      state: Object = {};
-      wrappedInstance: ?Object = null;
+      dispatchToken?: string;
+      state: any = {};
+      wrappedInstance?: HTMLElement = null;
 
       componentWillMount() {
         if (dispatcher) {
@@ -71,9 +68,10 @@ export default function connect(
         }
       }
 
-      focus = typeof BaseComponent.prototype.focus === 'function'
-        ? (...args) => focuser(this, ...args)
-        : undefined;
+      focus =
+        typeof BaseComponent.prototype.focus === 'function'
+          ? (...args) => focuser(this, ...args)
+          : undefined;
 
       handleDispatch(entry: DependencyIndexEntry) {
         this.setState(

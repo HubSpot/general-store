@@ -1,13 +1,12 @@
-jest.unmock('../StoreFactory.js');
+import StoreFactory from '../StoreFactory';
+jest.unmock('../StoreFactory');
 
 const EMPTY_FUNC = () => {};
 
 describe('StoreFactory', () => {
-  let StoreFactory;
   let storeFactory;
 
   beforeEach(() => {
-    StoreFactory = require('../StoreFactory.js').default;
     storeFactory = new StoreFactory({});
   });
 
@@ -73,7 +72,8 @@ describe('StoreFactory', () => {
       emptyFn
     );
     expect(() =>
-      factoryWithGetInitialState.defineGetInitialState(emptyFn)).not.toThrow();
+      factoryWithGetInitialState.defineGetInitialState(emptyFn)
+    ).not.toThrow();
   });
 
   it('sets responses', () => {
@@ -95,11 +95,13 @@ describe('StoreFactory', () => {
     expect(() =>
       factoryWithResponses.defineResponses({
         TEST_THREE: EMPTY_FUNC,
-      })).not.toThrow();
+      })
+    ).not.toThrow();
     expect(() =>
       factoryWithResponses.defineResponses({
         TEST: EMPTY_FUNC,
-      })).toThrow();
+      })
+    ).toThrow();
   });
 
   it('validates the actionType(s) passed to defineResponses', () => {

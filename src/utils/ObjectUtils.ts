@@ -1,4 +1,3 @@
-/* @flow */
 export function oForEach<T>(
   subject: { [key: string]: T },
   operation: (value: T, key: string) => void

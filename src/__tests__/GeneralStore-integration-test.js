@@ -7,23 +7,7 @@ function runTest(GeneralStore) {
   const REMOVE_USER = 'REMOVE_USER';
 
   let dispatcher;
-  let mockUser;
   let UserStore;
-
-  function merge(state, updates) {
-    const merged = {};
-    for (const stateKey in state) {
-      if (state.hasOwnProperty(stateKey)) {
-        merged[stateKey] = state[stateKey];
-      }
-    }
-    for (const updatesKey in updates) {
-      if (updates.hasOwnProperty(updatesKey)) {
-        merged[updatesKey] = updates[updatesKey];
-      }
-    }
-    return merged;
-  }
 
   function addUser(user) {
     dispatcher.dispatch({
@@ -37,33 +21,6 @@ function runTest(GeneralStore) {
       actionType: REMOVE_USER,
       data: user,
     });
-  }
-
-  function defineMockComponent() {
-    const mockComponent = {
-      props: {},
-      state: {},
-      setState: jest.fn(updates => {
-        mockComponent.state = merge(mockComponent.state, updates);
-      }),
-    };
-    return mockComponent;
-  }
-
-  function defineCountStore(incAction, decAction) {
-    return GeneralStore.defineFactory()
-      .defineGet(count => count)
-      .defineGetInitialState(() => 0)
-      .defineResponses({
-        [incAction]: count => count + 1,
-        [decAction]: count => {
-          return count > 0 ? count - 1 : count;
-        },
-      });
-  }
-
-  function defineUserCountStore() {
-    return defineCountStore(ADD_USER, REMOVE_USER).register(dispatcher);
   }
 
   function defineUserStore() {
@@ -80,11 +37,6 @@ function runTest(GeneralStore) {
   beforeEach(() => {
     Flux = require('flux');
     dispatcher = new Flux.Dispatcher();
-    mockUser = {
-      id: '123',
-      name: 'Test Person',
-    };
-
     UserStore = defineUserStore();
   });
 
@@ -120,8 +72,8 @@ function runTest(GeneralStore) {
   });
 
   it('should run listeners onChange', () => {
-    const mockChangeHandler = jest.genMockFn();
-    const otherMockChangeHandler = jest.genMockFn();
+    const mockChangeHandler = jest.fn();
+    const otherMockChangeHandler = jest.fn();
     const userId = 123;
     const user = {
       id: userId,
@@ -135,8 +87,8 @@ function runTest(GeneralStore) {
   });
 
   it('should NOT run listeners that have been removed onChange', () => {
-    const mockChangeHandler = jest.genMockFn();
-    const removedMockChangeHandler = jest.genMockFn();
+    const mockChangeHandler = jest.fn();
+    const removedMockChangeHandler = jest.fn();
     const userId = 123;
     const user = {
       id: userId,
@@ -149,82 +101,6 @@ function runTest(GeneralStore) {
     expect(mockChangeHandler.mock.calls.length).toBe(1);
     expect(removedMockChangeHandler.mock.calls.length).toBe(0);
   });
-
-  it('set the expected state on store change', () => {
-    const mockMixin = GeneralStore.StoreDependencyMixin(
-      {
-        users: UserStore,
-      },
-      dispatcher
-    );
-    const mockComponent = defineMockComponent();
-    mockComponent.state = mockMixin.getInitialState.call(mockComponent);
-    mockMixin.componentWillMount.call(mockComponent);
-    expect(mockComponent.state).toEqual({
-      users: {},
-    });
-    addUser(mockUser);
-    expect(mockComponent.setState.mock.calls.length).toBe(1);
-    expect(mockComponent.state).toEqual({
-      users: {
-        '123': mockUser,
-      },
-    });
-  });
-
-  it('triggers ONE update for fields with a common Store', () => {
-    const mockMixin = GeneralStore.StoreDependencyMixin(
-      {
-        users: UserStore,
-        userIds: {
-          stores: [UserStore],
-          deref: () => Object.keys(UserStore.get()),
-        },
-      },
-      dispatcher
-    );
-    const mockComponent = defineMockComponent();
-    mockComponent.state = mockMixin.getInitialState.call(mockComponent);
-    mockMixin.componentWillMount.call(mockComponent);
-    expect(mockComponent.state).toEqual({
-      users: {},
-      userIds: [],
-    });
-    addUser(mockUser);
-    expect(mockComponent.setState.mock.calls.length).toBe(1);
-    expect(mockComponent.state).toEqual({
-      users: {
-        [mockUser.id]: mockUser,
-      },
-      userIds: [mockUser.id],
-    });
-  });
-
-  it('triggers ONE update for stores that respond to a common action', () => {
-    const UserCountStore = defineUserCountStore();
-    const mockComponent = defineMockComponent();
-    const mockMixin = GeneralStore.StoreDependencyMixin(
-      {
-        users: UserStore,
-        userCount: UserCountStore,
-      },
-      dispatcher
-    );
-    mockComponent.state = mockMixin.getInitialState.call(mockComponent);
-    mockMixin.componentWillMount.call(mockComponent);
-    expect(mockComponent.state).toEqual({
-      users: {},
-      userCount: 0,
-    });
-    addUser(mockUser);
-    expect(mockComponent.state).toEqual({
-      users: {
-        '123': mockUser,
-      },
-      userCount: 1,
-    });
-    expect(mockComponent.setState.mock.calls.length).toBe(1);
-  });
 }
 
 /**
@@ -232,13 +108,13 @@ function runTest(GeneralStore) {
  * the source, dev, and prod builds of GeneralStore.
  */
 describe('GeneralStore src integration test', () => {
-  runTest(require('../GeneralStore.js'));
+  runTest(require('../GeneralStore'));
 });
 
 describe('GeneralStore dev build integration test', () => {
-  runTest(require('../../dist/general-store.js'));
+  runTest(require('../../dist/general-store'));
 });
 
 describe('GeneralStore prod build integration test', () => {
-  runTest(require('../../dist/general-store.min.js'));
+  runTest(require('../../dist/general-store.min'));
 });

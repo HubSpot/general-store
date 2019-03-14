@@ -1,11 +1,15 @@
 {
-  "extends": [
-    "plugin:react/recommended",
-    "prettier",
-    "prettier/react",
-  ],
-  "parser": "babel-eslint",
+  "extends": ["prettier"],
+  "plugins": ["@typescript-eslint", "react-app", "jest"],
+  "parser": "@typescript-eslint/parser",
   "env": {
     "jest": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   }
 }

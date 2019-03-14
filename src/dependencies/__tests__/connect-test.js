@@ -1,10 +1,14 @@
 jest.disableAutomock();
 import { Dispatcher } from 'flux';
-import { mount, shallow } from 'enzyme';
+import { mount, shallow, configure } from 'enzyme';
 import { getDispatchToken } from '../../store/InspectStore';
-import React, { PropTypes } from 'react';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import connect from '../connect';
 import StoreFactory from '../../store/StoreFactory';
+import Adapter from 'enzyme-adapter-react-16';
+
+configure({ adapter: new Adapter() });
 
 function BaseComponent() {
   return <div />;
@@ -64,7 +68,10 @@ describe('connect', () => {
         },
       },
     };
-    MockComponent = connect(dependencies, dispatcher)(BaseComponent);
+    MockComponent = connect(
+      dependencies,
+      dispatcher
+    )(BaseComponent);
   });
 
   describe('statics', () => {
@@ -97,7 +104,10 @@ describe('connect', () => {
 
     it('doesnt have propTypes if no deps specify them', () => {
       expect(
-        connect({ one: FirstStore }, dispatcher)(BaseComponent).propTypes
+        connect(
+          { one: FirstStore },
+          dispatcher
+        )(BaseComponent).propTypes
       ).toEqual({});
     });
   });
@@ -146,9 +156,10 @@ describe('connect', () => {
           return <div />;
         }
       }
-      const ConnectedComponentWithFocus = connect(dependencies, dispatcher)(
-        ComponentWithFocus
-      );
+      const ConnectedComponentWithFocus = connect(
+        dependencies,
+        dispatcher
+      )(ComponentWithFocus);
       const rendered = mount(<ConnectedComponentWithFocus />);
       const connectedInstance = rendered.instance();
       connectedInstance.focus('test', 123);

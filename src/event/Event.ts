@@ -1,6 +1,5 @@
-/* @flow */
-import EventHandler from './EventHandler.js';
-import uniqueID from '../uniqueid/uniqueID.js';
+import EventHandler from './EventHandler';
+import uniqueID from '../uniqueid/uniqueID';
 
 export default class Event {
   _handlers: { [key: string]: Function };
@@ -50,7 +49,7 @@ export default class Event {
    */
   _runHandler(key: string): void {
     if (this._handlers.hasOwnProperty(key)) {
-      this._handlers[key].call();
+      this._handlers[key].call(null);
     }
   }
 

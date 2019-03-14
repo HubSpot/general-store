@@ -1,20 +1,20 @@
-/* @flow */
-import type { Dispatcher } from 'flux';
+import { Dispatcher } from 'flux';
 import invariant from 'invariant';
 import Store from './Store';
 import StoreFactory from './StoreFactory';
 
-const HINT_LINK = 'Learn more about defining stores:' +
+const HINT_LINK =
+  'Learn more about defining stores:' +
   ' https://github.com/HubSpot/general-store#create-a-store';
 
-function dropFirstArg(func) {
+function dropFirstArg(func: Function) {
   return (head, ...tail) => func(...tail);
 }
 
 export default class StoreSingleton {
-  _facade: ?Store;
+  _facade?: Store;
   _factory: StoreFactory;
-  _getter: ?Function;
+  _getter?: Function;
 
   constructor() {
     this._facade = null;
@@ -33,7 +33,7 @@ export default class StoreSingleton {
     invariant(
       !this.isRegistered(),
       'StoreSingleton.defineGet: this store definition cannot be modified' +
-        ' because is has already been registered with a dispatcher. %s',
+        ' because it has already been registered with a dispatcher. %s',
       HINT_LINK
     );
     invariant(
@@ -73,7 +73,7 @@ export default class StoreSingleton {
     return this._facade instanceof Store;
   }
 
-  register(dispatcher: ?Dispatcher): Store {
+  register(dispatcher?: Dispatcher<any>): Store {
     invariant(
       typeof this._getter === 'function',
       'StoreSingleton.register: a store cannot be registered without a' +

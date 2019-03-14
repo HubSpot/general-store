@@ -1,12 +1,7 @@
-jest.unmock('../DispatcherInterface.js');
+jest.unmock('../DispatcherInterface');
+import * as DispatcherInterface from '../DispatcherInterface';
 
 describe('DispatcherInterface', () => {
-  let DispatcherInterface;
-
-  beforeEach(() => {
-    DispatcherInterface = require('../DispatcherInterface.js');
-  });
-
   it('correctly validates a dispatcher', () => {
     expect(DispatcherInterface.isDispatcher({})).toBe(false);
     expect(

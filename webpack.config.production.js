@@ -1,20 +1,15 @@
 'use strict';
 
-var webpack = require('webpack');
+var path = require('path');
 var baseConfig = require('./webpack.config.base');
 
 var config = Object.create(baseConfig);
-config.plugins = [
-  new webpack.optimize.OccurenceOrderPlugin(),
-  new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify('production'),
-  }),
-  new webpack.optimize.UglifyJsPlugin({
-    compressor: {
-      screw_ie8: true,
-      warnings: false,
-    },
-  }),
-];
-
+config.mode = 'production';
+config.output = {
+  path: path.resolve(__dirname, 'dist'),
+  filename: 'general-store.min.js',
+  library: 'GeneralStore',
+  libraryTarget: 'umd',
+  sourcePrefix: '  ',
+};
 module.exports = config;

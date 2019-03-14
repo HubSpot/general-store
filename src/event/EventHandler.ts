@@ -1,13 +1,16 @@
-/* @flow */
-import type Event from './Event';
+import Event from './Event';
 
 export default class EventHandler {
   _key: string;
-  _instance: ?Event;
+  _instance?: Event;
 
   constructor(instance: Event, key: string) {
     this._key = key;
     this._instance = instance;
+  }
+
+  getKey(): string {
+    return this._key;
   }
 
   remove(): void {

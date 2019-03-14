@@ -1,14 +1,13 @@
-/* @flow */
-import type { Dispatcher } from 'flux';
-import type { StoreResponses } from './Store';
-import type StoreFactory from './StoreFactory';
+import { Dispatcher } from 'flux';
+import { StoreResponses } from './Store';
+import StoreFactory from './StoreFactory';
 import Store from './Store';
 
 export function getActionTypes(store: Store): Array<string> {
   return Object.keys(store._responses) || [];
 }
 
-export function getDispatcher(store: Store): Dispatcher {
+export function getDispatcher(store: Store): Dispatcher<any> {
   return store._dispatcher;
 }
 

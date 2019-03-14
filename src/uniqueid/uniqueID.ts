@@ -1,7 +1,3 @@
-/**
- * @flow
- */
-
 const PREFIX = 'uid_';
 
 let nextUid = 0;
