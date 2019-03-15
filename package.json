@@ -11,7 +11,7 @@
     "build-and-test": "npm run clean && npm run build && npm test",
     "clean": "rm -rf ./dist && rm -rf lib",
     "format": "prettier --single-quote -l --bracket-spacing --jsx-bracket-same-line --trailing-comma es5 --parser flow --write \"{src,__{tests,mocks}__}/**/*.js\"",
-    "lint": "eslint ./src/**/*.ts",
+    "lint": "eslint . --ext ts,tsx",
     "prepublish": "npm run build-and-test",
     "test:unit": "jest",
     "test": "npm run lint && jest"
@@ -30,6 +30,9 @@
     "lib"
   ],
   "author": "Colby Rabideau",
+  "maintainers": [
+    "Adam Markon"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/HubSpot/general-store/issues"
@@ -56,6 +59,7 @@
     "eslint-config-prettier": "4.1.0",
     "eslint-plugin-jest": "^22.3.2",
     "eslint-plugin-react-app": "^4.0.1",
+    "eslint-plugin-react-hooks": "^1.5.1",
     "flux": "^2.0.1",
     "immutable-is": "^3.7.4",
     "invariant": "^2.2.1",

@@ -32,6 +32,7 @@ export default function connect(
       static displayName = makeDisplayName('Connected', BaseComponent);
       static propTypes: any = dependencyPropTypes(
         dependencies,
+        // eslint-disable-next-line react-app/react/forbid-foreign-prop-types
         BaseComponent.propTypes
       );
       static WrappedComponent: ComponentType<Props> = BaseComponent;
@@ -54,13 +55,13 @@ export default function connect(
         this.setState(calculateInitial(dependencies, this.props, this.state));
       }
 
-      componentWillReceiveProps(nextProps: Object): void {
+      componentWillReceiveProps(nextProps: Object) {
         this.setState(
           calculateForPropsChange(dependencies, nextProps, this.state)
         );
       }
 
-      componentWillUnmount(): void {
+      componentWillUnmount() {
         const dispatchToken = this.dispatchToken;
         if (dispatcher && dispatchToken) {
           this.dispatchToken = null;

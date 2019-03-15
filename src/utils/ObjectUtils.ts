@@ -58,3 +58,36 @@ export function oFilterMap<T, R>(
     {}
   );
 }
+
+export function shallowEqual(obj1: any, obj2: any): Boolean {
+  if (obj1 === obj2) {
+    return true;
+  }
+  if (typeof obj1 !== typeof obj2) {
+    return false;
+  }
+  // would have passed === check if both were same falsy value
+  if (!obj1 || !obj2) {
+    return false;
+  }
+  if (typeof obj1 !== 'object') {
+    return false;
+  }
+  if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+    return false;
+  }
+  for (const property in obj1) {
+    if (obj1.hasOwnProperty(property) && !obj2.hasOwnProperty(property)) {
+      return false;
+    }
+    if (!obj1.hasOwnProperty(property) && obj2.hasOwnProperty(property)) {
+      return false;
+    }
+    if (obj1.hasOwnProperty(property) && obj2.hasOwnProperty(property)) {
+      if (obj1[property] !== obj2[property]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}

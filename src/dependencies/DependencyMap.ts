@@ -98,6 +98,7 @@ export function dependencyPropTypes(
       if (dependency instanceof Store) {
         return types;
       }
+      // eslint-disable-next-line react-app/react/forbid-foreign-prop-types
       const { propTypes } = dependency;
       if (!propTypes || typeof propTypes !== 'object') {
         return types;
@@ -110,7 +111,7 @@ export function dependencyPropTypes(
 
 export function calculate<Props, State>(
   dependency: Dependency,
-  props: Props,
+  props?: Props,
   state?: State
 ): any {
   if (dependency instanceof Store) {
@@ -139,7 +140,7 @@ export function calculateForDispatch<Props, State>(
   dependencyIndexEntry: DependencyIndexEntry,
   props: Props,
   state?: State
-): Object {
+): { [key: string]: any } {
   return oMap(dependencyIndexEntry.fields, (_, field) =>
     calculate(dependencies[field], props, state)
   );

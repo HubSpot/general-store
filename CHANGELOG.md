@@ -1,3 +1,11 @@
+## 3.0.0
+* Removes the following APIs
+  * `StoreDependencyMixin`
+  * `connectWithState`
+* Adds a `useStoreDependency` [hook](https://reactjs.org/docs/hooks-intro.html) for use with `react@^16.8.0`.
+* `prop-types` added as a peer dependency as it has been removed from the main React package
+* Migrated from Flow to TypeScript
+
 ## 2.5.1
 * Support React 16.x by using [hoist-non-react-statics@2.5.0](https://github.com/mridgway/hoist-non-react-statics) (without `ForwardRef` support)
 

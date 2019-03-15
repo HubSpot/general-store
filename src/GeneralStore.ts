@@ -4,6 +4,7 @@ import * as DispatcherInstance from './dispatcher/DispatcherInstance';
 import * as InspectStore from './store/InspectStore';
 import StoreSingleton from './store/StoreSingleton';
 import StoreFactory from './store/StoreFactory';
+import useStoreDependency from './dependencies/useStoreDependency';
 
 function defineSingleton(): StoreSingleton {
   return new StoreSingleton();
@@ -20,4 +21,5 @@ module.exports = {
   defineFactory,
   DispatcherInstance,
   InspectStore,
+  useStoreDependency,
 };

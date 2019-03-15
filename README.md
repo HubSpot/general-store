@@ -18,12 +18,12 @@ Read more about the `general-store` rationale [on the HubSpot Product Team Blog]
 
 ## Install
 
-```
-# for node, browserify, etc
+```bash
+# npm >= 5.0.0
 npm install general-store
 
-# for bower
-bower install general-store
+# yarn
+yarn add general-store
 ```
 
 ## Create a store
@@ -37,26 +37,28 @@ function defineUserStore() {
   var users = {
     123: {
       id: 123,
-      name: 'Mary'
-    }
+      name: 'Mary',
+    },
   };
 
-  return GeneralStore.define()
-    .defineName('UserStore')
-    // the store's getter should return the public subset of its data
-    .defineGet(function() {
-      return users;
-    })
-    // handle actions received from the dispatcher
-    .defineResponseTo('USER_ADDED', function(user) {
-      users[user.id] = user;
-    })
-    .defineResponseTo('USER_REMOVED', function(user) {
-      delete users[user.id];
-    })
-    // after a store is "registered" its action handlers are bound
-    // to the dispatcher
-    .register(dispatcher);
+  return (
+    GeneralStore.define()
+      .defineName('UserStore')
+      // the store's getter should return the public subset of its data
+      .defineGet(function() {
+        return users;
+      })
+      // handle actions received from the dispatcher
+      .defineResponseTo('USER_ADDED', function(user) {
+        users[user.id] = user;
+      })
+      .defineResponseTo('USER_REMOVED', function(user) {
+        delete users[user.id];
+      })
+      // after a store is "registered" its action handlers are bound
+      // to the dispatcher
+      .register(dispatcher)
+  );
 }
 ```
 
@@ -85,10 +87,11 @@ Sending a message to your stores via the dispatcher is easy.
 ```javascript
 dispatcher.dispatch({
   actionType: 'USER_ADDED', // required field
-  data: { // optional field, passed to the store's response
+  data: {
+    // optional field, passed to the store's response
     id: 12314,
-    name: 'Colby Rabideau'
-  }
+    name: 'Colby Rabideau',
+  },
 });
 ```
 
@@ -105,11 +108,11 @@ var UserStoreFactory = GeneralStore.defineFactory()
     return {};
   })
   .defineResponses({
-    'USER_ADDED': function(state, user) {
+    USER_ADDED: function(state, user) {
       state[user.id] = user;
       return state;
     },
-    'USER_REMOVED': function(state, user) {
+    USER_REMOVED: function(state, user) {
       delete state[user.id];
       return state;
     },
@@ -129,15 +132,15 @@ describe('UserStore', () => {
   });
 
   it('adds users', () => {
-    var mockUser = {id: 1, name: 'Joe'};
-    dispatcher.dispatch({actionType: USER_ADDED, data: mockUser});
-    expect(storeInstance.get()).toEqual({1: mockUser});
+    var mockUser = { id: 1, name: 'Joe' };
+    dispatcher.dispatch({ actionType: USER_ADDED, data: mockUser });
+    expect(storeInstance.get()).toEqual({ 1: mockUser });
   });
 
   it('removes users', () => {
-    var mockUser = {id: 1, name: 'Joe'};
-    dispatcher.dispatch({actionType: USER_ADDED, data: mockUser});
-    dispatcher.dispatch({actionType: USER_REMOVED, data: mockUser});
+    var mockUser = { id: 1, name: 'Joe' };
+    dispatcher.dispatch({ actionType: USER_ADDED, data: mockUser });
+    dispatcher.dispatch({ actionType: USER_REMOVED, data: mockUser });
     expect(storeInstance.get()).toEqual({});
   });
 });
@@ -150,7 +153,7 @@ To further assist with testing, the [`InspectStore`](https://github.com/HubSpot/
 A registered Store provides methods for "getting" its value and subscribing to changes to that value.
 
 ```javascript
-UserStore.get() // returns {}
+UserStore.get(); // returns {}
 var subscription = UserStore.addOnChange(function() {
   // handle changes!
 });
@@ -162,83 +165,84 @@ subscription.remove();
 
 ## React
 
-### DependencyMap
+GeneralStore provides some convenience functions for supplying data to React components. Both functions rely on the concept of "dependencies" and process those dependencies to return any data kept in a `Store` and make it easily accessible to a React component.
 
-GeneralStore has a simple format for declaring dependencies.
+### Dependencies
+
+GeneralStore has a two formats for declaring data dependencies of React components. A `SimpleDependency` is simply a reference to a `Store` instance. The value returned will be the result of `Store.get()`. A `CompoundDependency` depends on one or more stores and uses a "dereference" function that allows you to perform operations and data manipulation on the data that comes from the `stores` listed in the dependency:
 
 ```javascript
-const dependencies = {
-  // simple fields can be expressed in the form `key => store`
-  subject: ProfileStore,
+const FriendsDependency = {
   // compound fields can depend on one or more stores
-  // and specify a function to "dereference" the store's value
-  friends: {
-    stores: [ProfileStore, UsersStore],
-    deref: (props, state) => {
-      friendIds = ProfileStore.get().friendIds;
-      users = UsersStore.get();
-      return friendIds.map(id => users[id]);
-    }
-  }
+  // and specify a function to "dereference" the store's value.
+  stores: [ProfileStore, UsersStore],
+  deref: (props, state) => {
+    friendIds = ProfileStore.get().friendIds;
+    users = UsersStore.get();
+    return friendIds.map(id => users[id]);
+  },
 };
 ```
 
 Once you declare your dependencies there are two ways to connect them to a react component.
 
-### connect
+### `useStoreDependency`
 
-GeneralStore provides a component "enhancer" called `connect`.
-It's similar to redux's `connect` function but it takes a general store DependencyMap.
+`useStoreDependency` is a [React Hook](https://reactjs.org/docs/hooks-intro.html) that enables you to connect to a single dependency inside of a functional component. The `useStoreDependency` hook accepts a dependency, and optionally a map of props to pass into the `deref` and a dispatcher instance.
+
+```javascript
+function FriendsList() {
+  const friends = GeneralStore.useStoreDependency(FriendsDependency, {}, dispatcher);
+  return (
+    <ul>
+      {friends.map(friend => (
+        <li>{friend.getName()}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### `connect`
+
+The second option is a Higher-Order Component (commonly "HOC") called `connect`. It's similar to `react-redux`'s `connect` function but it takes a `DependencyMap` (different than `useStoreDependency` which only accepts a single Dependency). A `DependencyMap` is a mapping of string keys to [`Dependency`s](#Dependencies):
+
+```javascript
+const dependencies = {
+  // simple fields can be expressed in the form `key => store`
+  subject: ProfileStore,
+  friends: FriendsDependency,
+};
+```
+
 `connect` passes the fields defined in the `DependencyMap` to the enhanced component as props.
 
 ```javascript
 // ProfileContainer.js
-function ProfileContainer({friends, subject}) {
+function ProfileContainer({ friends, subject }) {
   return (
     <div>
       <h1>{subject.name}</h1>
       {this.renderFriends()}
       <h3>Friends</h3>
       <ul>
-        {Object.keys(friends).map(id => <li>{friends[id].name}</li>)}
+        {Object.keys(friends).map(id => (
+          <li>{friends[id].name}</li>
+        ))}
       </ul>
     </div>
   );
 }
 
-export default connect(dependencies, dispatcher)(ProfileComponent);
-```
-
-### StoreDependencyMixin
-
-If you use `React.createClass`, GeneralStore also provides a mixin.
-Instead of passing the dependency fields to the component as props, `StoreDependencyMixin` exposes dependency data in component local state.
-
-```javascript
-var ProfileComponent = React.createClass({
-  mixins: [
-    GeneralStore.StoreDependencyMixin(dependencies, dispatcher)
-  ],
-
-  render: function() {
-    return (
-      <div>
-        <h1>{this.state.subject.name}</h1>
-        <h3>Friends</h3>
-        <ul>
-          {Object.keys(this.state.friends).map((id) => (
-            <li>{friends[id].name}</li>
-          ))}
-        </ul>
-      </div>
-    );
-  },
-});
+export default connect(
+  dependencies,
+  dispatcher
+)(ProfileComponent);
 ```
 
 ## Default Dispatcher Instance
 
-The common Flux architecture has a single central dispatcher. As a convenience `GeneralStore` allows you to set a global dispatcher which will become the default when a store is registered, a component is enhanced with `connected`, or a `StoreDependencyMixin` is created.
+The common Flux architecture has a single central dispatcher. As a convenience `GeneralStore` allows you to set a global dispatcher which will become the default when a store is registered, the `useStoreDependency` hook is called inside a functional component, or a component is enhanced with `connect`.
 
 ```javascript
 var dispatcher = new Flux.Dispatcher();
@@ -248,11 +252,17 @@ GeneralStore.DispatcherInstance.set(dispatcher);
 Now you can register a store without explicitly passing a dispatcher:
 
 ```javascript
-var users = {};
+const users = {};
 
-GeneralStore.define()
+const usersStore = GeneralStore.define()
   .defineGet(() => users)
   .register(); // the dispatcher instance is set so no need to explicitly pass it
+
+function MyComponent() {
+  // no need to pass it to "useStoreDependency" or "connect" either
+  const users = GeneralStore.useStoreDependency(usersStore);
+  /* ... */
+}
 ```
 
 ## Dispatcher Interface
@@ -261,19 +271,18 @@ At HubSpot we use the [Facebook Dispatcher](https://github.com/facebook/flux), b
 
 ```javascript
 type DispatcherPayload = {
-  actionType: string;
-  data: any;
+  actionType: string,
+  data: any,
 };
 
 type Dispatcher = {
-  isDispatching: () => bool;
-  register: (
-    handleAction: (payload: DispatcherPayload) => void
-  ) => string;
-  unregister: (dispatchToken: string) => void;
-  waitFor: (dispatchTokens: Array<string>) => void;
+  isDispatching: () => boolean,
+  register: (handleAction: (payload: DispatcherPayload) => void) => string,
+  unregister: (dispatchToken: string) => void,
+  waitFor: (dispatchTokens: Array<string>) => void,
 };
 ```
+
 ## Redux Devtools Extension
 
 Using [Redux devtools extension](https://github.com/zalmoxisus/redux-devtools-extension) you can inspect the state of a store and see how the state changes between dispatches. The "Jump" (ability to change store state to what it was after a specific dispatch) feature should work but it is dependent on you using regular JS objects as the backing state.
@@ -286,16 +295,16 @@ Using the `defineFactory` way of creating stores is highly recommended for this 
 
 ```
 # pull in dependencies
-npm install
+yarn install
 
 # run the type checker and unit tests
-npm test
+yarn test
 
 # if all tests pass, run the dev and prod build
-npm run build-and-test
+yarn run build-and-test
 
 # if all tests pass, run the dev and prod build then commit and push changes
-npm run deploy
+yarn run deploy
 ```
 
 ## Special Thanks
