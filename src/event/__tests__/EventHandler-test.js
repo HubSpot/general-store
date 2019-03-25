@@ -1,16 +1,12 @@
-jest.unmock('../EventHandler.js');
+jest.disableAutomock();
+
+import Event from '../Event';
+import EventHandler from '../EventHandler';
 
 describe('EventHandler', () => {
-  let Event;
-  let EventHandler;
-
-  beforeEach(() => {
-    Event = require('../Event.js').default;
-    EventHandler = require('../EventHandler.js').default;
-  });
-
   it('calls removeHandler only once on instance when remove is called', () => {
     const mockEvent = new Event();
+    jest.spyOn(mockEvent, 'removeHandler');
     const mockKey = 1234;
     const handler = new EventHandler(mockEvent, mockKey);
     handler.remove();

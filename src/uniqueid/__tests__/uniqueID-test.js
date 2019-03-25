@@ -1,12 +1,7 @@
-jest.unmock('../uniqueID.js');
+import uniqueId from '../uniqueID';
+jest.unmock('../uniqueID');
 
 describe('uniqueId', () => {
-  let uniqueId;
-
-  beforeEach(() => {
-    uniqueId = require('../uniqueID.js').default;
-  });
-
   it('always returns a unique number', () => {
     const testCount = 100;
     let next;

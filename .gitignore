@@ -27,10 +27,6 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 
-# bower
-bower_components
-src/bower_components
-
 # build stuff
 dist
 lib

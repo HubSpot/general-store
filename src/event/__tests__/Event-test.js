@@ -1,21 +1,16 @@
-jest.unmock('../Event.js');
+jest.disableAutomock();
+import Event from '../Event';
 
 describe('Event', () => {
-  let Event;
-  let EventHandler;
-
   let eventInstance;
 
   beforeEach(() => {
-    Event = require('../Event.js').default;
-    EventHandler = require('../EventHandler.js').default;
-
     eventInstance = new Event();
   });
 
   it('runs all handler callbacks on runHandlers', () => {
-    const mockCallback = jest.genMockFunction();
-    const otherMockCallback = jest.genMockFunction();
+    const mockCallback = jest.fn();
+    const otherMockCallback = jest.fn();
     eventInstance.addHandler(mockCallback);
     eventInstance.addHandler(otherMockCallback);
     eventInstance.runHandlers();
@@ -29,19 +24,20 @@ describe('Event', () => {
   });
 
   it('does not run handlers that have been removed', () => {
-    const mockCallback = jest.genMockFunction();
-    eventInstance.addHandler(mockCallback);
+    const mockCallback = jest.fn();
+    expect(mockCallback.mock.calls.length).toBe(0);
+    const handler = eventInstance.addHandler(mockCallback);
     eventInstance.runHandlers();
     expect(mockCallback.mock.calls.length).toBe(1);
-    eventInstance.removeHandler(EventHandler.mock.calls[0][1]);
+    eventInstance.removeHandler(handler.getKey());
     eventInstance.runHandlers();
     expect(mockCallback.mock.calls.length).toBe(1);
   });
 
   it('runs handlers for multiple events using runMutliple', () => {
     const otherEventInstance = new Event();
-    const mockCallback = jest.genMockFunction();
-    const otherMockCallback = jest.genMockFunction();
+    const mockCallback = jest.fn();
+    const otherMockCallback = jest.fn();
     eventInstance.addHandler(mockCallback);
     otherEventInstance.addHandler(otherMockCallback);
     Event.runMultiple([eventInstance, otherEventInstance]);
@@ -55,7 +51,7 @@ describe('Event', () => {
   });
 
   it('does not run handlers after the event has been removed', () => {
-    const mockCallback = jest.genMockFunction();
+    const mockCallback = jest.fn();
     eventInstance.addHandler(mockCallback);
     eventInstance.runHandlers();
     expect(mockCallback.mock.calls.length).toBe(1);

@@ -1,13 +1,11 @@
-jest.unmock('../DispatcherInstance.js');
+jest.unmock('../DispatcherInstance');
+import * as DispatcherInstance from '../DispatcherInstance';
 
 describe('DispatcherInstance', () => {
-  let DispatcherInstance;
-
   let mockDispatcher;
 
   beforeEach(() => {
-    DispatcherInstance = require('../DispatcherInstance.js');
-
+    DispatcherInstance.clear();
     mockDispatcher = {
       register() {
         return 12345;

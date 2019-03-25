@@ -1,11 +1,10 @@
 jest.unmock('../InspectStore');
 jest.unmock('../Store');
 jest.unmock('../StoreFactory');
+import * as InspectStore from '../InspectStore';
+import StoreFactory from '../StoreFactory';
 
 describe('InspectStore', () => {
-  let InspectStore;
-  let StoreFactory;
-
   const FIRST_ACTION = 'FIRST_ACTION';
   const SECOND_ACTION = 'SECOND_ACTION';
 
@@ -18,18 +17,15 @@ describe('InspectStore', () => {
   let store;
 
   beforeEach(() => {
-    InspectStore = require('../InspectStore');
-    StoreFactory = require('../StoreFactory').default;
-
     dispatchToken = 'testing_1';
     dispatcher = {
-      isDispatching: jest.genMockFn().mockReturnValue(true),
-      register: jest.genMockFn().mockReturnValue(dispatchToken),
-      unregister: jest.genMockFn(),
+      isDispatching: jest.fn(() => true),
+      register: jest.fn(() => dispatchToken),
+      unregister: jest.fn(),
     };
     getter = state => state;
-    firstHandler = jest.genMockFn();
-    secondHandler = jest.genMockFn();
+    firstHandler = jest.fn();
+    secondHandler = jest.fn();
 
     factory = new StoreFactory({})
       .defineName('TestStore')

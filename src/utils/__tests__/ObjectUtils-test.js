@@ -1,6 +1,13 @@
 jest.unmock('../ObjectUtils');
 
-import { oForEach, oFilterMap, oMap, oMerge, oReduce } from '../ObjectUtils';
+import {
+  oForEach,
+  oFilterMap,
+  oMap,
+  oMerge,
+  oReduce,
+  shallowEqual,
+} from '../ObjectUtils';
 
 describe('ObjectUtils', () => {
   describe('oForEach', () => {
@@ -56,6 +63,28 @@ describe('ObjectUtils', () => {
         one: 2,
         three: 4,
       });
+    });
+  });
+
+  describe('shallowEqual', () => {
+    it('shallowly compares values', () => {
+      expect(shallowEqual(1, 1)).toBe(true);
+      expect(shallowEqual(1, 0)).toBe(false);
+
+      expect(shallowEqual(1, null)).toBe(false);
+      expect(shallowEqual(1, undefined)).toBe(false);
+      expect(shallowEqual(0, false)).toBe(false);
+
+      expect(shallowEqual({}, null)).toBe(false);
+      expect(shallowEqual({}, {})).toBe(true);
+
+      expect(shallowEqual({ a: 1 }, {})).toBe(false);
+      expect(shallowEqual({}, { a: 1 })).toBe(false);
+      expect(shallowEqual({ a: 1 }, { a: 1 })).toBe(true);
+      expect(shallowEqual({ a: 1 }, { a: 'different' })).toBe(false);
+      expect(shallowEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })).toBe(
+        false
+      );
     });
   });
 });

@@ -1,4 +1,4 @@
-jest.unmock('../Dispatch');
+jest.disableAutomock();
 import { handleDispatch } from '../Dispatch';
 import { Dispatcher } from 'flux';
 
@@ -23,6 +23,7 @@ describe('Dispatch', () => {
 
   beforeEach(() => {
     dispatcher = new Dispatcher();
+    dispatcher.waitFor = jest.fn();
     mockThen = jest.fn();
   });
 

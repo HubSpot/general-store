@@ -1,7 +1,4 @@
-/* eslint no-unused-vars: 1 */
-jest.unmock('../DependencyMap').unmock('../../store/Store');
-
-import {
+const {
   calculate,
   calculateInitial,
   calculateForDispatch,
@@ -11,10 +8,10 @@ import {
   dependencyPropTypes,
   enforceValidDependencies,
   makeDependencyIndex,
-} from '../DependencyMap';
+} = jest.requireActual('../DependencyMap');
+const Store = jest.requireActual('../../store/Store').default;
 import { Dispatcher } from 'flux';
 import { getDispatchToken } from '../../store/InspectStore';
-import Store from '../../store/Store';
 import StoreFactory from '../../store/StoreFactory';
 
 describe('DependencyMap', () => {
@@ -119,7 +116,8 @@ describe('DependencyMap', () => {
       expect(() =>
         enforceValidDependencies({
           test: null,
-        })).toThrow();
+        })
+      ).toThrow();
     });
 
     it('throws if a dependency.deref is not a function', () => {
@@ -129,7 +127,8 @@ describe('DependencyMap', () => {
             stores: [],
             deref: null,
           },
-        })).toThrow();
+        })
+      ).toThrow();
     });
 
     it('throws if a dependency.stores is not an Array', () => {
@@ -139,7 +138,8 @@ describe('DependencyMap', () => {
             stores: null,
             deref: () => {},
           },
-        })).toThrow();
+        })
+      ).toThrow();
     });
 
     it('throws if an item in dependency.stores is not Store', () => {
@@ -149,7 +149,8 @@ describe('DependencyMap', () => {
             stores: [null],
             deref: () => {},
           },
-        })).toThrow();
+        })
+      ).toThrow();
     });
 
     it('doesnt throw if the dependency is valid', () => {
@@ -159,7 +160,8 @@ describe('DependencyMap', () => {
             stores: [CountStore],
             deref: () => {},
           },
-        })).not.toThrow();
+        })
+      ).not.toThrow();
     });
   });
 

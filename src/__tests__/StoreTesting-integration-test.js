@@ -1,9 +1,9 @@
+import { Dispatcher } from 'flux';
+import * as GeneralStore from '../GeneralStore';
+
 jest.autoMockOff();
 
 describe('Store testing integration test', () => {
-  const { Dispatcher } = require('flux');
-  const GeneralStore = require('../GeneralStore');
-
   const ADD_USER = 'ADD_USER';
   const REMOVE_USER = 'REMOVE_USER';
 

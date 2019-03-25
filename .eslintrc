@@ -1,11 +1,22 @@
 {
-  "extends": [
-    "plugin:react/recommended",
-    "prettier",
-    "prettier/react",
-  ],
-  "parser": "babel-eslint",
+  "extends": ["prettier", "plugin:react-app/recommended"],
+  "plugins": ["@typescript-eslint", "react-app", "jest", "react-hooks"],
+  "parser": "@typescript-eslint/parser",
   "env": {
     "jest": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react-app/import/first": 0,
+    "no-unused-vars": 0,
+    "@typescript-eslint/no-unused-vars": "error"
   }
 }
