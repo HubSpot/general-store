@@ -60,7 +60,7 @@ const moduleBundleConfig = {
       format: 'esm',
     },
   ],
-  external: ['react'],
+  external: ['react', 'hoist-non-react-statics'],
 };
 
 export default [
