@@ -1,3 +1,6 @@
+## 3.0.1
+* Externalize `hoist-non-react-statics` from CJS and ESM bundles.
+
 ## 3.0.0
 * Removes the following APIs
   * `StoreDependencyMixin`
