@@ -1,8 +1,5 @@
 jest.disableAutomock();
-import {
-  focuser,
-  makeDisplayName,
-} from '../BuildComponent';
+import { focuser, makeDisplayName } from '../BuildComponent';
 
 describe('BuildComponent', () => {
   describe('focuser', () => {
@@ -34,9 +31,7 @@ describe('BuildComponent', () => {
 
     it('creates a prefixed displayName using a fallback if necessary', () => {
       const BaseComponent = {};
-      expect(makeDisplayName('Test', BaseComponent)).toBe(
-        'Test(Component)'
-      );
+      expect(makeDisplayName('Test', BaseComponent)).toBe('Test(Component)');
     });
   });
 });

@@ -17,6 +17,10 @@ function BaseComponent() {
 BaseComponent.displayName = 'BaseComponent';
 BaseComponent.testStaticMethod = () => true;
 
+const BaseArrowComponent = () => {
+  return <div />;
+};
+
 describe('connect', () => {
   const FIRST_ONLY = 'FIRST_ONLY';
   const SECOND_ONLY = 'SECOND_ONLY';
@@ -41,6 +45,7 @@ describe('connect', () => {
   let SecondStore;
   let dependencies;
   let MockComponent;
+  let MockArrowComponent;
 
   beforeEach(() => {
     dispatcher = new Dispatcher();
@@ -72,19 +77,29 @@ describe('connect', () => {
       dependencies,
       dispatcher
     )(BaseComponent);
+
+    MockArrowComponent = connect(
+      dependencies,
+      dispatcher
+    )(BaseArrowComponent);
   });
 
   describe('statics', () => {
     it('exports dependencies', () => {
       expect(MockComponent.dependencies).toEqual(dependencies);
+      expect(MockArrowComponent.dependencies).toEqual(dependencies);
     });
 
     it('exports WrappedComponent', () => {
       expect(MockComponent.WrappedComponent).toEqual(BaseComponent);
+      expect(MockArrowComponent.WrappedComponent).toEqual(BaseArrowComponent);
     });
 
     it('generates a proper displayName', () => {
       expect(MockComponent.displayName).toBe('Connected(BaseComponent)');
+      expect(MockArrowComponent.displayName).toBe(
+        'Connected(BaseArrowComponent)'
+      );
     });
 
     it('passes any statics through to ConnectedComponent', () => {
@@ -109,6 +124,15 @@ describe('connect', () => {
           dispatcher
         )(BaseComponent).propTypes
       ).toEqual({});
+    });
+  });
+
+  describe('renders', () => {
+    it('renders without error', () => {
+      const rootArrow = mount(<MockArrowComponent />);
+      expect(rootArrow.exists()).toBe(true);
+      const root = mount(<MockComponent />);
+      expect(root.exists()).toBe(true);
     });
   });
 
@@ -143,6 +167,7 @@ describe('connect', () => {
   describe('focus', () => {
     it('is undefined if BaseComponent has no focus method', () => {
       expect(MockComponent.focus).toBe(undefined);
+      expect(MockArrowComponent.focus).toBe(undefined);
     });
 
     it('calls through to the BaseComponents focus', () => {

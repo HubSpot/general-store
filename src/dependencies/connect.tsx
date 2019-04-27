@@ -70,7 +70,7 @@ export default function connect(
       }
 
       focus =
-        typeof BaseComponent.prototype.focus === 'function'
+        BaseComponent.prototype && typeof BaseComponent.prototype.focus === 'function'
           ? (...args) => focuser(this, ...args)
           : undefined;
 
@@ -85,11 +85,13 @@ export default function connect(
       };
 
       render() {
+        const refProp = !!(BaseComponent.prototype && BaseComponent.prototype.isReactComponent) ? {ref: this.setWrappedInstance} : {};
+
         return (
           <BaseComponent
             {...this.props}
             {...this.state}
-            ref={this.setWrappedInstance}
+            {...refProp}
           />
         );
       }
