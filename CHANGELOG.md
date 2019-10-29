@@ -1,3 +1,6 @@
+## 3.1.0
+* Use `UNSAFE_` prefix for `componentWillMount`, `componentWillReceiveProps` usages in `connect` HOC.
+
 ## 3.0.1
 * Externalize `hoist-non-react-statics` from CJS and ESM bundles.
 
