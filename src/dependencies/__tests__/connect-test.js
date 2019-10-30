@@ -112,7 +112,7 @@ describe('connect', () => {
     });
   });
 
-  describe('componentWillMount', () => {
+  describe('UNSAFE_componentWillMount', () => {
     it('registers a callback with the dispatcher', () => {
       shallow(<MockComponent />);
       expect(dispatcher.register.mock.calls.length).toEqual(3);
@@ -128,7 +128,7 @@ describe('connect', () => {
     });
   });
 
-  describe('componentWillReceiveProps', () => {
+  describe('UNSAFE_componentWillReceiveProps', () => {
     it('calculates and sets state', () => {
       const root = shallow(<MockComponent />);
       root.setProps({ add: 2 });

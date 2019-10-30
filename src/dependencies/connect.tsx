@@ -41,7 +41,7 @@ export default function connect(
       state: any = {};
       wrappedInstance?: HTMLElement = null;
 
-      componentWillMount() {
+      UNSAFE_componentWillMount() {
         if (dispatcher) {
           this.dispatchToken = dispatcher.register(
             handleDispatch.bind(
@@ -55,7 +55,7 @@ export default function connect(
         this.setState(calculateInitial(dependencies, this.props, this.state));
       }
 
-      componentWillReceiveProps(nextProps: Object) {
+      UNSAFE_componentWillReceiveProps(nextProps: Object) {
         this.setState(
           calculateForPropsChange(dependencies, nextProps, this.state)
         );
