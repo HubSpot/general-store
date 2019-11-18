@@ -1,3 +1,6 @@
+## 3.2.0
+* Fix potential infinite loop with Immutable dependency values (#74)
+
 ## 3.1.0
 * Use `UNSAFE_` prefix for `componentWillMount`, `componentWillReceiveProps` usages in `connect` HOC.
 
