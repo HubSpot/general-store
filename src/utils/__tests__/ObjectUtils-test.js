@@ -1,5 +1,6 @@
 jest.unmock('../ObjectUtils');
 
+import { Map } from 'immutable';
 import {
   oForEach,
   oFilterMap,
@@ -85,6 +86,28 @@ describe('ObjectUtils', () => {
       expect(shallowEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })).toBe(
         false
       );
+    });
+
+    it('shallowly compares immutable values', () => {
+      expect(shallowEqual(Map({ a: 1 }), Map({ a: 1 }))).toBe(true);
+      const mockImmutable1 = {
+        hashCode() {
+          return 1;
+        },
+        equals() {
+          return false;
+        },
+      };
+      const mockImmutable2 = {
+        hashCode() {
+          return 1;
+        },
+        equals() {
+          return false;
+        },
+      };
+      // force hash collision - should fall back to .equals
+      expect(shallowEqual(mockImmutable1, mockImmutable2)).toBe(false);
     });
   });
 });

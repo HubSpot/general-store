@@ -59,6 +59,7 @@
     "eslint-plugin-react-app": "^4.0.1",
     "eslint-plugin-react-hooks": "^1.5.1",
     "flux": "^2.0.1",
+    "immutable": "4.0.0-rc.12",
     "immutable-is": "^3.7.4",
     "invariant": "^2.2.1",
     "jest": "24.5.0",

@@ -7,6 +7,7 @@ import useStoreDependency from '../useStoreDependency';
 import { Dispatcher } from 'flux';
 import { set as setDispatcherInstance } from '../../dispatcher/DispatcherInstance';
 import TestUtils from 'react-dom/test-utils';
+import { List, Map } from 'immutable';
 
 configure({ adapter: new Adapter() });
 
@@ -158,6 +159,29 @@ describe('useStoreDependency', () => {
       dispatcher.dispatch({ actionType: DO_NOTHING });
       rendered.update();
       expect(renders).toBe(2);
+    });
+
+    it("doesn't trigger an infinite loop when using immutable objects", () => {
+      const store = new StoreFactory({
+        getter: state => state,
+        getInitialState: () => List([Map({ a: 1 })]),
+        responses: {
+          updateImmutable: (state, newValue) => newValue,
+        },
+      }).register();
+      const Component = () => {
+        useStoreDependency({
+          stores: [store],
+          deref: () => List([Map({ a: 5 })]),
+        });
+
+        return null;
+      };
+      mount(<Component />);
+      // no assertions to make, but this test will fail if equality is
+      // not implemented correctly, as the immutables will not be strictly
+      // equal, sending useStoreDependency into an infinite loop
+      // https://github.com/HubSpot/general-store/issues/74
     });
   });
 
