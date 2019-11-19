@@ -182,6 +182,7 @@ describe('useStoreDependency', () => {
       // not implemented correctly, as the immutables will not be strictly
       // equal, sending useStoreDependency into an infinite loop
       // https://github.com/HubSpot/general-store/issues/74
+      expect(true).toBe(true);
     });
   });
 

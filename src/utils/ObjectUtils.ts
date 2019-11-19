@@ -79,7 +79,7 @@ export function shallowEqual(obj1: any, obj2: any): Boolean {
     // https://github.com/immutable-js/immutable-js/blob/59c291a2b37693198a0950637c5d55cd14dd6bc4/src/is.js#L52-L55
     if (obj1.hashCode() !== obj2.hashCode()) {
       return false;
-    } else {
+    } else if (typeof obj1.equals === 'function') {
       return obj1.equals(obj2);
     }
   }
