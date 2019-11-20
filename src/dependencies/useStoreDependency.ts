@@ -10,6 +10,7 @@ import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
 import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import { handleDispatch } from './Dispatch';
 import { Dispatcher } from 'flux';
+import { shallowEqual } from '../utils/ObjectUtils';
 
 type SingleDependency = {
   [key: string]: Dependency;
@@ -50,7 +51,7 @@ function useStoreDependency<Props>(
             entry,
             currProps.current
           );
-          if (newValue !== dependencyValue) {
+          if (!shallowEqual(newValue, dependencyValue)) {
             setDependencyValue(newValue);
           }
         }
@@ -62,7 +63,7 @@ function useStoreDependency<Props>(
   }, [dispatcher, dependencyValue, dependency, currProps]);
 
   const newValue = calculate(dependency, props);
-  if (newValue !== dependencyValue) {
+  if (!shallowEqual(newValue, dependencyValue)) {
     setDependencyValue(newValue);
   }
   return dependencyValue;
