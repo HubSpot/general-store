@@ -1,3 +1,6 @@
+## 3.2.1
+* Fix shallowCompare function when one or both inputs is falsy.
+
 ## 3.2.0
 * Fix potential infinite loop with Immutable dependency values (#74)
 
