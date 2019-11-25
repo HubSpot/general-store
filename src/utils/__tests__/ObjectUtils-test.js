@@ -109,5 +109,9 @@ describe('ObjectUtils', () => {
       // force hash collision - should fall back to .equals
       expect(shallowEqual(mockImmutable1, mockImmutable2)).toBe(false);
     });
+
+    it('handles immutable values if one input is falsy', () => {
+      expect(() => shallowEqual(Map({ a: 1 }), null)).not.toThrow();
+    });
   });
 });

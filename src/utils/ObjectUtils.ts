@@ -68,6 +68,8 @@ export function shallowEqual(obj1: any, obj2: any): Boolean {
   // While this technically means this is deep equality for Immutables,
   // it's better to have a more specific check than an entirely incorrect one.
   if (
+    obj1 &&
+    obj2 &&
     typeof obj1.hashCode === 'function' &&
     typeof obj2.hashCode === 'function'
   ) {
