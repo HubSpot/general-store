@@ -34,3 +34,4 @@ src/bower_components
 # build stuff
 dist
 lib
+es
