@@ -7,10 +7,11 @@
     "build:commonjs": "BABEL_ENV=commonjs babel src --ignore *-test.js --out-dir lib",
     "build:umd": "NODE_ENV=development webpack --config ./webpack.config.development.js src/GeneralStore.js dist/general-store.js",
     "build:umd:min": "NODE_ENV=production webpack --config ./webpack.config.production.js -p src/GeneralStore.js dist/general-store.min.js",
-    "build": "npm run build:commonjs && npm run build:umd && npm run build:umd:min",
+    "build:es": "babel src --ignore *-test.js --out-dir es --no-babelrc --plugins=syntax-class-properties,syntax-jsx,syntax-object-rest-spread,transform-flow-strip-types",
+    "build": "npm run build:commonjs && npm run build:umd && npm run build:umd:min && npm run build:es",
     "build-and-test": "npm run clean && npm run build && npm test",
     "check": "flow check",
-    "clean": "rm -rf ./dist && rm -rf lib",
+    "clean": "rm -rf dist && rm -rf lib && rm -rf es",
     "format": "prettier --single-quote -l --bracket-spacing --jsx-bracket-same-line --trailing-comma es5 --parser flow --write \"{src,__{tests,mocks}__}/**/*.js\"",
     "lint": "eslint ./src",
     "prepublish": "npm run build-and-test",
@@ -28,7 +29,8 @@
   ],
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "es"
   ],
   "author": "Colby Rabideau",
   "license": "MIT",
