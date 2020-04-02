@@ -32,24 +32,26 @@ export type Action = {
   payload: any;
 };
 
-export type StoreGetter = (...args: Array<any>) => any;
+export type StoreGetter<T> = (...args: Array<any>) => T;
 
-export type StoreResponses = {
-  [key: string]: (
-    state: any,
-    data: any,
-    actionType: string,
-    payload: Action
-  ) => any;
+export type StoreResponse<T> = (
+  state: T,
+  data: any,
+  actionType: string,
+  payload: Action
+) => any;
+
+export type StoreResponses<T> = {
+  [key: string]: StoreResponse<T>;
 };
 
-type StoreOptions = {
+type StoreOptions<T> = {
   dispatcher: Dispatcher<any>;
-  factory: StoreFactory;
-  getter: (...args: Array<any>) => any;
-  initialState: any;
+  factory: StoreFactory<T>;
+  getter: StoreGetter<T>;
+  initialState: T;
   name?: string;
-  responses: {};
+  responses: StoreResponses<T>;
 };
 
 type DevToolsOptions = {
@@ -70,14 +72,14 @@ type DevToolsExtension = {
   subscribe: (callback: (message: DevToolsMessage) => void) => any;
 };
 
-export default class Store {
+export default class Store<T> {
   _dispatcher: Dispatcher<any>;
   _dispatchToken: string;
-  _factory: StoreFactory;
-  _getter: StoreGetter;
+  _factory: StoreFactory<T>;
+  _getter: StoreGetter<T>;
   _event: Event;
   _name: string;
-  _responses: StoreResponses;
+  _responses: StoreResponses<T>;
   _state: any;
   _uid: string;
   _devToolsExtension: DevToolsExtension;
@@ -90,7 +92,7 @@ export default class Store {
     initialState,
     name,
     responses,
-  }: StoreOptions) {
+  }: StoreOptions<T>) {
     this._dispatcher = dispatcher;
     this._factory = factory;
     this._getter = getter;
@@ -145,7 +147,7 @@ export default class Store {
    * @param  ...  accepts any number of params
    * @return any
    */
-  get(...args: Array<any>): any {
+  get(...args: any[]): T {
     return this._getter(this._state, ...args);
   }
 
@@ -208,7 +210,7 @@ export default class Store {
    *
    * @return this
    */
-  triggerChange(): Store {
+  triggerChange(): Store<T> {
     if (process.env.NODE_ENV !== 'production') {
       if (!this._dispatcher.isDispatching()) {
         console.warn(

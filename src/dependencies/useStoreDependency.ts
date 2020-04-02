@@ -11,10 +11,7 @@ import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import { handleDispatch } from './Dispatch';
 import { Dispatcher } from 'flux';
 import { shallowEqual } from '../utils/ObjectUtils';
-
-type SingleDependency = {
-  [key: string]: Dependency;
-};
+// import StoreFactory from '../store/StoreFactory';
 
 function useCurrent<ValueType>(value: ValueType): React.RefObject<ValueType> {
   const ref = React.useRef(value);
@@ -22,11 +19,11 @@ function useCurrent<ValueType>(value: ValueType): React.RefObject<ValueType> {
   return ref;
 }
 
-function useStoreDependency<Props>(
-  dependency: Dependency,
-  props: Props,
+function useStoreDependency<Props, DepType>(
+  dependency: Dependency<DepType>,
+  props?: Props,
   dispatcher: Dispatcher<any> = getDispatcherInstance()
-) {
+): DepType {
   enforceDispatcher(dispatcher);
 
   const [dependencyValue, setDependencyValue] = React.useState(
@@ -46,11 +43,12 @@ function useStoreDependency<Props>(
         (entry: DependencyIndexEntry) => {
           const {
             dependency: newValue,
-          }: SingleDependency = calculateForDispatch(
-            dependencyMap,
-            entry,
-            currProps.current
-          );
+          }: { dependency?: DepType } = calculateForDispatch<
+            Props,
+            Partial<typeof dependencyMap>,
+            DepType,
+            typeof dependencyMap
+          >(dependencyMap, entry, currProps.current);
           if (!shallowEqual(newValue, dependencyValue)) {
             setDependencyValue(newValue);
           }
@@ -68,5 +66,13 @@ function useStoreDependency<Props>(
   }
   return dependencyValue;
 }
+
+// const store = new StoreFactory({
+//   getter() {
+//     return 'test';
+//   },
+// }).register();
+// const test = useStoreDependency(store);
+// console.log(test);
 
 export default useStoreDependency;

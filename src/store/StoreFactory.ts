@@ -2,7 +2,7 @@ import { Dispatcher } from 'flux';
 import * as DispatcherInstance from '../dispatcher/DispatcherInstance';
 import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import invariant from 'invariant';
-import Store from './Store';
+import Store, { StoreGetter, StoreResponses, StoreResponse } from './Store';
 
 const HINT_LINK =
   'Learn more about defining stores:' +
@@ -31,38 +31,30 @@ function enforceResponse(existingResponses, actionType, response) {
   );
 }
 
-type Getter = (state: any) => any;
-
-type Response = (state: any, payload: any, actionType: string) => any;
-
-type Responses = {
-  [key: string]: Response;
-};
-
-type StoreFactoryDefinition = {
-  getter?: Getter;
-  getInitialState?: () => any;
+type StoreFactoryDefinition<T> = {
+  getter?: StoreGetter<T>;
+  getInitialState?: StoreGetter<T>;
   name?: string;
-  responses?: Responses;
+  responses?: StoreResponses<T>;
 };
 
 function defaultGetInitialState() {
   return undefined;
 }
 
-function defaultGetter(state: any): any {
+function defaultGetter<T>(state: T): T {
   return state;
 }
 
-export default class StoreFactory {
-  _definition: StoreFactoryDefinition;
+export default class StoreFactory<T> {
+  _definition: StoreFactoryDefinition<T>;
 
   constructor({
     getter,
     getInitialState,
     name,
     responses,
-  }: StoreFactoryDefinition = {}) {
+  }: StoreFactoryDefinition<T> = {}) {
     this._definition = {
       getter: getter || defaultGetter,
       getInitialState: getInitialState || defaultGetInitialState,
@@ -71,7 +63,7 @@ export default class StoreFactory {
     };
   }
 
-  defineGet(getter: Getter): StoreFactory {
+  defineGet(getter: StoreGetter<T>): StoreFactory<T> {
     invariant(
       this._definition.getter === defaultGetter,
       'StoreFactory.defineGet: a getter is already defined.'
@@ -82,7 +74,7 @@ export default class StoreFactory {
     });
   }
 
-  defineGetInitialState(getInitialState: () => any): StoreFactory {
+  defineGetInitialState(getInitialState: StoreGetter<T>): StoreFactory<T> {
     invariant(
       typeof getInitialState === 'function',
       'StoreFactory.defineGetInitialState: getInitialState must be a function.'
@@ -101,7 +93,7 @@ export default class StoreFactory {
     });
   }
 
-  defineResponses(newResponses: Responses): StoreFactory {
+  defineResponses(newResponses: StoreResponses<T>): StoreFactory<T> {
     const { responses } = this._definition;
     invariant(
       newResponses && typeof newResponses === 'object',
@@ -121,8 +113,8 @@ export default class StoreFactory {
 
   defineResponseTo(
     actionTypes: string | Array<string>,
-    response: Response
-  ): StoreFactory {
+    response: StoreResponse<T>
+  ): StoreFactory<T> {
     return this.defineResponses(
       [].concat(actionTypes).reduce((responses, actionType) => {
         responses[actionType] = response;
@@ -131,11 +123,11 @@ export default class StoreFactory {
     );
   }
 
-  getDefinition(): StoreFactoryDefinition {
+  getDefinition(): StoreFactoryDefinition<T> {
     return this._definition;
   }
 
-  register(dispatcher?: Dispatcher<any>): Store {
+  register(dispatcher?: Dispatcher<any>): Store<T> {
     dispatcher = dispatcher || DispatcherInstance.get();
     invariant(
       dispatcher !== null && typeof dispatcher === 'object',

@@ -13,8 +13,8 @@ import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
 import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import { Dispatcher } from 'flux';
 
-function subscribe(
-  dependencies: DependencyMap,
+function subscribe<T>(
+  dependencies: DependencyMap<T>,
   dependencyIndex: DependencyIndex,
   dispatcher: Dispatcher<any>,
   callback: Function,
@@ -60,8 +60,8 @@ function subscribe(
   return { remove };
 }
 
-export default function connectCallback(
-  dependencies: DependencyMap,
+export default function connectCallback<T>(
+  dependencies: DependencyMap<T>,
   dispatcher: Dispatcher<any> = getDispatcherInstance()
 ) {
   enforceDispatcher(dispatcher);

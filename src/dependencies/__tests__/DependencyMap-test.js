@@ -48,11 +48,11 @@ describe('DependencyMap', () => {
       },
       absCount: {
         stores: [CountStore],
-        deref: props => Math.abs(CountStore.get()), // eslint-disable-line no-unused-vars
+        deref: props => Math.abs(CountStore.get()), // eslint-disable-line @typescript-eslint/no-unused-vars
       },
       timesAHundred: {
         stores: [CountStore],
-        deref: (props, state) => CountStore.get() * 100, // eslint-disable-line no-unused-vars
+        deref: (props, state) => CountStore.get() * 100, // eslint-disable-line @typescript-eslint/no-unused-vars
       },
       timesAHundredMinusState: {
         stores: [CountStore],
@@ -170,62 +170,7 @@ describe('DependencyMap', () => {
       expect(calculate(CountStore)).toEqual(initialState);
     });
 
-    it('it passes no args to deref with arity 0', () => {
-      expect(
-        calculate(
-          {
-            stores: [CountStore],
-            deref(...args) {
-              expect(args[0]).toBe(undefined);
-              expect(args[1]).toBe(undefined);
-              expect(args[2]).toBe(undefined);
-              return CountStore.get();
-            },
-          },
-          mockProps,
-          mockState
-        )
-      ).toEqual(initialState);
-    });
-
-    it('it passes props to deref with arity 1', () => {
-      expect(
-        calculate(
-          {
-            stores: [CountStore],
-            deref(props, ...args) {
-              expect(props).toBe(mockProps);
-              expect(args[1]).toBe(undefined);
-              expect(args[2]).toBe(undefined);
-              return CountStore.get();
-            },
-          },
-          mockProps,
-          mockState
-        )
-      ).toEqual(initialState);
-    });
-
-    it('it passes props, state, stores to deref with arity 2', () => {
-      const mockStores = [CountStore];
-      expect(
-        calculate(
-          {
-            stores: mockStores,
-            deref: function testDeref(props, state, stores) {
-              expect(props).toBe(mockProps);
-              expect(state).toBe(mockState);
-              expect(stores).toBe(mockStores);
-              return CountStore.get();
-            },
-          },
-          mockProps,
-          mockState
-        )
-      ).toEqual(initialState);
-    });
-
-    it('it passes props, state, stores to deref with arity 3', () => {
+    it('it passes props, state, stores to deref', () => {
       const mockStores = [CountStore];
       expect(
         calculate(

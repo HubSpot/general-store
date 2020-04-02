@@ -15,8 +15,8 @@ import * as React from 'react';
 import { Component, ComponentType } from 'react';
 import hoistStatics from 'hoist-non-react-statics';
 
-export default function connect(
-  dependencies: DependencyMap,
+export default function connect<RT, Deps extends DependencyMap<RT>>(
+  dependencies: Deps,
   dispatcher: Dispatcher<any> = getDispatcherInstance()
 ): Function {
   enforceDispatcher(dispatcher);
@@ -28,7 +28,7 @@ export default function connect(
   ): ComponentType<Props> {
     class ConnectedComponent extends Component<Props, any> {
       static defaultProps?: Partial<Props> = BaseComponent.defaultProps;
-      static dependencies: DependencyMap = dependencies;
+      static dependencies: Deps = dependencies;
       static displayName = makeDisplayName('Connected', BaseComponent);
       static propTypes: any = dependencyPropTypes(
         dependencies,

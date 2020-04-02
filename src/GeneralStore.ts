@@ -10,7 +10,7 @@ function defineSingleton(): StoreSingleton {
   return new StoreSingleton();
 }
 
-function defineFactory(): StoreFactory {
+function defineFactory<T>(): StoreFactory<T> {
   return new StoreFactory({});
 }
 

@@ -1,6 +1,6 @@
-export function oForEach<T>(
-  subject: { [key: string]: T },
-  operation: (value: T, key: string) => void
+export function oForEach<ValueType>(
+  subject: { [key: string]: ValueType },
+  operation: (value: ValueType, key: string) => void
 ): void {
   for (const key in subject) {
     if (subject.hasOwnProperty(key)) {
@@ -9,11 +9,11 @@ export function oForEach<T>(
   }
 }
 
-export function oMap<T, R>(
-  subject: { [key: string]: T },
-  mapper: (value: any, key: string) => R
-): { [key: string]: R } {
-  const result = {};
+export function oMap<ToMap, ValueType, Mapped>(
+  subject: { [key in keyof ToMap]: ValueType },
+  mapper: (value: any, key: string) => Mapped
+): Partial<Record<keyof ToMap, Mapped>> {
+  const result: Partial<Record<keyof ToMap, Mapped>> = {};
   oForEach(subject, (value, key) => {
     result[key] = mapper(value, key);
   });
