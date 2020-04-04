@@ -1,8 +1,14 @@
-import GeneralStore from '../GeneralStore';
+import * as GeneralStore from '../GeneralStore';
 
 jest.disableAutomock();
 
-const exportList = ['connect', 'define', 'defineFactory', 'DispatcherInstance'];
+const exportList = [
+  'connect',
+  'define',
+  'defineFactory',
+  'DispatcherInstance',
+  'useStoreDependency',
+];
 
 describe('GeneralStore', () => {
   it('should match the export list', () => {
