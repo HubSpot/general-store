@@ -11,9 +11,9 @@ function dropFirstArg(func: Function) {
   return (head, ...tail) => func(...tail);
 }
 
-export default class StoreSingleton {
-  _facade?: Store;
-  _factory: StoreFactory;
+export default class StoreSingleton<T> {
+  _facade?: Store<T>;
+  _factory: StoreFactory<T>;
   _getter?: Function;
 
   constructor() {
@@ -29,7 +29,7 @@ export default class StoreSingleton {
     this._getter = null;
   }
 
-  defineGet(getter: () => any): StoreSingleton {
+  defineGet(getter: () => any): StoreSingleton<T> {
     invariant(
       !this.isRegistered(),
       'StoreSingleton.defineGet: this store definition cannot be modified' +
@@ -47,7 +47,7 @@ export default class StoreSingleton {
     return this;
   }
 
-  defineName(name: string): StoreSingleton {
+  defineName(name: string): StoreSingleton<T> {
     this._factory.defineName(name);
     return this;
   }
@@ -55,7 +55,7 @@ export default class StoreSingleton {
   defineResponseTo(
     actionTypes: Array<string> | string,
     response: (data: any) => void
-  ): StoreSingleton {
+  ): StoreSingleton<T> {
     invariant(
       !this.isRegistered(),
       'StoreSingleton.defineResponseTo: this store definition cannot be' +
@@ -73,7 +73,7 @@ export default class StoreSingleton {
     return this._facade instanceof Store;
   }
 
-  register(dispatcher?: Dispatcher<any>): Store {
+  register(dispatcher?: Dispatcher<any>): Store<T> {
     invariant(
       typeof this._getter === 'function',
       'StoreSingleton.register: a store cannot be registered without a' +

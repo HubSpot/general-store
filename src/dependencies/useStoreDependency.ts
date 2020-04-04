@@ -1,22 +1,75 @@
-import * as React from 'react';
+import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useRef,
+  useEffect,
+  useState,
+  useMemo,
+} from 'react';
 import {
   Dependency,
   calculate,
   calculateForDispatch,
   makeDependencyIndex,
   DependencyIndexEntry,
+  DependencyMap,
+  GetDependencyType,
 } from './DependencyMap';
 import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
 import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import { handleDispatch } from './Dispatch';
 import { Dispatcher } from 'flux';
-import { shallowEqual } from '../utils/ObjectUtils';
-// import StoreFactory from '../store/StoreFactory';
+import { deepEqual, shallowEqual } from '../utils/ObjectUtils';
 
-function useCurrent<ValueType>(value: ValueType): React.RefObject<ValueType> {
-  const ref = React.useRef(value);
+export function useCurrent<ValueType>(value: ValueType): RefObject<ValueType> {
+  const ref = useRef(value);
   ref.current = value;
   return ref;
+}
+
+export function _useDispatchSubscription<
+  Props,
+  DependencyMapType extends DependencyMap,
+  DependenciesType = {
+    [key in keyof DependencyMapType]: GetDependencyType<DependencyMapType[key]>
+  }
+>(
+  dependencyMap: DependencyMapType,
+  currentProps: RefObject<Props>,
+  dispatcher: Dispatcher<any>,
+  dependencyValue: DependenciesType,
+  setDependencyValue: Dispatch<SetStateAction<DependenciesType>>
+) {
+  useEffect(() => {
+    const dependencyIndex = makeDependencyIndex(dependencyMap);
+    const dispatchToken: string = dispatcher.register(
+      handleDispatch.bind(
+        null,
+        dispatcher,
+        dependencyIndex,
+        (entry: DependencyIndexEntry) => {
+          const newValue = calculateForDispatch<
+            Props,
+            Partial<typeof dependencyMap>,
+            DependencyMapType
+          >(dependencyMap, entry, currentProps.current);
+          if (!shallowEqual(newValue, dependencyValue)) {
+            setDependencyValue((newValue as unknown) as DependenciesType);
+          }
+        }
+      )
+    );
+    return () => {
+      dispatcher.unregister(dispatchToken);
+    };
+  }, [
+    currentProps,
+    dependencyMap,
+    dependencyValue,
+    dispatcher,
+    setDependencyValue,
+  ]);
 }
 
 function useStoreDependency<Props, DepType>(
@@ -26,53 +79,27 @@ function useStoreDependency<Props, DepType>(
 ): DepType {
   enforceDispatcher(dispatcher);
 
-  const [dependencyValue, setDependencyValue] = React.useState(
-    calculate(dependency, props)
-  );
+  const [dependencyValue, setDependencyValue] = useState({
+    dependency: calculate(dependency, props),
+  });
 
   const currProps = useCurrent(props);
 
-  React.useEffect(() => {
-    const dependencyMap = { dependency };
-    const dependencyIndex = makeDependencyIndex(dependencyMap);
-    const dispatchToken: string = dispatcher.register(
-      handleDispatch.bind(
-        null,
-        dispatcher,
-        dependencyIndex,
-        (entry: DependencyIndexEntry) => {
-          const {
-            dependency: newValue,
-          }: { dependency?: DepType } = calculateForDispatch<
-            Props,
-            Partial<typeof dependencyMap>,
-            DepType,
-            typeof dependencyMap
-          >(dependencyMap, entry, currProps.current);
-          if (!shallowEqual(newValue, dependencyValue)) {
-            setDependencyValue(newValue);
-          }
-        }
-      )
-    );
-    return () => {
-      dispatcher.unregister(dispatchToken);
-    };
-  }, [dispatcher, dependencyValue, dependency, currProps]);
+  const dependencyMap = useMemo(() => ({ dependency }), [dependency]);
+
+  _useDispatchSubscription(
+    dependencyMap,
+    currProps,
+    dispatcher,
+    dependencyValue,
+    setDependencyValue
+  );
 
   const newValue = calculate(dependency, props);
-  if (!shallowEqual(newValue, dependencyValue)) {
-    setDependencyValue(newValue);
+  if (!deepEqual(newValue, dependencyValue.dependency)) {
+    setDependencyValue({ dependency: newValue });
   }
-  return dependencyValue;
+  return dependencyValue.dependency;
 }
-
-// const store = new StoreFactory({
-//   getter() {
-//     return 'test';
-//   },
-// }).register();
-// const test = useStoreDependency(store);
-// console.log(test);
 
 export default useStoreDependency;

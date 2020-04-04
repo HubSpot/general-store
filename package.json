@@ -3,10 +3,13 @@
   "version": "3.2.1",
   "description": "Simple, flexible store implementation for Flux.",
   "main": "lib/GeneralStore.js",
+  "module": "dist/general-store.esm.js",
+  "types": "lib/GeneralStore.d.ts",
   "scripts": {
-    "build:commonjs": "BABEL_ENV=commonjs babel src --ignore *-test.js --out-dir lib --extensions \".ts\",\".tsx\"",
+    "build:commonjs": "babel src --ignore *-test.js --out-dir lib --extensions \".ts\",\".tsx\"",
     "build:umd": "rollup -c",
-    "build": "npm run build:commonjs && npm run build:umd",
+    "build": "npm run build:commonjs && npm run build:umd && npm run generate-types",
+    "generate-types": "tsc --outDir lib",
     "build-and-test": "npm run clean && npm run build && npm test",
     "clean": "rm -rf ./dist && rm -rf lib",
     "format": "prettier --single-quote -l --bracket-spacing --jsx-bracket-same-line --trailing-comma es5 --parser flow --write \"{src,__{tests,mocks}__}/**/*.js\"",
@@ -26,7 +29,8 @@
   ],
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "esm"
   ],
   "author": "Colby Rabideau",
   "maintainers": [
@@ -51,6 +55,7 @@
     "@types/flux": "^3.1.8",
     "@typescript-eslint/eslint-plugin": "2.26.0",
     "@typescript-eslint/parser": "2.26.0",
+    "babel-preset-es2015": "6.24.1",
     "enzyme": "3.9.0",
     "enzyme-adapter-react-16": "1.11.0",
     "eslint": "5.15.1",

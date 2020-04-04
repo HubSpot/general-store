@@ -2,9 +2,6 @@ const {
   calculate,
   calculateInitial,
   calculateForDispatch,
-  calculateForPropsChange,
-  calculateForStateChange,
-  dependenciesUseState,
   dependencyPropTypes,
   enforceValidDependencies,
   makeDependencyIndex,
@@ -220,35 +217,6 @@ describe('DependencyMap', () => {
     });
   });
 
-  describe('calculateForPropsChange', () => {
-    it('calculates dependencies with deref arity > 1', () => {
-      const result = calculateForPropsChange(
-        dependencies,
-        mockProps,
-        mockState
-      );
-      expect(result).toEqual({
-        absCount: initialState,
-        timesAHundred: initialState * 100,
-        timesAHundredMinusState: initialState * 100 - mockState.testState,
-      });
-    });
-  });
-
-  describe('calculateForStateChange', () => {
-    it('calculates dependencies with deref arity > 2', () => {
-      const result = calculateForStateChange(
-        dependencies,
-        mockProps,
-        mockState
-      );
-      expect(result).toEqual({
-        timesAHundred: initialState * 100,
-        timesAHundredMinusState: initialState * 100 - mockState.testState,
-      });
-    });
-  });
-
   describe('makeDependencyIndex', () => {
     it('properly calculates fields affected by actions', () => {
       const index = makeDependencyIndex(dependencies);
@@ -266,22 +234,6 @@ describe('DependencyMap', () => {
       expect(index[INCREMENT].dispatchTokens).toEqual({
         [getDispatchToken(CountStore)]: true,
       });
-    });
-  });
-
-  describe('dependenciesUseState', () => {
-    it('reports `false` if no derefs are arity > 2', () => {
-      expect(
-        dependenciesUseState({
-          count: dependencies.count,
-          negativeCount: dependencies.negativeCount,
-          absCount: dependencies.absCount,
-        })
-      ).toBe(false);
-    });
-
-    it('reports `true` if any derefs are arity > 2', () => {
-      expect(dependenciesUseState(dependencies)).toBe(true);
     });
   });
 });

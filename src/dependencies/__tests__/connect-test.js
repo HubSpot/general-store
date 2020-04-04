@@ -1,3 +1,4 @@
+/* eslint-disable react-app/react/forbid-foreign-prop-types */
 jest.disableAutomock();
 import { Dispatcher } from 'flux';
 import { mount, shallow, configure } from 'enzyme';
@@ -7,6 +8,7 @@ import * as PropTypes from 'prop-types';
 import connect from '../connect';
 import StoreFactory from '../../store/StoreFactory';
 import Adapter from 'enzyme-adapter-react-16';
+import { act } from 'react-dom/test-utils';
 
 configure({ adapter: new Adapter() });
 
@@ -112,15 +114,22 @@ describe('connect', () => {
     });
   });
 
-  describe('UNSAFE_componentWillMount', () => {
+  describe('on mount', () => {
     it('registers a callback with the dispatcher', () => {
-      shallow(<MockComponent />);
+      let root;
+      act(() => {
+        root = mount(<MockComponent />);
+      });
       expect(dispatcher.register.mock.calls.length).toEqual(3);
+      root.unmount();
     });
 
     it('calculates and sets initial state', () => {
-      const root = shallow(<MockComponent />);
-      expect(root.state()).toEqual({
+      let root;
+      act(() => {
+        root = mount(<MockComponent />);
+      });
+      expect(root.find(BaseComponent).props()).toEqual({
         one: 1,
         two: 2,
         third: 3,
@@ -128,60 +137,51 @@ describe('connect', () => {
     });
   });
 
-  describe('UNSAFE_componentWillReceiveProps', () => {
+  describe('when props change', () => {
     it('calculates and sets state', () => {
-      const root = shallow(<MockComponent />);
-      root.setProps({ add: 2 });
-      expect(root.state()).toEqual({
+      let root;
+      act(() => {
+        root = mount(<MockComponent />);
+        root.setProps({ add: 2 });
+      });
+      act(() => {
+        root.update();
+      });
+      expect(root.find(BaseComponent).props()).toEqual({
+        add: 2,
         one: 1,
         two: 4,
         third: 5,
       });
+      root.unmount();
     });
   });
 
-  describe('focus', () => {
-    it('is undefined if BaseComponent has no focus method', () => {
-      expect(MockComponent.focus).toBe(undefined);
-    });
-
-    it('calls through to the BaseComponents focus', () => {
-      const focusSpy = jest.fn();
-      class ComponentWithFocus extends React.Component {
-        focus(...args) {
-          return focusSpy(...args);
-        }
-
-        render() {
-          return <div />;
-        }
-      }
-      const ConnectedComponentWithFocus = connect(
-        dependencies,
-        dispatcher
-      )(ComponentWithFocus);
-      const rendered = mount(<ConnectedComponentWithFocus />);
-      const connectedInstance = rendered.instance();
-      connectedInstance.focus('test', 123);
-      expect(focusSpy.mock.calls.length).toBe(1);
-      expect(focusSpy.mock.calls[0]).toEqual(['test', 123]);
-    });
-  });
-
-  describe('handleDispatch', () => {
+  describe('on dispatch', () => {
     it('waits for all stores affected by the actionType', () => {
-      shallow(<MockComponent />);
-      dispatcher.dispatch({ actionType: SHARED });
-      expect(dispatcher.waitFor.mock.calls[0][0]).toEqual([
+      let root;
+      act(() => {
+        root = mount(<MockComponent />);
+      });
+      act(() => {
+        dispatcher.dispatch({ actionType: SHARED });
+      });
+      act(() => {
+        root.update();
+      });
+      expect(dispatcher.waitFor).toHaveBeenCalledWith([
         getDispatchToken(FirstStore),
         getDispatchToken(SecondStore),
       ]);
     });
 
     it('only updates fields affected by the actionType', () => {
-      const root = shallow(<MockComponent />);
+      const root = mount(<MockComponent />);
       dispatcher.dispatch({ actionType: SHARED });
-      expect(root.state()).toEqual({
+      act(() => {
+        root.update();
+      });
+      expect(root.find(BaseComponent).props()).toEqual({
         one: 0,
         two: 1,
         third: 1,
@@ -189,12 +189,16 @@ describe('connect', () => {
     });
   });
 
-  describe('componentWillUnmount', () => {
+  describe('on unmount', () => {
     it('unregisters its dispatcher callback', () => {
-      const root = shallow(<MockComponent />);
-      const dispatchToken = root.instance().dispatchToken;
-      root.unmount();
-      expect(dispatcher.unregister.mock.calls[0][0]).toBe(dispatchToken);
+      let root;
+      act(() => {
+        root = mount(<MockComponent />);
+      });
+      act(() => {
+        root.unmount();
+      });
+      expect(dispatcher.unregister).toHaveBeenCalled();
     });
   });
 });

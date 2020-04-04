@@ -35,6 +35,7 @@ const bundle = env => {
         globals: {
           react: 'React',
         },
+        name: 'GeneralStore',
       },
     ],
     external: ['react'],

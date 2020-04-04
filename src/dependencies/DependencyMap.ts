@@ -1,14 +1,9 @@
+import { ComponentType } from 'react';
 import { getActionTypes, getDispatchToken } from '../store/InspectStore';
 import invariant from 'invariant';
-import {
-  oFilterMap,
-  oForEach,
-  oMap,
-  oMerge,
-  oReduce,
-} from '../utils/ObjectUtils';
+import { oForEach, oMap, oMerge, oReduce } from '../utils/ObjectUtils';
 import Store from '../store/Store';
-// import StoreFactory from '../store/StoreFactory';
+import hoistStatics from 'hoist-non-react-statics';
 
 export type CompoundDependency<T> = {
   propTypes?: Object;
@@ -27,17 +22,35 @@ export type DependencyIndex = {
   [key: string]: DependencyIndexEntry;
 };
 
-export type DependencyMap<DependencyTypes> = {
-  [key: string]: Dependency<DependencyTypes>;
+export type DependencyMap = {
+  readonly [key: string]: Dependency<any>;
 };
+
+export type GetProps<C> = C extends ComponentType<infer P>
+  ? P extends {}
+    ? P
+    : never
+  : never;
+export type GetDependencyType<D> = D extends Dependency<infer T> ? T : never;
+export type DependencyMapProps<
+  DM extends DependencyMap
+> = DM extends DependencyMap
+  ? { [key in keyof DM]: GetDependencyType<DM[key]> }
+  : never;
+export type ConnectedComponentType<P, C> = React.ForwardRefExoticComponent<
+  P & C
+> & {
+  WrappedComponent: C;
+  dependencies: DependencyMap;
+} & hoistStatics.NonReactStatics<P & C>;
 
 export type PropTypes = {
   [key: string]: Function;
 };
 
-export function enforceValidDependencies<T>(
-  dependencies: DependencyMap<T>
-): DependencyMap<T> {
+export function enforceValidDependencies(
+  dependencies: DependencyMap
+): DependencyMap {
   invariant(
     dependencies && typeof dependencies === 'object',
     'expected `dependencies` to be an `object` but got `%s`',
@@ -79,8 +92,8 @@ export function enforceValidDependencies<T>(
   return dependencies;
 }
 
-export function dependencyPropTypes<T>(
-  dependencies: DependencyMap<T>,
+export function dependencyPropTypes(
+  dependencies: DependencyMap,
   existingPropTypes: { [key: string]: Function } = {}
 ): PropTypes {
   const unrelatedPropTypes = oReduce(
@@ -122,67 +135,25 @@ export function calculate<Props, State, DerefValue>(
   return deref(props, state, stores);
 }
 
-export function calculateInitial<
-  Props,
-  State,
-  RT,
-  Deps extends DependencyMap<RT>
->(
+export function calculateInitial<Props, State, Deps extends DependencyMap>(
   dependencies: Deps,
   props: Props,
   state?: State
-): Partial<Record<keyof Deps, RT>> {
-  return oMap(dependencies, dependency => calculate(dependency, props, state));
+): { [key in keyof Deps]: GetDependencyType<Deps[key]> } {
+  return oMap(dependencies, dependency =>
+    calculate(dependency, props, state)
+  ) as { [key in keyof Deps]: GetDependencyType<Deps[key]> };
 }
 
-// const test = calculateInitial(
-//   { dep: new StoreFactory<string>().register() },
-//   {}
-// ).dep;
-// console.log(test);
-
-export function calculateForDispatch<
-  Props,
-  State,
-  RT,
-  Deps extends DependencyMap<RT>
->(
+export function calculateForDispatch<Props, State, Deps extends DependencyMap>(
   dependencies: Deps,
   dependencyIndexEntry: DependencyIndexEntry,
   props: Props,
   state?: State
-): Partial<Record<keyof Deps, RT>> {
+): { [key in keyof Deps]: Deps[key] } {
   return oMap(dependencyIndexEntry.fields, (_, field) =>
-    calculate(dependencies[field], props, state)
-  );
-}
-
-export function calculateForPropsChange<Props, State, DT>(
-  dependencies: DependencyMap<DT>,
-  props: Props,
-  state?: State
-): Object {
-  return oFilterMap(
-    dependencies,
-    <T>(dep: Dependency<T>) =>
-      typeof (<CompoundDependency<T>>dep).deref === 'function' &&
-      (<CompoundDependency<T>>dep).deref.length > 0,
-    dep => calculate(dep, props, state)
-  );
-}
-
-export function calculateForStateChange<Props, State, DT>(
-  dependencies: DependencyMap<DT>,
-  props: Props,
-  state?: State
-): Object {
-  return oFilterMap(
-    dependencies,
-    <T>(dep: Dependency<T>) =>
-      typeof (<CompoundDependency<T>>dep).deref === 'function' &&
-      (<CompoundDependency<T>>dep).deref.length > 1,
-    dep => calculate(dep, props, state)
-  );
+    calculate(dependencies[field as string], props, state)
+  ) as { [key in keyof Deps]: GetDependencyType<Deps[key]> };
 }
 
 function makeIndexEntry(): DependencyIndexEntry {
@@ -192,8 +163,8 @@ function makeIndexEntry(): DependencyIndexEntry {
   };
 }
 
-export function makeDependencyIndex<DT>(
-  dependencies: DependencyMap<DT>
+export function makeDependencyIndex(
+  dependencies: DependencyMap
 ): DependencyIndex {
   enforceValidDependencies(dependencies);
   return oReduce(
@@ -215,19 +186,4 @@ export function makeDependencyIndex<DT>(
     },
     {}
   );
-}
-
-export function dependenciesUseState<DT>(
-  dependencies: DependencyMap<DT>
-): boolean {
-  for (const field in dependencies) {
-    if (!dependencies.hasOwnProperty(field)) {
-      continue;
-    }
-    const dep = dependencies[field];
-    if (!(dep instanceof Store) && dep.deref.length > 1) {
-      return true;
-    }
-  }
-  return false;
 }
