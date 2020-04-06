@@ -29,8 +29,7 @@
   ],
   "files": [
     "dist",
-    "lib",
-    "esm"
+    "lib"
   ],
   "author": "Colby Rabideau",
   "maintainers": [
