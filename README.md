@@ -244,7 +244,7 @@ export default connect(
 )(ProfileComponent);
 ```
 
-`connect` also allows you to compose dependencies in - the entire dependency map is passed as the second argument to all `deref` functions. While the above syntax is simpler, if the Friends and Users data was a bit harder to compose and each required multiple stores, the friends dependency could've been written like this:
+`connect` also allows you to compose dependencies - the result of the entire dependency map is passed as the second argument to all `deref` functions. While the above syntax is simpler, if the Friends and Users data was a bit harder to calculate and each required multiple stores, the friends dependency could've been written as a composition like this:
 
 ```javascript
 const dependencies = {
