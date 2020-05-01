@@ -20,7 +20,7 @@ import { get as getDispatcherInstance } from '../dispatcher/DispatcherInstance';
 import { enforceDispatcher } from '../dispatcher/DispatcherInterface';
 import { handleDispatch } from './Dispatch';
 import { Dispatcher } from 'flux';
-import { deepEqual, shallowEqual } from '../utils/ObjectUtils';
+import { shallowEqual } from '../utils/ObjectUtils';
 
 export function useCurrent<ValueType>(value: ValueType): RefObject<ValueType> {
   const ref = useRef(value);
@@ -96,7 +96,7 @@ function useStoreDependency<Props, DepType>(
   );
 
   const newValue = calculate(dependency, props);
-  if (!deepEqual(newValue, dependencyValue.dependency)) {
+  if (!shallowEqual(newValue, dependencyValue.dependency)) {
     setDependencyValue({ dependency: newValue });
   }
   return dependencyValue.dependency;
