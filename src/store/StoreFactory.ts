@@ -31,7 +31,7 @@ function enforceResponse(existingResponses, actionType, response) {
   );
 }
 
-type StoreFactoryDefinition<T> = {
+export type StoreFactoryDefinition<T> = {
   getter?: StoreGetter<T>;
   getInitialState?: StoreGetter<T>;
   name?: string;
@@ -99,7 +99,7 @@ export default class StoreFactory<T> {
       newResponses && typeof newResponses === 'object',
       'StoreFactory.defineResponses: newResponses must be an object'
     );
-    Object.keys(newResponses).forEach(actionType =>
+    Object.keys(newResponses).forEach((actionType) =>
       enforceResponse(responses, actionType, newResponses[actionType])
     );
     return new StoreFactory({

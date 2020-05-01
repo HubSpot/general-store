@@ -45,7 +45,7 @@ export type StoreResponses<T> = {
   [key: string]: StoreResponse<T>;
 };
 
-type StoreOptions<T> = {
+export type StoreOptions<T> = {
   dispatcher: Dispatcher<any>;
   factory: StoreFactory<T>;
   getter: StoreGetter<T>;

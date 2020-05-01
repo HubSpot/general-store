@@ -11,6 +11,7 @@ export function defineFactory<T>(): StoreFactory<T> {
   return new StoreFactory({});
 }
 
+export { StoreFactory };
 export { default as connect } from './dependencies/connect';
 export { default as connectCallback } from './dependencies/connectCallback';
 export {
