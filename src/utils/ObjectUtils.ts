@@ -95,7 +95,9 @@ function _equal(obj1: any, obj2: any, shallow: boolean = true): boolean {
           return false;
         }
       } else {
-        return _equal(obj1[property], obj2[property], false);
+        if (!_equal(obj1[property], obj2[property], false)) {
+          return false;
+        }
       }
     }
   }
