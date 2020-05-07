@@ -176,7 +176,7 @@ const FriendsDependency = {
   // compound fields can depend on one or more stores
   // and specify a function to "dereference" the store's value.
   stores: [ProfileStore, UsersStore],
-  deref: (props, state) => {
+  deref: props => {
     friendIds = ProfileStore.get().friendIds;
     users = UsersStore.get();
     return friendIds.map(id => users[id]);
@@ -192,7 +192,11 @@ Once you declare your dependencies there are two ways to connect them to a react
 
 ```javascript
 function FriendsList() {
-  const friends = GeneralStore.useStoreDependency(FriendsDependency, {}, dispatcher);
+  const friends = GeneralStore.useStoreDependency(
+    FriendsDependency,
+    {},
+    dispatcher
+  );
   return (
     <ul>
       {friends.map(friend => (
@@ -205,7 +209,7 @@ function FriendsList() {
 
 ### `connect`
 
-The second option is a Higher-Order Component (commonly "HOC") called `connect`. It's similar to `react-redux`'s `connect` function but it takes a `DependencyMap` (different than `useStoreDependency` which only accepts a single Dependency). A `DependencyMap` is a mapping of string keys to [`Dependency`s](#Dependencies):
+The second option is a Higher-Order Component (commonly "HOC") called `connect`. It's similar to `react-redux`'s `connect` function but it takes a `DependencyMap`. Note that this is different than `useStoreDependency` which only accepts a single `Dependency`, even though (as of v4) `connect` and `useStoreDependency` have the same implementation under the hood. A `DependencyMap` is a mapping of string keys to [`Dependency`s](#Dependencies):
 
 ```javascript
 const dependencies = {
@@ -239,6 +243,23 @@ export default connect(
   dispatcher
 )(ProfileComponent);
 ```
+
+`connect` also allows you to compose dependencies - the result of the entire dependency map is passed as the second argument to all `deref` functions. While the above syntax is simpler, if the Friends and Users data was a bit harder to calculate and each required multiple stores, the friends dependency could've been written as a composition like this:
+
+```javascript
+const dependencies = {
+  users: UsersStore,
+  friends: {
+    stores: [ProfileStore],
+    deref: (props, deps) => {
+      friendIds = ProfileStore.get().friendIds;
+      return friendIds.map(id => deps.users[id]);
+    },
+  },
+};
+```
+
+This composition makes separating dependency code and making dependencies testable much easier, since all dependency logic doesn't need to be fully self-contained.
 
 ## Default Dispatcher Instance
 

@@ -1,21 +1,17 @@
+import { ComponentType } from 'react';
 import { getActionTypes, getDispatchToken } from '../store/InspectStore';
 import invariant from 'invariant';
-import {
-  oFilterMap,
-  oForEach,
-  oMap,
-  oMerge,
-  oReduce,
-} from '../utils/ObjectUtils';
+import { oForEach, oMap, oMerge, oReduce } from '../utils/ObjectUtils';
 import Store from '../store/Store';
+import hoistStatics from 'hoist-non-react-statics';
 
-export type CompoundDependency = {
+export type CompoundDependency<T> = {
   propTypes?: Object;
-  stores: Array<Store>;
-  deref: (props?: Object, state?: Object, stores?: Array<Store>) => any;
+  stores: Store<any>[];
+  deref: (props?: Object, state?: Object, stores?: Store<any>[]) => T;
 };
 
-export type Dependency = CompoundDependency | Store;
+export type Dependency<T> = CompoundDependency<T> | Store<T>;
 
 export type DependencyIndexEntry = {
   dispatchTokens: { [key: string]: boolean };
@@ -27,8 +23,26 @@ export type DependencyIndex = {
 };
 
 export type DependencyMap = {
-  [key: string]: Dependency;
+  readonly [key: string]: Dependency<any>;
 };
+
+export type GetProps<C> = C extends ComponentType<infer P>
+  ? P extends {}
+    ? P
+    : never
+  : never;
+export type GetDependencyType<D> = D extends Dependency<infer T> ? T : never;
+export type DependencyMapProps<
+  DM extends DependencyMap
+> = DM extends DependencyMap
+  ? { [key in keyof DM]: GetDependencyType<DM[key]> }
+  : never;
+export type ConnectedComponentType<P, C> = React.ForwardRefExoticComponent<
+  P & C
+> & {
+  WrappedComponent: C;
+  dependencies: DependencyMap;
+} & hoistStatics.NonReactStatics<P & C>;
 
 export type PropTypes = {
   [key: string]: Function;
@@ -109,69 +123,37 @@ export function dependencyPropTypes(
   );
 }
 
-export function calculate<Props, State>(
-  dependency: Dependency,
+export function calculate<Props, State, DerefValue>(
+  dependency: Dependency<DerefValue>,
   props?: Props,
   state?: State
-): any {
+): DerefValue {
   if (dependency instanceof Store) {
     return dependency.get();
   }
   const { deref, stores } = dependency;
-  if (deref.length === 0) {
-    return deref();
-  }
-  if (deref.length === 1) {
-    return deref(props);
-  }
   return deref(props, state, stores);
 }
 
-export function calculateInitial<Props, State>(
-  dependencies: DependencyMap,
+export function calculateInitial<Props, State, Deps extends DependencyMap>(
+  dependencies: Deps,
   props: Props,
   state?: State
-): Object {
-  return oMap(dependencies, dependency => calculate(dependency, props, state));
+): { [key in keyof Deps]: GetDependencyType<Deps[key]> } {
+  return oMap(dependencies, dependency =>
+    calculate(dependency, props, state)
+  ) as { [key in keyof Deps]: GetDependencyType<Deps[key]> };
 }
 
-export function calculateForDispatch<Props, State>(
-  dependencies: DependencyMap,
+export function calculateForDispatch<Props, State, Deps extends DependencyMap>(
+  dependencies: Deps,
   dependencyIndexEntry: DependencyIndexEntry,
   props: Props,
   state?: State
-): { [key: string]: any } {
+): { [key in keyof Deps]: Deps[key] } {
   return oMap(dependencyIndexEntry.fields, (_, field) =>
-    calculate(dependencies[field], props, state)
-  );
-}
-
-export function calculateForPropsChange<Props, State>(
-  dependencies: DependencyMap,
-  props: Props,
-  state?: State
-): Object {
-  return oFilterMap(
-    dependencies,
-    (dep: Dependency) =>
-      typeof (<CompoundDependency>dep).deref === 'function' &&
-      (<CompoundDependency>dep).deref.length > 0,
-    dep => calculate(dep, props, state)
-  );
-}
-
-export function calculateForStateChange<Props, State>(
-  dependencies: DependencyMap,
-  props: Props,
-  state?: State
-): Object {
-  return oFilterMap(
-    dependencies,
-    (dep: Dependency) =>
-      typeof (<CompoundDependency>dep).deref === 'function' &&
-      (<CompoundDependency>dep).deref.length > 1,
-    dep => calculate(dep, props, state)
-  );
+    calculate(dependencies[field as string], props, state)
+  ) as { [key in keyof Deps]: GetDependencyType<Deps[key]> };
 }
 
 function makeIndexEntry(): DependencyIndexEntry {
@@ -204,17 +186,4 @@ export function makeDependencyIndex(
     },
     {}
   );
-}
-
-export function dependenciesUseState(dependencies: DependencyMap): boolean {
-  for (const field in dependencies) {
-    if (!dependencies.hasOwnProperty(field)) {
-      continue;
-    }
-    const dep = dependencies[field];
-    if (!(dep instanceof Store) && dep.deref.length > 1) {
-      return true;
-    }
-  }
-  return false;
 }

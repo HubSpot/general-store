@@ -2,7 +2,9 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "module": "commonjs",
-    "jsx": "react"
+    "jsx": "react",
+    "declaration": true,
+    "emitDeclarationOnly": true
   },
   "include": ["./src/**/*"]
 }

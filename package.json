@@ -3,10 +3,16 @@
   "version": "3.2.1",
   "description": "Simple, flexible store implementation for Flux.",
   "main": "lib/GeneralStore.js",
+  "module": "dist/general-store.esm.js",
+  "types": "lib/GeneralStore.d.ts",
   "scripts": {
-    "build:commonjs": "BABEL_ENV=commonjs babel src --ignore *-test.js --out-dir lib --extensions \".ts\",\".tsx\"",
+    "build:commonjs": "babel src --ignore *-test.js --out-dir lib --extensions \".ts\",\".tsx\"",
     "build:umd": "rollup -c",
-    "build": "npm run build:commonjs && npm run build:umd",
+    "build": "npm run build:commonjs && npm run build:umd && npm run generate-types",
+    "generate-initial-types": "tsc --outDir lib",
+    "bundle-types": "dts-bundle --name GeneralStore --main lib/GeneralStore.d.ts --out ../dist/GeneralStore.d.ts",
+    "generate-flow": "flowgen -o flow-typed/GeneralStore.flow.js --add-flow-header --no-inexact dist/GeneralStore.d.ts > flow-errors.log",
+    "generate-types": "npm run generate-initial-types && npm run bundle-types && npm run generate-flow",
     "build-and-test": "npm run clean && npm run build && npm test",
     "clean": "rm -rf ./dist && rm -rf lib",
     "format": "prettier --single-quote -l --bracket-spacing --jsx-bracket-same-line --trailing-comma es5 --parser flow --write \"{src,__{tests,mocks}__}/**/*.js\"",
@@ -49,8 +55,9 @@
     "@babel/preset-react": "7.0.0",
     "@babel/preset-typescript": "7.3.3",
     "@types/flux": "^3.1.8",
-    "@typescript-eslint/eslint-plugin": "^1.4.2",
-    "@typescript-eslint/parser": "^1.4.2",
+    "@typescript-eslint/eslint-plugin": "2.26.0",
+    "@typescript-eslint/parser": "2.26.0",
+    "dts-bundle": "0.7.3",
     "enzyme": "3.9.0",
     "enzyme-adapter-react-16": "1.11.0",
     "eslint": "5.15.1",
@@ -58,6 +65,7 @@
     "eslint-plugin-jest": "^22.3.2",
     "eslint-plugin-react-app": "^4.0.1",
     "eslint-plugin-react-hooks": "^1.5.1",
+    "flowgen": "1.10.0",
     "flux": "^2.0.1",
     "immutable": "3.8.1",
     "immutable-is": "^3.7.4",
@@ -73,8 +81,7 @@
     "rollup-plugin-replace": "^2.1.1",
     "rollup-plugin-typescript": "^1.0.0",
     "rollup-plugin-uglify": "^6.0.2",
-    "tslib": "^1.9.3",
-    "typescript": "^3.3.3333"
+    "typescript": "3.8.3"
   },
   "jest": {
     "roots": [

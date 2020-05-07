@@ -3,11 +3,11 @@ jest.unmock('../ObjectUtils');
 import { Map } from 'immutable';
 import {
   oForEach,
-  oFilterMap,
   oMap,
   oMerge,
   oReduce,
   shallowEqual,
+  deepEqual,
 } from '../ObjectUtils';
 
 describe('ObjectUtils', () => {
@@ -56,17 +56,6 @@ describe('ObjectUtils', () => {
     });
   });
 
-  describe('oFilterMap', () => {
-    it('applies the filterer then the mapper', () => {
-      const increment = n => n + 1;
-      const odd = n => n % 2 === 1;
-      expect(oFilterMap({ one: 1, two: 2, three: 3 }, odd, increment)).toEqual({
-        one: 2,
-        three: 4,
-      });
-    });
-  });
-
   describe('shallowEqual', () => {
     it('shallowly compares values', () => {
       expect(shallowEqual(1, 1)).toBe(true);
@@ -112,6 +101,28 @@ describe('ObjectUtils', () => {
 
     it('handles immutable values if one input is falsy', () => {
       expect(() => shallowEqual(Map({ a: 1 }), null)).not.toThrow();
+    });
+  });
+
+  describe('deepEqual', () => {
+    it('deeply compares values', () => {
+      expect(deepEqual(1, 1)).toBe(true);
+      expect(deepEqual(1, 0)).toBe(false);
+
+      expect(deepEqual(1, null)).toBe(false);
+      expect(deepEqual(1, undefined)).toBe(false);
+      expect(deepEqual(0, false)).toBe(false);
+
+      expect(deepEqual({}, null)).toBe(false);
+      expect(deepEqual({}, {})).toBe(true);
+
+      expect(deepEqual({ a: 1 }, {})).toBe(false);
+      expect(deepEqual({}, { a: 1 })).toBe(false);
+      expect(deepEqual({ a: 1 }, { a: 1 })).toBe(true);
+      expect(deepEqual({ a: 1 }, { a: 'different' })).toBe(false);
+      expect(deepEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })).toBe(
+        true
+      );
     });
   });
 });

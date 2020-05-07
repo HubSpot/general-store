@@ -1,6 +1,6 @@
-export function oForEach<T>(
-  subject: { [key: string]: T },
-  operation: (value: T, key: string) => void
+export function oForEach(
+  subject: { [key: string]: any },
+  operation: (value: any, key: string) => void
 ): void {
   for (const key in subject) {
     if (subject.hasOwnProperty(key)) {
@@ -9,15 +9,15 @@ export function oForEach<T>(
   }
 }
 
-export function oMap<T, R>(
-  subject: { [key: string]: T },
-  mapper: (value: any, key: string) => R
-): { [key: string]: R } {
-  const result = {};
-  oForEach(subject, (value, key) => {
+export function oMap<ToMap extends { [key: string]: any }, Mapped>(
+  subject: { [key in keyof ToMap]: ToMap[key] },
+  mapper: (value: any, key: string | number | symbol) => Mapped
+): { [key in keyof ToMap]: Mapped } {
+  const result: Partial<{ [key in keyof ToMap]: Mapped }> = {};
+  oForEach(subject, (value, key: keyof ToMap) => {
     result[key] = mapper(value, key);
   });
-  return result;
+  return result as { [key in keyof ToMap]: Mapped };
 }
 
 export function oMerge<T>(
@@ -42,24 +42,7 @@ export function oReduce<T, R>(
   return result;
 }
 
-export function oFilterMap<T, R>(
-  subject: { [key: string]: T },
-  filter: (value: T, key: string) => boolean,
-  mapper: (value: T, key: string) => R
-): { [key: string]: R } {
-  return oReduce(
-    subject,
-    (result, value, key) => {
-      if (filter(value, key)) {
-        result[key] = mapper(value, key);
-      }
-      return result;
-    },
-    {}
-  );
-}
-
-export function shallowEqual(obj1: any, obj2: any): Boolean {
+function _equal(obj1: any, obj2: any, shallow: boolean = true): boolean {
   if (obj1 === obj2) {
     return true;
   }
@@ -107,10 +90,24 @@ export function shallowEqual(obj1: any, obj2: any): Boolean {
       return false;
     }
     if (obj1.hasOwnProperty(property) && obj2.hasOwnProperty(property)) {
-      if (obj1[property] !== obj2[property]) {
-        return false;
+      if (shallow) {
+        if (obj1[property] !== obj2[property]) {
+          return false;
+        }
+      } else {
+        if (!_equal(obj1[property], obj2[property], false)) {
+          return false;
+        }
       }
     }
   }
   return true;
+}
+
+export function shallowEqual(obj1: any, obj2: any): boolean {
+  return _equal(obj1, obj2, true);
+}
+
+export function deepEqual(obj1: any, obj2: any): boolean {
+  return _equal(obj1, obj2, false);
 }

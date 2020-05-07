@@ -2,9 +2,6 @@ const {
   calculate,
   calculateInitial,
   calculateForDispatch,
-  calculateForPropsChange,
-  calculateForStateChange,
-  dependenciesUseState,
   dependencyPropTypes,
   enforceValidDependencies,
   makeDependencyIndex,
@@ -48,11 +45,11 @@ describe('DependencyMap', () => {
       },
       absCount: {
         stores: [CountStore],
-        deref: props => Math.abs(CountStore.get()), // eslint-disable-line no-unused-vars
+        deref: props => Math.abs(CountStore.get()), // eslint-disable-line @typescript-eslint/no-unused-vars
       },
       timesAHundred: {
         stores: [CountStore],
-        deref: (props, state) => CountStore.get() * 100, // eslint-disable-line no-unused-vars
+        deref: (props, state) => CountStore.get() * 100, // eslint-disable-line @typescript-eslint/no-unused-vars
       },
       timesAHundredMinusState: {
         stores: [CountStore],
@@ -170,62 +167,7 @@ describe('DependencyMap', () => {
       expect(calculate(CountStore)).toEqual(initialState);
     });
 
-    it('it passes no args to deref with arity 0', () => {
-      expect(
-        calculate(
-          {
-            stores: [CountStore],
-            deref(...args) {
-              expect(args[0]).toBe(undefined);
-              expect(args[1]).toBe(undefined);
-              expect(args[2]).toBe(undefined);
-              return CountStore.get();
-            },
-          },
-          mockProps,
-          mockState
-        )
-      ).toEqual(initialState);
-    });
-
-    it('it passes props to deref with arity 1', () => {
-      expect(
-        calculate(
-          {
-            stores: [CountStore],
-            deref(props, ...args) {
-              expect(props).toBe(mockProps);
-              expect(args[1]).toBe(undefined);
-              expect(args[2]).toBe(undefined);
-              return CountStore.get();
-            },
-          },
-          mockProps,
-          mockState
-        )
-      ).toEqual(initialState);
-    });
-
-    it('it passes props, state, stores to deref with arity 2', () => {
-      const mockStores = [CountStore];
-      expect(
-        calculate(
-          {
-            stores: mockStores,
-            deref: function testDeref(props, state, stores) {
-              expect(props).toBe(mockProps);
-              expect(state).toBe(mockState);
-              expect(stores).toBe(mockStores);
-              return CountStore.get();
-            },
-          },
-          mockProps,
-          mockState
-        )
-      ).toEqual(initialState);
-    });
-
-    it('it passes props, state, stores to deref with arity 3', () => {
+    it('it passes props, state, stores to deref', () => {
       const mockStores = [CountStore];
       expect(
         calculate(
@@ -275,35 +217,6 @@ describe('DependencyMap', () => {
     });
   });
 
-  describe('calculateForPropsChange', () => {
-    it('calculates dependencies with deref arity > 1', () => {
-      const result = calculateForPropsChange(
-        dependencies,
-        mockProps,
-        mockState
-      );
-      expect(result).toEqual({
-        absCount: initialState,
-        timesAHundred: initialState * 100,
-        timesAHundredMinusState: initialState * 100 - mockState.testState,
-      });
-    });
-  });
-
-  describe('calculateForStateChange', () => {
-    it('calculates dependencies with deref arity > 2', () => {
-      const result = calculateForStateChange(
-        dependencies,
-        mockProps,
-        mockState
-      );
-      expect(result).toEqual({
-        timesAHundred: initialState * 100,
-        timesAHundredMinusState: initialState * 100 - mockState.testState,
-      });
-    });
-  });
-
   describe('makeDependencyIndex', () => {
     it('properly calculates fields affected by actions', () => {
       const index = makeDependencyIndex(dependencies);
@@ -321,22 +234,6 @@ describe('DependencyMap', () => {
       expect(index[INCREMENT].dispatchTokens).toEqual({
         [getDispatchToken(CountStore)]: true,
       });
-    });
-  });
-
-  describe('dependenciesUseState', () => {
-    it('reports `false` if no derefs are arity > 2', () => {
-      expect(
-        dependenciesUseState({
-          count: dependencies.count,
-          negativeCount: dependencies.negativeCount,
-          absCount: dependencies.absCount,
-        })
-      ).toBe(false);
-    });
-
-    it('reports `true` if any derefs are arity > 2', () => {
-      expect(dependenciesUseState(dependencies)).toBe(true);
     });
   });
 });
