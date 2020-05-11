@@ -26,6 +26,13 @@ npm install general-store
 yarn add general-store
 ```
 
+```js
+// namespace import
+import * as GeneralStore from 'general-store';
+// or import just your module
+import { define } from 'general-store';
+```
+
 ## Create a store
 
 GeneralStore uses functions to encapsulate private data.
@@ -65,8 +72,8 @@ function defineUserStore() {
 If you use a singleton pattern for stores, simply use the result of `register` from a module.
 
 ```javascript
-var Dispatcher = require('flux').Dispatcher;
-var GeneralStore = require('general-store.js');
+import { Dispatcher } from 'flux';
+import * as GeneralStore from 'general-store';
 
 var dispatcher = new Dispatcher();
 var users = {};
@@ -77,7 +84,7 @@ var UserStore = GeneralStore.define()
   })
   .register(dispatcher);
 
-module.exports = UserStore;
+export default UserStore;
 ```
 
 ## Dispatch to the Store
