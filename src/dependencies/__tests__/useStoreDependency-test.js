@@ -184,6 +184,31 @@ describe('useStoreDependency', () => {
       // https://github.com/HubSpot/general-store/issues/74
       expect(true).toBe(true);
     });
+
+    it('prevents unnecessary re-renders when returning Immutables from derefs', () => {
+      const store = new StoreFactory({
+        getter: state => state,
+        getInitialState: () => List([Map({ a: 1 })]),
+      })
+        .defineResponseTo('increment', state =>
+          state.map(item => item.set('a', item.get('a') + 1))
+        )
+        .register();
+      let renders = 0;
+      const countRender = () => (renders += 1);
+      const Component = () => {
+        useStoreDependency(store);
+        countRender();
+        return null;
+      };
+      const rendered = mount(<Component />);
+      expect(renders).toBe(1);
+      TestUtils.act(() => {
+        dispatcher.dispatch({ actionType: 'increment' });
+      });
+      rendered.update();
+      expect(renders).toBe(2);
+    });
   });
 
   describe('with props', () => {
