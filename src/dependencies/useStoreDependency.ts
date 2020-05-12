@@ -95,9 +95,9 @@ function useStoreDependency<Props, DepType>(
     setDependencyValue
   );
 
-  const newValue = calculate(dependency, props);
-  if (!shallowEqual(newValue, dependencyValue.dependency)) {
-    setDependencyValue({ dependency: newValue });
+  const newValue = { dependency: calculate(dependency, props) };
+  if (!shallowEqual(newValue, dependencyValue)) {
+    setDependencyValue(newValue);
   }
   return dependencyValue.dependency;
 }

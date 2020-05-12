@@ -1,14 +1,25 @@
 jest.unmock('../ObjectUtils');
 
 import { Map } from 'immutable';
-import {
-  oForEach,
-  oMap,
-  oMerge,
-  oReduce,
-  shallowEqual,
-  deepEqual,
-} from '../ObjectUtils';
+import { oForEach, oMap, oMerge, oReduce, shallowEqual } from '../ObjectUtils';
+import { performance } from 'perf_hooks';
+
+const randomStr = () =>
+  new Array(10)
+    .fill(undefined)
+    .map(() => String.fromCharCode(Math.round(Math.random() * 60) + 65))
+    .join('');
+const largeObject = (keys = 50, recursions = 2) =>
+  new Array(keys)
+    .fill(undefined)
+    .reduce(
+      acc =>
+        acc.set(
+          randomStr(),
+          recursions > 0 ? largeObject(keys, recursions - 1) : randomStr()
+        ),
+      Map()
+    );
 
 describe('ObjectUtils', () => {
   describe('oForEach', () => {
@@ -102,27 +113,21 @@ describe('ObjectUtils', () => {
     it('handles immutable values if one input is falsy', () => {
       expect(() => shallowEqual(Map({ a: 1 }), null)).not.toThrow();
     });
-  });
 
-  describe('deepEqual', () => {
-    it('deeply compares values', () => {
-      expect(deepEqual(1, 1)).toBe(true);
-      expect(deepEqual(1, 0)).toBe(false);
-
-      expect(deepEqual(1, null)).toBe(false);
-      expect(deepEqual(1, undefined)).toBe(false);
-      expect(deepEqual(0, false)).toBe(false);
-
-      expect(deepEqual({}, null)).toBe(false);
-      expect(deepEqual({}, {})).toBe(true);
-
-      expect(deepEqual({ a: 1 }, {})).toBe(false);
-      expect(deepEqual({}, { a: 1 })).toBe(false);
-      expect(deepEqual({ a: 1 }, { a: 1 })).toBe(true);
-      expect(deepEqual({ a: 1 }, { a: 'different' })).toBe(false);
-      expect(deepEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })).toBe(
-        true
-      );
+    it('handles large immutables reasonably quickly', () => {
+      const obj1 = largeObject();
+      // just removing the key would create a short-circuit in immutable
+      // because it can just check `.size`, instead, we replace it with an
+      // identically huge object
+      const obj2 = obj1.set(obj1.keySeq().last(), largeObject(50, 1));
+      const start = performance.now();
+      shallowEqual(obj1, obj2);
+      const end = performance.now();
+      // we should be optimizing for library speed over render prevention, clients
+      // can memoize in userland. thus, we should aim for even the largest objects
+      // to be compared very fast. the arbitrary threshold I picked was less than
+      // half a frame.
+      expect(end - start < 8).toBe(true);
     });
   });
 });

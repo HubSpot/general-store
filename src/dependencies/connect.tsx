@@ -15,7 +15,7 @@ import * as React from 'react';
 import { ComponentType, forwardRef, RefObject, useRef, useState } from 'react';
 import hoistStatics from 'hoist-non-react-statics';
 import { _useDispatchSubscription } from './useStoreDependency';
-import { deepEqual, oMap } from '../utils/ObjectUtils';
+import { shallowEqual, oMap } from '../utils/ObjectUtils';
 
 export function useCurrent<ValueType>(value: ValueType): RefObject<ValueType> {
   const ref = useRef(value);
@@ -54,7 +54,7 @@ export default function connect<Deps extends DependencyMap>(
         const newValue = oMap(dependencies, dep =>
           calculate(dep, props, dependencyValue)
         );
-        if (!deepEqual(newValue, dependencyValue)) {
+        if (!shallowEqual(newValue, dependencyValue)) {
           setDependencyValue(newValue as typeof dependencyValue);
         }
 
