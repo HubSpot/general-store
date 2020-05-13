@@ -1,3 +1,6 @@
+## 3.2.2
+* Fix significant performance bottleneck in `shallowCompare` (#84 / #86)
+
 ## 3.2.1
 * Fix shallowCompare function when one or both inputs is falsy.
 
