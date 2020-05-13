@@ -1,3 +1,12 @@
+## 4.0.1
+* Publish useful TS and Flow types. Previously the TS types weren't very useful - all output was typed as `any`. Now, General Store can follow and infer types from your dependencies all the way through to their output, either as props or in hooks, and properly type their return values!
+* `connect` is now a thin wrapper around `useStoreDependency` and was rewritten as a functional component. This allowed us to reduce bundle size by **nearly 50%** while also increasing the runtime performance of `connect`. This also implicitly removes all usages of unsafe React lifecycles, ensuring forward compatibility and safety within concurrent mode.
+* `connect` now has `forwardRef` support, so passing a `ref` to a `connect`ed component properly passes the ref onto the inner component. Functional components can now be connected with `forwardRef` with more predictable behavior. **This is potentially a breaking change.**
+* The library's entry module is now an ESModule rather than a CommonJS module to enable better treeshaking. **This is potentially a breaking change.**
+
+## 3.2.2
+* Fix significant performance bottleneck in `shallowCompare` (#84 / #86)
+
 ## 3.2.1
 * Fix shallowCompare function when one or both inputs is falsy.
 
