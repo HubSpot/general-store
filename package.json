@@ -1,6 +1,6 @@
 {
   "name": "general-store",
-  "version": "4.0.1-rc.0",
+  "version": "4.0.1",
   "description": "Simple, flexible store implementation for Flux.",
   "main": "lib/GeneralStore.js",
   "module": "dist/general-store.esm.js",
