@@ -86,6 +86,11 @@ describe('ObjectUtils', () => {
       expect(shallowEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })).toBe(
         false
       );
+
+      expect(shallowEqual({ a: [1, 2, 3] }, { a: [1, 2, 3] })).toBe(true);
+      expect(
+        shallowEqual({ a: [1, 2, 3] }, { a: [1, 2, { b: 'other' }] })
+      ).toBe(false);
     });
 
     it('shallowly compares immutable values', () => {
