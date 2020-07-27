@@ -1,3 +1,6 @@
+## 4.0.3
+* Fix missing falsy check in new `shallowCompare` function
+
 ## 4.0.2
 * Fixed a regression in the 4.x release channel that would cause `connect`ed components with dependencies returning plain JS arrays (Immutable.js `List`s were unaffected) to create an infinite update loop. (#88)
 
