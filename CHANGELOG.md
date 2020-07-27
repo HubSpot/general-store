@@ -1,3 +1,6 @@
+## 4.0.2
+* Fixed a regression in the 4.x release channel that would cause `connect`ed components with dependencies returning plain JS arrays (Immutable.js `List`s were unaffected) to create an infinite update loop. (#88)
+
 ## 4.0.1
 * Publish useful TS and Flow types. Previously the TS types weren't very useful - all output was typed as `any`. Now, General Store can follow and infer types from your dependencies all the way through to their output, either as props or in hooks, and properly type their return values!
 * `connect` is now a thin wrapper around `useStoreDependency` and was rewritten as a functional component. This allowed us to reduce bundle size by **nearly 50%** while also increasing the runtime performance of `connect`. This also implicitly removes all usages of unsafe React lifecycles, ensuring forward compatibility and safety within concurrent mode.
