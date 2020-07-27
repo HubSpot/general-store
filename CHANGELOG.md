@@ -1,3 +1,6 @@
+## 4.0.4
+* Fix dependency map values not being passed as second argument to `deref` when using `connect`.
+
 ## 4.0.3
 * Fix missing falsy check in new `shallowCompare` function
 
