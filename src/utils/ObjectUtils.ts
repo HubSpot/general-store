@@ -102,7 +102,10 @@ export function shallowEqual(obj1: any, obj2: any): boolean {
         if (!obj1[property].equals(obj2[property])) {
           return false;
         }
-      } else if (Array.isArray(obj1[property])) {
+      } else if (
+        Array.isArray(obj1[property]) &&
+        Array.isArray(obj2[property])
+      ) {
         return _compareArrays(obj1[property], obj2[property]);
       } else if (obj1[property] !== obj2[property]) {
         return false;
