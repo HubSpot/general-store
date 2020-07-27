@@ -50,6 +50,21 @@ function isImmutable(obj: any): boolean {
   );
 }
 
+function _compareArrays(arr1: unknown[], arr2: unknown[]): boolean {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  if (!arr1.length) {
+    return true;
+  }
+  for (const idx in arr1) {
+    if (arr1[idx] !== arr2[idx]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function shallowEqual(obj1: any, obj2: any): boolean {
   if (obj1 === obj2) {
     return true;
@@ -87,6 +102,8 @@ export function shallowEqual(obj1: any, obj2: any): boolean {
         if (!obj1[property].equals(obj2[property])) {
           return false;
         }
+      } else if (Array.isArray(obj1[property])) {
+        return _compareArrays(obj1[property], obj2[property]);
       } else if (obj1[property] !== obj2[property]) {
         return false;
       }
