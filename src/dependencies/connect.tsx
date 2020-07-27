@@ -38,7 +38,7 @@ export default function connect<Deps extends DependencyMap>(
         enforceDispatcher(dispatcher);
 
         const [dependencyValue, setDependencyValue] = useState(() =>
-          calculateInitial(dependencies, props)
+          calculateInitial(dependencies, props, {}) || {}
         );
 
         const currProps = useCurrent(props);

@@ -53,7 +53,7 @@ export function _useDispatchSubscription<
             Props,
             Partial<typeof dependencyMap>,
             DependencyMapType
-          >(dependencyMap, entry, currentProps.current);
+          >(dependencyMap, entry, currentProps.current, dependencyValue);
           if (!shallowEqual(newValue, dependencyValue)) {
             setDependencyValue((newValue as unknown) as DependenciesType);
           }
