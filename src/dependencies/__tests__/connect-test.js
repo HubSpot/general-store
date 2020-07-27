@@ -65,8 +65,8 @@ describe('connect', () => {
       },
       third: {
         stores: [FirstStore, SecondStore],
-        deref: props => {
-          return FirstStore.get() + SecondStore.get(props.add || 0);
+        deref: (props, state) => {
+          return state.one + SecondStore.get(props.add || 0);
         },
       },
     };
