@@ -88,8 +88,15 @@ describe('ObjectUtils', () => {
       );
 
       expect(shallowEqual({ a: [] }, { a: [1] })).toBe(false);
+      expect(shallowEqual({ a: [] }, { a: null })).toBe(false);
       expect(shallowEqual({ a: [] }, { a: [] })).toBe(true);
       expect(shallowEqual({ a: [1, 2, 3] }, { a: [1, 2, 3] })).toBe(true);
+      expect(
+        shallowEqual(
+          { a: [1, 2, { b: 'other' }] },
+          { a: [1, 2, { b: 'other' }] }
+        )
+      ).toBe(true);
       expect(
         shallowEqual({ a: [1, 2, 3] }, { a: [1, 2, { b: 'other' }] })
       ).toBe(false);

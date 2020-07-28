@@ -50,7 +50,8 @@ function isImmutable(obj: any): boolean {
   );
 }
 
-function _compareArrays(arr1: unknown[], arr2: unknown[]): boolean {
+function _compareArrays(arr1?: unknown[], arr2?: unknown[]): boolean {
+  if (!arr1 || !arr2) return false;
   if (arr1.length !== arr2.length) {
     return false;
   }
@@ -58,7 +59,11 @@ function _compareArrays(arr1: unknown[], arr2: unknown[]): boolean {
     return true;
   }
   for (const idx in arr1) {
-    if (arr1[idx] !== arr2[idx]) {
+    // this makes it _technically_ not a shallow equal for array values,
+    // but for stores that return arrays of objects, the object identities
+    // will likely not be equal so we should actually inspect the objects
+    // to see if they're equal
+    if (!shallowEqual(arr1[idx], arr2[idx])) {
       return false;
     }
   }
@@ -103,7 +108,7 @@ export function shallowEqual(obj1: any, obj2: any): boolean {
           return false;
         }
       } else if (
-        Array.isArray(obj1[property]) &&
+        Array.isArray(obj1[property]) ||
         Array.isArray(obj2[property])
       ) {
         return _compareArrays(obj1[property], obj2[property]);
