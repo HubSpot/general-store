@@ -137,6 +137,49 @@ describe('connect', () => {
     });
   });
 
+  describe('complex dependency results', () => {
+    it('prevents infinite loops with incorrectly diffed results', () => {
+      const simpleArraysStore = new StoreFactory({})
+        .defineGet(state => state)
+        .defineGetInitialState(() => [1, 2, 3, 4, 5])
+        .register(dispatcher);
+      const complexArraysStore = new StoreFactory({})
+        .defineGet(state => state)
+        .defineGetInitialState(() => [
+          { top: 'test', top2: [1, 2, 3], top3: { deep: 'test', deep2: 1234 } },
+          {
+            top: 'test2',
+            top2: [4, 5, 6],
+            top3: { deep: 'test2', deep2: 2468 },
+          },
+        ])
+        .register(dispatcher);
+      MockComponent = connect(
+        {
+          simpleArraysStore,
+          complexArraysStore,
+          merged: {
+            stores: [simpleArraysStore, complexArraysStore],
+            deref(__, depMap) {
+              console.log(depMap);
+              return (
+                depMap.simpleArraysStore &&
+                depMap.simpleArraysStore.concat(depMap.complexArraysStore)
+              );
+            },
+          },
+        },
+        dispatcher
+      )(BaseComponent);
+      let root;
+      act(() => {
+        root = mount(<MockComponent />);
+      });
+      // would not get here if array diffing wasn't working properly
+      expect(root.find(BaseComponent).exists()).toBe(true);
+    });
+  });
+
   describe('when props change', () => {
     it('calculates and sets state', () => {
       let root;
