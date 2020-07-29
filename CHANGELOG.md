@@ -1,3 +1,6 @@
+## 4.0.5
+* Implement deeper equality check and test suite for array-based dependencies.
+
 ## 4.0.4
 * Fix dependency map values not being passed as second argument to `deref` when using `connect`.
 
