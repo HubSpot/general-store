@@ -68,7 +68,7 @@ describe('ObjectUtils', () => {
   });
 
   describe('shallowEqual', () => {
-    it('shallowly compares values', () => {
+    it('compares values', () => {
       expect(shallowEqual(1, 1)).toBe(true);
       expect(shallowEqual(1, 0)).toBe(false);
 
@@ -102,7 +102,7 @@ describe('ObjectUtils', () => {
       ).toBe(false);
     });
 
-    it('shallowly compares immutable values', () => {
+    it('compares immutable values', () => {
       expect(shallowEqual(Map({ a: 1 }), Map({ a: 1 }))).toBe(true);
       const mockImmutable1 = {
         hashCode() {

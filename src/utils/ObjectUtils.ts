@@ -70,8 +70,15 @@ function _compareArrays(arr1?: unknown[], arr2?: unknown[]): boolean {
   return true;
 }
 
+// polyfill for Object.is
+function objectIs(x: any, y: any) {
+  return (
+    (x === y && (x !== 0 || 1 / x === 1 / y)) || (x !== x && y !== y) // eslint-disable-line no-self-compare
+  );
+}
+
 export function shallowEqual(obj1: any, obj2: any): boolean {
-  if (obj1 === obj2) {
+  if (objectIs(obj1, obj2)) {
     return true;
   }
 
@@ -112,7 +119,7 @@ export function shallowEqual(obj1: any, obj2: any): boolean {
         Array.isArray(obj2[property])
       ) {
         return _compareArrays(obj1[property], obj2[property]);
-      } else if (obj1[property] !== obj2[property]) {
+      } else if (!objectIs(obj1[property], obj2[property])) {
         return false;
       }
     }

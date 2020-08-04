@@ -161,7 +161,6 @@ describe('connect', () => {
           merged: {
             stores: [simpleArraysStore, complexArraysStore],
             deref(__, depMap) {
-              console.log(depMap);
               return (
                 depMap.simpleArraysStore &&
                 depMap.simpleArraysStore.concat(depMap.complexArraysStore)
@@ -177,6 +176,7 @@ describe('connect', () => {
       });
       // would not get here if array diffing wasn't working properly
       expect(root.find(BaseComponent).exists()).toBe(true);
+      root.unmount();
     });
   });
 
@@ -220,7 +220,9 @@ describe('connect', () => {
 
     it('only updates fields affected by the actionType', () => {
       const root = mount(<MockComponent />);
-      dispatcher.dispatch({ actionType: SHARED });
+      act(() => {
+        dispatcher.dispatch({ actionType: SHARED });
+      });
       act(() => {
         root.update();
       });
