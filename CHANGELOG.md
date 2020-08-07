@@ -1,3 +1,9 @@
+## 4.0.7
+* Revert `connect` to a class component to let React handle diffing the internal state
+
+## 4.0.6
+* Attempt another equality fix for infinite re-render cases
+
 ## 4.0.5
 * Implement deeper equality check and test suite for array-based dependencies.
 
