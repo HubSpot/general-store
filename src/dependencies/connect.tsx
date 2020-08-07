@@ -37,8 +37,8 @@ export default function connect<Deps extends DependencyMap>(
       (props: GetProps<C>, ref) => {
         enforceDispatcher(dispatcher);
 
-        const [dependencyValue, setDependencyValue] = useState(() =>
-          calculateInitial(dependencies, props, {}) || {}
+        const [dependencyValue, setDependencyValue] = useState(
+          () => calculateInitial(dependencies, props, {}) || {}
         );
 
         const currProps = useCurrent(props);
@@ -54,7 +54,11 @@ export default function connect<Deps extends DependencyMap>(
         const newValue = oMap(dependencies, dep =>
           calculate(dep, props, dependencyValue)
         );
-        if (!shallowEqual(newValue, dependencyValue)) {
+        if (
+          Object.keys(newValue)
+            .map(k => shallowEqual(newValue[k], dependencyValue[k]))
+            .some(el => el === false)
+        ) {
           setDependencyValue(newValue as typeof dependencyValue);
         }
 

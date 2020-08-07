@@ -54,7 +54,11 @@ export function _useDispatchSubscription<
             Partial<typeof dependencyMap>,
             DependencyMapType
           >(dependencyMap, entry, currentProps.current, dependencyValue);
-          if (!shallowEqual(newValue, dependencyValue)) {
+          if (
+            Object.keys(newValue)
+              .map(k => shallowEqual(newValue[k], dependencyValue[k]))
+              .some(el => !el)
+          ) {
             setDependencyValue((newValue as unknown) as DependenciesType);
           }
         }
@@ -96,7 +100,7 @@ function useStoreDependency<Props, DepType>(
   );
 
   const newValue = { dependency: calculate(dependency, props) };
-  if (!shallowEqual(newValue, dependencyValue)) {
+  if (!shallowEqual(newValue.dependency, dependencyValue.dependency)) {
     setDependencyValue(newValue);
   }
   return dependencyValue.dependency;
