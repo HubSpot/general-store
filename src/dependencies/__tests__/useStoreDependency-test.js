@@ -236,6 +236,28 @@ describe('useStoreDependency', () => {
       testHook(useCallback);
     });
 
+    it('returns the updated store value after prop update', () => {
+      const Component = ({ factor }) => {
+        const value = useStoreDependency(multiplyDependency, { factor });
+        if (value !== factor) {
+          // We need to throw here rather than relying on the `expect` below
+          // to catch invalid return values.
+          //
+          // This component ends up re-rendering twice: once for the explicit `setProps`
+          // call, and once for the internal `setState` call inside `useStoreDependency`.
+          // The expected end state is eventually reached, but intermediate return
+          // values from `useStoreDependency` could still be wrong.
+          throw new Error(`incorrect return value from useStoreDependency: expected ${factor} but received ${value}`);
+        }
+        return <div data-value={value} />;
+      };
+      const rendered = mount(<Component factor={4} />);
+      expect(rendered.find('div').prop('data-value')).toBe(4);
+      rendered.setProps({ factor: 8 });
+      rendered.update();
+      expect(rendered.find('div').prop('data-value')).toBe(8);
+    });
+
     it('handles a prop update', () => {
       const Component = ({ factor = 4 }) => {
         const value = useStoreDependency(multiplyDependency, { factor });
