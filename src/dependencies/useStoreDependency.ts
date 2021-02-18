@@ -83,9 +83,9 @@ function useStoreDependency<Props, DepType>(
 ): DepType {
   enforceDispatcher(dispatcher);
 
-  const [dependencyValue, setDependencyValue] = useState({
+  const [dependencyValue, setDependencyValue] = useState(() => ({
     dependency: calculate(dependency, props),
-  });
+  }));
 
   const currProps = useCurrent(props);
 
