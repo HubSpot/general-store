@@ -83,9 +83,8 @@ function useStoreDependency<Props, DepType>(
 ): DepType {
   enforceDispatcher(dispatcher);
 
-  const [dependencyValue, setDependencyValue] = useState({
-    dependency: calculate(dependency, props),
-  });
+  const newValue = { dependency: calculate(dependency, props) };
+  const [dependencyValue, setDependencyValue] = useState(newValue);
 
   const currProps = useCurrent(props);
 
@@ -99,7 +98,6 @@ function useStoreDependency<Props, DepType>(
     setDependencyValue
   );
 
-  const newValue = { dependency: calculate(dependency, props) };
   if (!shallowEqual(newValue.dependency, dependencyValue.dependency)) {
     setDependencyValue(newValue);
     return newValue.dependency;

@@ -214,13 +214,16 @@ describe('useStoreDependency', () => {
   describe('with props', () => {
     let store;
     let multiplyDependency;
+    let derefCallCount;
 
     beforeEach(() => {
       store = BaseStoreFactory.register(dispatcher);
+      derefCallCount = 0;
       multiplyDependency = {
         stores: [store],
         deref: ({ factor }) => {
           if (!factor) throw new Error('no factor provided');
+          derefCallCount += 1;
           return store.get() * factor;
         },
       };
@@ -286,6 +289,39 @@ describe('useStoreDependency', () => {
       rendered.find('div').simulate('click');
       rendered.update();
       expect(rendered.find('div').prop('data-factor')).toBe(16);
+    });
+
+    describe('deref call count', () => {
+      it('called once on initial render', () => {
+        const Component = ({ factor }) => {
+          const value = useStoreDependency(multiplyDependency, { factor });
+          return <div data-value={value} />;
+        };
+        mount(<Component factor={4} />);
+        expect(derefCallCount).toBe(1);
+      });
+
+      it('called once on re-render', () => {
+        const Component = ({ factor }) => {
+          const value = useStoreDependency(multiplyDependency, { factor });
+          return <div data-value={value} />;
+        };
+        const rendered = mount(<Component factor={4} />);
+        rendered.setProps({});
+        rendered.update();
+        expect(derefCallCount).toBe(2);
+      });
+
+      it('called twice on prop change (once from the initial re-render, again in the second re-render after the internal setState call)', () => {
+        const Component = ({ factor }) => {
+          const value = useStoreDependency(multiplyDependency, { factor });
+          return <div data-value={value} />;
+        };
+        const rendered = mount(<Component factor={4} />);
+        rendered.setProps({ factor: 8 });
+        rendered.update();
+        expect(derefCallCount).toBe(3);
+      });
     });
   });
 });
