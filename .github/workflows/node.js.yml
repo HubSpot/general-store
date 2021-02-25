@@ -24,7 +24,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - uses: borales/actions-yarn@v2.0.0
       with:
-        cmd: install
-    - uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: build-and-test
+        cmd: install # runs build-and-test as a part of the postinstall script
