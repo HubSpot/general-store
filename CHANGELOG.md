@@ -1,3 +1,6 @@
+## 4.1.0
+* Fix bug where useStoreDependency could return stale data, prevent expensive derefs from being called multiple times.
+
 ## 4.0.7
 * Revert `connect` to a class component to let React handle diffing the internal state
 
