@@ -42,30 +42,25 @@ const bundle = env => {
   };
   return config;
 };
-const moduleBundleConfig = {
+const moduleBundle = format => ({
   input: './src/GeneralStore.ts',
   plugins: [
-    typescript(),
-    commonjs(),
-    resolve({
-      browser: true,
+    typescript({
+      target: format === 'esm' ? 'es2015' : 'es5'
     }),
   ],
   output: [
     {
-      file: `dist/general-store.cjs.js`,
-      format: 'cjs',
-    },
-    {
       file: `dist/general-store.esm.js`,
-      format: 'esm',
+      format
     },
   ],
   external: ['react', 'hoist-non-react-statics'],
-};
+});
 
 export default [
   bundle('development'),
   bundle('production'),
-  moduleBundleConfig,
+  moduleBundle('cjs'),
+  moduleBundle('esm'),
 ];
