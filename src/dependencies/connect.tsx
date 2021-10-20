@@ -84,7 +84,8 @@ export default function connect<Deps extends DependencyMap>(
       }
 
       focus =
-        typeof BaseComponent.prototype.focus === 'function'
+        BaseComponent.prototype &&
+        typeof BaseComponent.prototype.focus === "function"
           ? (...args: any[]) => focuser(this, ...args)
           : undefined;
 
