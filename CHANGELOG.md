@@ -1,3 +1,6 @@
+## 4.1.1
+* Fix bug where `connect` threw errors when wrapping arrow function components.
+
 ## 4.1.0
 * Fix bug where useStoreDependency could return stale data, prevent expensive derefs from being called multiple times.
 
