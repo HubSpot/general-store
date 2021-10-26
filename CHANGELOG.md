@@ -1,3 +1,6 @@
+## 4.2.0
+* Publish ES2015 code in the ESM bundle rather than compiling down to ES5. This should not be a breaking change since builds would need to be ES2015-compatible to understand `import`/`export` statements already, but publishing as a minor version to be safe.
+
 ## 4.1.1
 * Fix bug where `connect` threw errors when wrapping arrow function components.
 
